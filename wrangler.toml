@@ -1,0 +1,5 @@
+# Cloudflare Pages configuration for the One Night landing page.
+# The site is a fully static Next.js export, so Pages just serves ./out.
+name = "one-night"
+compatibility_date = "2025-06-25"
+pages_build_output_dir = "out"
