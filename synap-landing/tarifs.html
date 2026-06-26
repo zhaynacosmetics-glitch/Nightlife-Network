@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tarifs — Synap, l'agent IA de networking</title>
+<meta name="description" content="Les tarifs Synap : Découverte (gratuit), Pro pour les networkers actifs, et Organisateur pour les événements. Gratuit pendant la beta." />
+<meta name="theme-color" content="#ffffff" />
+<meta property="og:title" content="Tarifs — Synap" />
+<meta property="og:description" content="Un tarif pour chaque façon de networker. Gratuit pendant la beta." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0b12'/%3E%3Ccircle cx='10' cy='11' r='3' fill='%23818cf8'/%3E%3Ccircle cx='22' cy='10' r='2.4' fill='%234f46e5'/%3E%3Ccircle cx='17' cy='22' r='2.6' fill='%236366f1'/%3E%3Cpath d='M10 11 22 10 17 22Z' stroke='%234f46e5' stroke-width='1.4' fill='none' opacity='.6'/%3E%3C/svg%3E" />
+</head>
+<body>
+<header class="nav">
+  <div class="nav-in">
+    <a href="index.html" class="logo"><svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0a0b12"/><circle cx="10" cy="11" r="3" fill="#818cf8"/><circle cx="22" cy="10" r="2.4" fill="#4f46e5"/><circle cx="17" cy="22" r="2.6" fill="#6366f1"/><path d="M10 11 22 10 17 22Z" stroke="#4f46e5" stroke-width="1.4" fill="none" opacity=".6"/></svg> Synap</a>
+    <nav class="nav-links">
+      <a href="index.html#features">Fonctionnalités</a>
+      <a href="organisateurs.html">Organisateurs</a>
+      <a href="tarifs.html" class="current">Tarifs</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="index.html#login" class="btn btn-light">Se connecter</a>
+      <a href="index.html#cta" class="btn btn-dark">Rejoindre la beta</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO + PRICING -->
+<section class="hero" style="padding-bottom:30px">
+  <div class="aura a"></div><div class="aura b"></div>
+  <div class="wrap hero-center">
+    <span class="eyebrow"><span class="dot"></span> Tarifs · gratuit pendant la beta</span>
+    <h1>Un tarif pour chaque <span class="grad-text">façon de networker.</span></h1>
+    <p class="lead">Commence gratuitement. Passe au niveau supérieur quand tu veux. Sans engagement.</p>
+    <div class="bill-toggle" role="tablist" aria-label="Période de facturation">
+      <button id="billMonthly" class="active" role="tab" aria-selected="true">Mensuel</button>
+      <button id="billYearly" role="tab" aria-selected="false">Annuel <span class="save">−20%</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:30px">
+  <div class="wrap">
+    <div class="price-grid">
+      <!-- Découverte -->
+      <div class="price-card reveal">
+        <div class="price-name">Découverte</div>
+        <p class="price-desc">Pour tester Synap sur ton prochain event.</p>
+        <div class="price-amt"><span class="num">0&nbsp;€</span></div>
+        <div class="price-note">Gratuit, pour toujours.</div>
+        <a href="index.html#cta" class="btn btn-light">Commencer</a>
+        <ul class="price-list">
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> 1 événement par mois</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Scan d'event &amp; profils de base</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> 10 suggestions de matchs</li>
+          <li class="off"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span> Accroches IA illimitées</li>
+          <li class="off"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span> Synchro agenda &amp; suivi</li>
+        </ul>
+      </div>
+      <!-- Pro -->
+      <div class="price-card popular reveal">
+        <div class="price-name">Pro</div>
+        <p class="price-desc">Pour les pros qui networkent souvent et veulent tout débloquer.</p>
+        <div class="price-amt"><span class="num" id="proPrice">19&nbsp;€</span><span class="per">/ mois</span></div>
+        <div class="price-note" id="proNote">Facturation mensuelle, sans engagement.</div>
+        <a href="index.html#cta" class="btn btn-accent">Rejoindre la beta</a>
+        <ul class="price-list">
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Événements illimités</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Synergies &amp; cross-business illimités</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Accroches IA illimitées</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Prise de RDV + synchro agenda (iCal)</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Suivi post-event &amp; synchro CRM</li>
+        </ul>
+      </div>
+      <!-- Organisateur -->
+      <div class="price-card reveal">
+        <div class="price-name">Organisateur</div>
+        <p class="price-desc">Pour les événements qui veulent un networking augmenté.</p>
+        <div class="price-amt"><span class="num">Sur devis</span></div>
+        <div class="price-note">À partir de 290&nbsp;€ / événement.</div>
+        <a href="organisateurs.html" class="btn btn-dark">Demander une démo</a>
+        <ul class="price-list">
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Tout le plan Pro pour tes participants</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Billetterie intégrée</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Liste des participants visible</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Statistiques &amp; branding</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Support dédié</li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--muted-2);font-size:13px;margin-top:24px">Tous les plans sont gratuits pendant la beta privée — les membres conservent un tarif préférentiel à vie.</p>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow"><span class="dot"></span> Comparatif</span><h2>Le détail, <span class="grad-text">plan par plan.</span></h2></div>
+    <div class="cmp-wrap reveal">
+      <table class="cmp">
+        <thead><tr><th>Fonctionnalité</th><th>Découverte</th><th>Pro</th><th>Organisateur</th></tr></thead>
+        <tbody>
+          <tr><td>Événements</td><td>1 / mois</td><td class="yes">Illimités</td><td class="yes">Illimités</td></tr>
+          <tr><td>Suggestions de matchs</td><td>10</td><td class="yes">Illimitées</td><td class="yes">Illimitées</td></tr>
+          <tr><td>Détection de synergies</td><td>Basique</td><td class="yes">Avancée</td><td class="yes">Avancée</td></tr>
+          <tr><td>Accroches générées par l'IA</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Prise de RDV + synchro agenda</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Suivi post-event &amp; CRM</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Billetterie intégrée</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Liste des participants visible</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Statistiques &amp; branding</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>Support</td><td>Communauté</td><td>Prioritaire</td><td class="yes">Dédié</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow"><span class="dot"></span> FAQ tarifs</span><h2>Questions <span class="grad-text">de tarification.</span></h2></div>
+    <div class="faq reveal">
+      <details open><summary>C'est vraiment gratuit pendant la beta ?<span class="pm"></span></summary><div class="answer">Oui. Tous les plans sont gratuits pendant la beta privée. Les membres de la beta conservent un tarif préférentiel à vie au lancement.</div></details>
+      <details><summary>Puis-je changer de plan à tout moment ?<span class="pm"></span></summary><div class="answer">Oui, tu peux passer de Découverte à Pro (ou inversement) quand tu veux. Le changement est immédiat et calculé au prorata.</div></details>
+      <details><summary>Y a-t-il un engagement ?<span class="pm"></span></summary><div class="answer">Aucun. Le plan Pro est sans engagement en mensuel ; l'annuel te fait économiser 20%. Tu peux résilier en un clic.</div></details>
+      <details><summary>Comment fonctionne le tarif Organisateur ?<span class="pm"></span></summary><div class="answer">Il dépend de la taille de l'événement (nombre de participants) et des options. Demande une démo via la <a href="organisateurs.html">page Organisateurs</a> pour un devis personnalisé.</div></details>
+      <details><summary>Quels moyens de paiement acceptez-vous ?<span class="pm"></span></summary><div class="answer">Carte bancaire et virement (pour les plans Organisateur). Paiement sécurisé, facture automatique.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <div class="aura"></div>
+      <h2>Prêt à networker plus malin ?</h2>
+      <p>Rejoins les 2 400+ pros sur liste d'attente. Accès anticipé, gratuit pendant la beta.</p>
+      <div class="hero-actions" style="justify-content:center">
+        <a href="index.html#cta" class="btn btn-accent">Rejoindre la beta <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="organisateurs.html" class="btn btn-light">Je suis organisateur</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a href="index.html" class="logo"><svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0a0b12"/><circle cx="10" cy="11" r="3" fill="#818cf8"/><circle cx="22" cy="10" r="2.4" fill="#4f46e5"/><circle cx="17" cy="22" r="2.6" fill="#6366f1"/><path d="M10 11 22 10 17 22Z" stroke="#4f46e5" stroke-width="1.4" fill="none" opacity=".6"/></svg> Synap</a>
+        <p>L'agent IA qui transforme chaque event de networking en opportunités business concrètes.</p>
+      </div>
+      <div><h5>Produit</h5><ul><li><a href="index.html#features">Fonctionnalités</a></li><li><a href="organisateurs.html">Organisateurs</a></li><li><a href="tarifs.html">Tarifs</a></li><li><a href="index.html#cta">Beta</a></li></ul></div>
+      <div><h5>Entreprise</h5><ul><li><a href="index.html#valeurs">À propos</a></li><li><a href="#">Blog</a></li><li><a href="index.html#contact">Contact</a></li></ul></div>
+      <div><h5>Légal</h5><ul><li><a href="confidentialite.html">Confidentialité</a></li><li><a href="cgu.html">CGU</a></li><li><a href="confidentialite.html#securite">Sécurité</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Synap. Tous droits réservés.</span><span>Conçu pour ceux qui transforment les rencontres en résultats.</span></div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((e)=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  const bm=document.getElementById('billMonthly'), by=document.getElementById('billYearly'), price=document.getElementById('proPrice'), note=document.getElementById('proNote');
+  function setBilling(yearly){
+    bm.classList.toggle('active',!yearly); by.classList.toggle('active',yearly);
+    bm.setAttribute('aria-selected',String(!yearly)); by.setAttribute('aria-selected',String(yearly));
+    price.innerHTML = yearly ? '15&nbsp;€' : '19&nbsp;€';
+    note.textContent = yearly ? 'Soit 180 € / an, facturé annuellement.' : 'Facturation mensuelle, sans engagement.';
+  }
+  bm.addEventListener('click',()=>setBilling(false));
+  by.addEventListener('click',()=>setBilling(true));
+</script>
+</body>
+</html>
