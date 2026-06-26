@@ -1,7 +1,7 @@
 # Cloudflare config for the One Night landing page.
 # Deployed as a Worker serving static assets (the Next.js static export in ./out).
 # Works with the "Create a Worker" Git flow: `wrangler deploy` uploads ./out as-is.
-name = "nightlife-network"
+name = "nightlife"
 compatibility_date = "2025-06-25"
 
 [assets]
