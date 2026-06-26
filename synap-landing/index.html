@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Synap — L'agent IA qui révèle tes opportunités business à chaque event</title>
+<meta name="description" content="Synap analyse les participants de chaque événement de networking, détecte les synergies et le cross-business, et te dit exactement qui rencontrer — et pourquoi. Ton agent IA de networking." />
+<meta name="theme-color" content="#060A14" />
+<meta property="og:title" content="Synap — Ton agent IA de networking" />
+<meta property="og:description" content="Détecte les synergies, le cross-business et les bonnes personnes à rencontrer à chaque event. En temps réel." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23060A14'/%3E%3Ccircle cx='10' cy='11' r='3' fill='%2338BDF8'/%3E%3Ccircle cx='22' cy='10' r='2.4' fill='%233B82F6'/%3E%3Ccircle cx='17' cy='22' r='2.4' fill='%2322D3EE'/%3E%3Cpath d='M10 11 22 10 17 22Z' stroke='%233B82F6' stroke-width='1.4' fill='none' opacity='.6'/%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #060a14;
+    --bg-2: #0a1120;
+    --surface: rgba(255, 255, 255, 0.035);
+    --surface-2: rgba(255, 255, 255, 0.06);
+    --border: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --text: #f1f5f9;
+    --muted: #93a4c0;
+    --muted-2: #64748b;
+    --blue: #3b82f6;
+    --blue-bright: #60a5fa;
+    --cyan: #22d3ee;
+    --grad: linear-gradient(120deg, #3b82f6 0%, #22d3ee 100%);
+    --grad-soft: linear-gradient(120deg, rgba(59,130,246,.18), rgba(34,211,238,.18));
+    --radius: 20px;
+    --maxw: 1180px;
+    --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--cyan); color: #04121a; }
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+
+  .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  .grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; letter-spacing: .02em;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--muted); backdrop-filter: blur(8px);
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 0 rgba(34,211,238,.5); animation: ping 2.2s infinite; }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(34,211,238,.5);} 70%,100% { box-shadow: 0 0 0 9px rgba(34,211,238,0);} }
+
+  h1, h2, h3 { line-height: 1.08; letter-spacing: -0.025em; font-weight: 800; }
+  .section { padding: 110px 0; position: relative; }
+  .section-head { max-width: 680px; margin: 0 auto 60px; text-align: center; }
+  .section-head h2 { font-size: clamp(30px, 4.6vw, 50px); margin: 18px 0 16px; }
+  .section-head p { color: var(--muted); font-size: 18px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    font-family: var(--font); font-weight: 600; font-size: 15px; cursor: pointer;
+    padding: 13px 22px; border-radius: 999px; border: 1px solid transparent;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--grad); color: #04121a; font-weight: 700; box-shadow: 0 10px 36px -10px rgba(34,211,238,.6); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 44px -10px rgba(34,211,238,.8); }
+  .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+  .btn-ghost:hover { background: var(--surface-2); transform: translateY(-2px); }
+  .btn svg { width: 17px; height: 17px; transition: transform .2s ease; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+
+  /* Background decor */
+  .bg-decor { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .bg-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(80% 60% at 50% 0%, #000 0%, transparent 75%);
+    mask-image: radial-gradient(80% 60% at 50% 0%, #000 0%, transparent 75%);
+  }
+  .glow { position: absolute; border-radius: 50%; filter: blur(120px); opacity: .5; }
+  .glow.a { width: 540px; height: 540px; background: #1d4ed8; top: -160px; left: -120px; }
+  .glow.b { width: 480px; height: 480px; background: #0e7490; top: 120px; right: -140px; opacity: .4; }
+
+  /* NAV */
+  header.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 16px 0; transition: all .3s ease; }
+  header.nav.scrolled .nav-inner { background: rgba(8,12,22,.8); border-color: var(--border); box-shadow: 0 10px 40px -20px rgba(0,0,0,.8); }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px 10px 18px; border-radius: 999px; border: 1px solid transparent;
+    backdrop-filter: blur(16px); transition: all .3s ease;
+  }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; letter-spacing: -0.03em; }
+  .logo .mark { width: 30px; height: 30px; }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-links a { padding: 9px 14px; border-radius: 999px; font-size: 14.5px; font-weight: 500; color: var(--muted); transition: color .2s, background .2s; }
+  .nav-links a:hover { color: var(--text); background: var(--surface); }
+  .nav-mobile-cta { display: none; }
+  .nav-cta { display: flex; align-items: center; gap: 10px; }
+  .burger { display: none; width: 42px; height: 42px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); cursor: pointer; align-items: center; justify-content: center; }
+  .burger span { display: block; width: 18px; height: 2px; background: var(--text); position: relative; }
+  .burger span::before, .burger span::after { content: ""; position: absolute; left: 0; width: 18px; height: 2px; background: var(--text); }
+  .burger span::before { top: -6px; } .burger span::after { top: 6px; }
+
+  /* HERO */
+  .hero { padding: 160px 0 80px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(38px, 6vw, 66px); margin: 24px 0 22px; }
+  .hero p.lead { font-size: clamp(17px, 2vw, 20px); color: var(--muted); max-width: 520px; }
+  .hero-actions { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+  .hero-trust { display: flex; align-items: center; gap: 14px; margin-top: 30px; color: var(--muted); font-size: 14px; }
+  .avatars { display: flex; }
+  .avatars span { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -10px; background-size: cover; }
+  .avatars span:first-child { margin-left: 0; }
+
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* Hero visual: scan card */
+  .scan { position: relative; }
+  .scan-card {
+    position: relative; border-radius: 24px; padding: 22px;
+    background: linear-gradient(180deg, rgba(20,28,46,.9), rgba(10,16,30,.95));
+    border: 1px solid var(--border); box-shadow: 0 40px 90px -30px rgba(0,0,0,.9);
+    backdrop-filter: blur(10px);
+  }
+  .scan-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .scan-live { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--cyan); }
+  .scan-live .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); animation: ping 2s infinite; }
+  .scan-meta { font-size: 12.5px; color: var(--muted-2); }
+  .match { display: flex; align-items: center; gap: 13px; padding: 13px; border-radius: 15px; border: 1px solid var(--border); background: var(--surface); margin-bottom: 10px; transition: border-color .25s, transform .25s; }
+  .match:hover { border-color: var(--border-strong); transform: translateX(3px); }
+  .match .pfp { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; display: grid; place-items: center; font-weight: 700; color: #04121a; }
+  .match .info { flex: 1; min-width: 0; }
+  .match .name { font-weight: 700; font-size: 14.5px; display: flex; align-items: center; gap: 6px; }
+  .match .role { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .match .tag { display: inline-block; margin-top: 5px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 7px; background: var(--grad-soft); color: var(--blue-bright); border: 1px solid rgba(59,130,246,.25); }
+  .score { text-align: right; flex-shrink: 0; }
+  .score .num { font-weight: 800; font-size: 18px; }
+  .score .lbl { font-size: 10.5px; color: var(--muted-2); text-transform: uppercase; letter-spacing: .05em; }
+  .scan-foot { margin-top: 16px; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 13px; background: var(--grad-soft); border: 1px solid rgba(34,211,238,.2); font-size: 13px; }
+  .scan-foot svg { width: 18px; height: 18px; color: var(--cyan); flex-shrink: 0; }
+
+  .float-chip { position: absolute; background: rgba(13,20,36,.95); border: 1px solid var(--border-strong); border-radius: 14px; padding: 10px 13px; font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 18px 40px -18px rgba(0,0,0,.9); backdrop-filter: blur(8px); }
+  .float-chip svg { width: 16px; height: 16px; }
+  .float-chip.one { top: -22px; right: 24px; color: var(--cyan); animation: bob 6s ease-in-out infinite; }
+  .float-chip.two { bottom: 40px; left: -28px; color: var(--blue-bright); animation: bob 7s ease-in-out infinite .8s; }
+  @keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-9px);} }
+
+  /* Logos marquee */
+  .logos { padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .logos p { text-align: center; color: var(--muted-2); font-size: 13px; text-transform: uppercase; letter-spacing: .15em; margin-bottom: 24px; }
+  .logo-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px 48px; opacity: .8; }
+  .logo-row span { font-weight: 700; font-size: 19px; color: var(--muted); letter-spacing: -0.02em; }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .stat { background: var(--bg-2); padding: 34px 22px; text-align: center; }
+  .stat .v { font-size: clamp(30px, 4vw, 42px); font-weight: 800; letter-spacing: -0.03em; }
+  .stat .l { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+  /* Features bento */
+  .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; transition: border-color .3s, transform .3s, background .3s; position: relative; overflow: hidden; }
+  .card:hover { border-color: var(--border-strong); background: var(--surface-2); transform: translateY(-3px); }
+  .card .ico { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; background: var(--grad-soft); border: 1px solid rgba(59,130,246,.2); margin-bottom: 18px; }
+  .card .ico svg { width: 23px; height: 23px; color: var(--cyan); }
+  .card h3 { font-size: 20px; margin-bottom: 9px; font-weight: 700; }
+  .card p { color: var(--muted); font-size: 14.5px; }
+  .col-3 { grid-column: span 3; } .col-2 { grid-column: span 2; } .col-6 { grid-column: span 6; }
+  .card.feature-big { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; }
+  .card.feature-big .copy h3 { font-size: 26px; }
+  .mini-graph { position: relative; height: 200px; }
+
+  /* Steps */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; position: relative; }
+  .step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; }
+  .step .n { font-size: 13px; font-weight: 700; color: var(--cyan); letter-spacing: .1em; }
+  .step h3 { font-size: 21px; margin: 14px 0 9px; }
+  .step p { color: var(--muted); font-size: 14.5px; }
+  .step .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--grad); margin-top: 20px; }
+  .step .ico svg { width: 22px; height: 22px; color: #04121a; }
+
+  /* Agent highlight */
+  .agent { background: linear-gradient(160deg, rgba(20,28,46,.7), rgba(8,12,22,.4)); border: 1px solid var(--border); border-radius: 28px; padding: 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .agent h2 { font-size: clamp(28px, 4vw, 42px); margin-bottom: 18px; }
+  .agent .lead { color: var(--muted); font-size: 17px; margin-bottom: 26px; }
+  .check-list { list-style: none; display: grid; gap: 14px; }
+  .check-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; }
+  .check-list .ck { width: 24px; height: 24px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; flex-shrink: 0; margin-top: 2px; }
+  .check-list .ck svg { width: 14px; height: 14px; color: #04121a; }
+  .agent-visual { position: relative; height: 360px; display: grid; place-items: center; }
+
+  /* Use cases */
+  .cases { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .case { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 18px; text-align: center; transition: border-color .25s, transform .25s; }
+  .case:hover { border-color: var(--border-strong); transform: translateY(-3px); }
+  .case .ico { width: 40px; height: 40px; border-radius: 11px; margin: 0 auto 14px; display: grid; place-items: center; background: var(--grad-soft); }
+  .case .ico svg { width: 20px; height: 20px; color: var(--cyan); }
+  .case h4 { font-size: 15.5px; font-weight: 700; }
+  .case p { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
+
+  /* Testimonials */
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .quote { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
+  .quote .stars { display: flex; gap: 2px; color: #fbbf24; margin-bottom: 14px; }
+  .quote .stars svg { width: 16px; height: 16px; }
+  .quote blockquote { font-size: 15px; color: var(--text); }
+  .quote .who { display: flex; align-items: center; gap: 11px; margin-top: 18px; }
+  .quote .who .pfp { width: 40px; height: 40px; border-radius: 50%; }
+  .quote .who .name { font-weight: 700; font-size: 14px; }
+  .quote .who .role { font-size: 12.5px; color: var(--muted); }
+
+  /* CTA band */
+  .cta-band { position: relative; overflow: hidden; border-radius: 32px; padding: 72px 40px; text-align: center; background: linear-gradient(160deg, rgba(30,58,138,.5), rgba(8,12,22,.6)); border: 1px solid var(--border-strong); }
+  .cta-band h2 { font-size: clamp(30px, 5vw, 54px); margin-bottom: 18px; }
+  .cta-band p { color: var(--muted); font-size: 18px; max-width: 540px; margin: 0 auto 32px; }
+  .cta-band .glow { opacity: .45; }
+
+  /* FAQ */
+  .faq { max-width: 760px; margin: 0 auto; }
+  details { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); margin-bottom: 12px; overflow: hidden; }
+  details[open] { border-color: var(--border-strong); }
+  summary { list-style: none; cursor: pointer; padding: 20px 22px; font-weight: 600; font-size: 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary .pm { width: 22px; height: 22px; flex-shrink: 0; position: relative; transition: transform .3s; }
+  summary .pm::before, summary .pm::after { content: ""; position: absolute; background: var(--cyan); border-radius: 2px; }
+  summary .pm::before { top: 10px; left: 4px; width: 14px; height: 2px; }
+  summary .pm::after { top: 4px; left: 10px; width: 2px; height: 14px; transition: transform .3s; }
+  details[open] summary .pm::after { transform: rotate(90deg); opacity: 0; }
+  details .answer { padding: 0 22px 20px; color: var(--muted); font-size: 14.5px; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--border); padding: 64px 0 36px; }
+  .foot-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; }
+  .foot-grid h5 { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+  .foot-grid ul { list-style: none; display: grid; gap: 10px; }
+  .foot-grid a { color: var(--muted); font-size: 14px; transition: color .2s; }
+  .foot-grid a:hover { color: var(--text); }
+  .foot-about p { color: var(--muted); font-size: 14px; margin-top: 14px; max-width: 280px; }
+  .foot-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted-2); font-size: 13px; flex-wrap: wrap; gap: 12px; }
+
+  /* network graph nodes */
+  .node { fill: var(--cyan); }
+  .node.b { fill: var(--blue); }
+  .edge { stroke: rgba(96,165,250,.4); stroke-width: 1.4; }
+  .pulse-node { transform-origin: center; animation: nodepulse 3s ease-in-out infinite; }
+  @keyframes nodepulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+
+  /* Responsive */
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+    .hero { padding: 130px 0 60px; }
+    .agent { grid-template-columns: 1fr; padding: 36px; gap: 32px; }
+    .agent-visual { height: 280px; }
+    .bento { grid-template-columns: repeat(2, 1fr); }
+    .col-3, .col-2, .col-6 { grid-column: span 2; }
+    .card.feature-big { grid-template-columns: 1fr; }
+    .cases { grid-template-columns: repeat(2, 1fr); }
+    .quotes { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    .nav-links { display: none; }
+    .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 76px; left: 16px; right: 16px; background: rgba(8,12,22,.97); border: 1px solid var(--border); border-radius: 18px; padding: 14px; gap: 4px; backdrop-filter: blur(16px); }
+    .nav-links.open a { padding: 12px 14px; }
+    .nav-links.open .nav-mobile-cta { display: inline-flex; margin-top: 6px; justify-content: center; color: #04121a; }
+    .burger { display: flex; }
+    .nav-cta .btn-ghost, .nav-cta .btn-primary { display: none; }
+    .section { padding: 80px 0; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: 1fr; }
+    .cases { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr; gap: 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; scroll-behavior: auto !important; }
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-decor" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="glow a"></div>
+  <div class="glow b"></div>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="#" class="logo" aria-label="Synap — accueil">
+        <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.12)"/>
+          <circle cx="10" cy="11" r="3" fill="#38BDF8"/>
+          <circle cx="22" cy="10" r="2.4" fill="#3B82F6"/>
+          <circle cx="17" cy="22" r="2.6" fill="#22D3EE"/>
+          <path d="M10 11 22 10 17 22Z" stroke="#3B82F6" stroke-width="1.4" fill="none" opacity=".6"/>
+        </svg>
+        Synap
+      </a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#features">Fonctionnalités</a>
+        <a href="#how">Comment ça marche</a>
+        <a href="#agent">L'agent</a>
+        <a href="#cases">Cas d'usage</a>
+        <a href="#faq">FAQ</a>
+        <a href="#cta" class="btn btn-primary nav-mobile-cta">Rejoindre la beta</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#login" class="btn btn-ghost">Se connecter</a>
+        <a href="#cta" class="btn btn-primary">Rejoindre la beta
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <button class="burger" id="burger" aria-label="Ouvrir le menu"><span></span></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="reveal in">
+      <span class="eyebrow"><span class="dot"></span> Agent IA de networking · Beta privée</span>
+      <h1>Arrête de networker au hasard. <span class="grad-text">Laisse l'IA trouver tes vraies opportunités.</span></h1>
+      <p class="lead">Synap analyse les participants de chaque event, détecte les <strong style="color:var(--text)">synergies</strong> et le <strong style="color:var(--text)">cross-business</strong>, et te dit exactement qui rencontrer — et pourquoi.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-primary">Rejoindre la beta
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#how" class="btn btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3V9Z" fill="currentColor" stroke="none"/></svg>
+          Voir la démo
+        </a>
+      </div>
+      <div class="hero-trust">
+        <div class="avatars" aria-hidden="true">
+          <span style="background:linear-gradient(135deg,#60a5fa,#1d4ed8)"></span>
+          <span style="background:linear-gradient(135deg,#22d3ee,#0e7490)"></span>
+          <span style="background:linear-gradient(135deg,#a78bfa,#6d28d9)"></span>
+          <span style="background:linear-gradient(135deg,#34d399,#047857)"></span>
+        </div>
+        <span>Déjà <strong style="color:var(--text)">2 400+</strong> pros sur liste d'attente</span>
+      </div>
+    </div>
+
+    <!-- Scan visual -->
+    <div class="scan reveal in">
+      <div class="float-chip one">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
+        Synergie détectée
+      </div>
+      <div class="float-chip two">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        128 profils scannés
+      </div>
+      <div class="scan-card">
+        <div class="scan-top">
+          <span class="scan-live"><span class="pulse"></span> SCAN EN DIRECT</span>
+          <span class="scan-meta">Tech Summit · Hall A</span>
+        </div>
+
+        <div class="match">
+          <div class="pfp" style="background:linear-gradient(135deg,#60a5fa,#1d4ed8)">CL</div>
+          <div class="info">
+            <div class="name">Camille L.</div>
+            <div class="role">CPO · SaaS RH</div>
+            <span class="tag">Cross-business : RH × ton API</span>
+          </div>
+          <div class="score"><div class="num grad-text">94%</div><div class="lbl">match</div></div>
+        </div>
+
+        <div class="match">
+          <div class="pfp" style="background:linear-gradient(135deg,#22d3ee,#0e7490)">YD</div>
+          <div class="info">
+            <div class="name">Yanis D.</div>
+            <div class="role">Fondateur · Fintech</div>
+            <span class="tag">Partenariat distribution</span>
+          </div>
+          <div class="score"><div class="num grad-text">89%</div><div class="lbl">match</div></div>
+        </div>
+
+        <div class="match">
+          <div class="pfp" style="background:linear-gradient(135deg,#34d399,#047857)">SR</div>
+          <div class="info">
+            <div class="name">Sofia R.</div>
+            <div class="role">Investisseuse · Seed</div>
+            <span class="tag">Thèse alignée · ticket 300k€</span>
+          </div>
+          <div class="score"><div class="num grad-text">86%</div><div class="lbl">match</div></div>
+        </div>
+
+        <div class="scan-foot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg>
+          Accroche suggérée : « Camille, ton onboarding RH + notre API = -40% de churn. On en parle ? »
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="wrap">
+    <p>Pensé pour les events qui comptent</p>
+    <div class="logo-row" aria-hidden="true">
+      <span>VivaTech</span><span>Web Summit</span><span>SaaStr</span><span>Slush</span><span>CES</span><span>Station&nbsp;F</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section" style="padding-top:90px;padding-bottom:0">
+  <div class="wrap">
+    <div class="stats-grid reveal">
+      <div class="stat"><div class="v grad-text" data-count="92" data-suffix="%">0%</div><div class="l">de matchs jugés pertinents</div></div>
+      <div class="stat"><div class="v grad-text" data-count="3" data-suffix="×">0×</div><div class="l">plus de deals initiés</div></div>
+      <div class="stat"><div class="v grad-text" data-count="30" data-suffix="s">0s</div><div class="l">pour scanner un event</div></div>
+      <div class="stat"><div class="v grad-text" data-count="5000" data-suffix="+">0</div><div class="l">connexions qualifiées</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span> Le problème</span>
+      <h2>Le networking, c'est <span class="grad-text">80% de hasard.</span></h2>
+      <p>Tu repars d'un event avec une poignée de cartes de visite, zéro suivi, et la sensation d'être passé à côté des bonnes personnes.</p>
+    </div>
+    <div class="bento">
+      <div class="card col-2 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <h3>Tu cherches à l'aveugle</h3>
+        <p>Des centaines de participants, aucune idée de qui peut réellement faire avancer ton business.</p>
+      </div>
+      <div class="card col-2 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4m0 4h.01"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h3>Tu rates les synergies</h3>
+        <p>La complémentarité parfaite était dans la salle — tu ne l'as jamais identifiée.</p>
+      </div>
+      <div class="card col-2 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h12"/></svg></div>
+        <h3>Tu ne suis jamais</h3>
+        <p>Sans relance ni contexte, 90% des contacts d'event finissent oubliés.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span> La solution</span>
+      <h2>Ton copilote de networking, <span class="grad-text">en temps réel.</span></h2>
+      <p>Synap fait le travail d'analyse à ta place pour que tu te concentres sur l'essentiel : créer du lien et conclure.</p>
+    </div>
+
+    <div class="bento">
+      <!-- big feature -->
+      <div class="card col-6 feature-big reveal">
+        <div class="copy">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4"/></svg></div>
+          <h3>Scan d'event en temps réel</h3>
+          <p>Importe la liste des participants ou scanne sur place. Synap profile chaque personne — secteur, rôle, offre, besoins — en quelques secondes.</p>
+        </div>
+        <div class="mini-graph">
+          <svg viewBox="0 0 320 200" width="100%" height="100%" aria-hidden="true">
+            <line class="edge" x1="160" y1="100" x2="60" y2="50"/>
+            <line class="edge" x1="160" y1="100" x2="270" y2="60"/>
+            <line class="edge" x1="160" y1="100" x2="80" y2="160"/>
+            <line class="edge" x1="160" y1="100" x2="250" y2="155"/>
+            <line class="edge" x1="160" y1="100" x2="160" y2="30"/>
+            <line class="edge" x1="60" y1="50" x2="160" y2="30"/>
+            <line class="edge" x1="270" y1="60" x2="250" y2="155"/>
+            <circle class="node b pulse-node" cx="60" cy="50" r="7"/>
+            <circle class="node pulse-node" cx="270" cy="60" r="6" style="animation-delay:.4s"/>
+            <circle class="node pulse-node" cx="80" cy="160" r="6" style="animation-delay:.8s"/>
+            <circle class="node b pulse-node" cx="250" cy="155" r="7" style="animation-delay:1.1s"/>
+            <circle class="node pulse-node" cx="160" cy="30" r="5" style="animation-delay:.6s"/>
+            <circle cx="160" cy="100" r="13" fill="url(#cg)"/>
+            <defs><linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="#22D3EE"/></linearGradient></defs>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card col-3 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div>
+        <h3>Détection de synergies & cross-business</h3>
+        <p>L'IA croise secteurs, offres et besoins pour révéler partenariats, ventes croisées et opportunités que personne ne voit.</p>
+      </div>
+
+      <div class="card col-3 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/></svg></div>
+        <h3>Qui rencontrer en priorité</h3>
+        <p>Une liste classée par potentiel business — fini les conversations qui ne mènent nulle part.</p>
+      </div>
+
+      <div class="card col-2 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L3 21l1.8-6.5A8 8 0 1 1 21 12Z"/></svg></div>
+        <h3>Brise-glace sur mesure</h3>
+        <p>L'agent te souffle l'accroche parfaite, basée sur le contexte réel de la personne.</p>
+      </div>
+
+      <div class="card col-2 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></div>
+        <h3>Suivi post-event</h3>
+        <p>Relances personnalisées et synchro CRM : aucune opportunité ne refroidit.</p>
+      </div>
+
+      <div class="card col-2 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M12 7V4M9 13h.01M15 13h.01"/></svg></div>
+        <h3>Agent autonome</h3>
+        <p>Il analyse, priorise et prépare pendant que tu réseautes. Tu gardes le contrôle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span> Comment ça marche</span>
+      <h2>Trois étapes, <span class="grad-text">zéro effort.</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="n">ÉTAPE 01</div>
+        <h3>Définis tes objectifs</h3>
+        <p>Connecte ton profil et dis à Synap ce que tu cherches : clients, partenaires, levée, recrutement…</p>
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></div>
+      </div>
+      <div class="step reveal">
+        <div class="n">ÉTAPE 02</div>
+        <h3>Scanne l'event</h3>
+        <p>Importe la liste des participants ou scanne sur place. L'agent profile et analyse la salle entière.</p>
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg></div>
+      </div>
+      <div class="step reveal">
+        <div class="n">ÉTAPE 03</div>
+        <h3>Rencontre les bonnes personnes</h3>
+        <p>Reçois tes matchs, leurs synergies et tes accroches — en direct, dans ta poche.</p>
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 19v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V19"/><circle cx="9" cy="7" r="3.2"/><path d="M22 19v-1.5a4 4 0 0 0-3-3.85"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT -->
+<section class="section" id="agent">
+  <div class="wrap">
+    <div class="agent reveal">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> Un vrai agent, pas un annuaire</span>
+        <h2 style="margin-top:18px">L'IA travaille. <span class="grad-text">Toi, tu connectes.</span></h2>
+        <p class="lead">Synap n'est pas une base de contacts de plus. C'est un agent autonome qui raisonne sur tes objectifs et agit pour les atteindre.</p>
+        <ul class="check-list">
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Analyse chaque profil et son potentiel de collaboration avec le tien</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Identifie les ponts de cross-business invisibles à l'œil nu</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Rédige tes messages d'approche et de relance</li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Apprend de tes retours pour s'améliorer à chaque event</li>
+        </ul>
+      </div>
+      <div class="agent-visual">
+        <svg viewBox="0 0 320 320" width="100%" height="100%" aria-hidden="true">
+          <defs>
+            <radialGradient id="ring" cx="50%" cy="50%" r="50%"><stop offset="60%" stop-color="transparent"/><stop offset="100%" stop-color="rgba(34,211,238,.08)"/></radialGradient>
+            <linearGradient id="core" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+          </defs>
+          <circle cx="160" cy="160" r="150" fill="none" stroke="rgba(255,255,255,.06)"/>
+          <circle cx="160" cy="160" r="110" fill="none" stroke="rgba(255,255,255,.07)"/>
+          <circle cx="160" cy="160" r="70" fill="none" stroke="rgba(255,255,255,.09)"/>
+          <circle cx="160" cy="160" r="150" fill="url(#ring)"/>
+          <g class="pulse-node"><circle cx="160" cy="10" r="6" class="node"/></g>
+          <g class="pulse-node" style="animation-delay:.5s"><circle cx="300" cy="120" r="5" class="node b"/></g>
+          <g class="pulse-node" style="animation-delay:1s"><circle cx="40" cy="220" r="5" class="node"/></g>
+          <g class="pulse-node" style="animation-delay:1.4s"><circle cx="250" cy="270" r="6" class="node b"/></g>
+          <g class="pulse-node" style="animation-delay:.8s"><circle cx="50" cy="80" r="5" class="node"/></g>
+          <line class="edge" x1="160" y1="160" x2="160" y2="10"/>
+          <line class="edge" x1="160" y1="160" x2="300" y2="120"/>
+          <line class="edge" x1="160" y1="160" x2="40" y2="220"/>
+          <line class="edge" x1="160" y1="160" x2="250" y2="270"/>
+          <line class="edge" x1="160" y1="160" x2="50" y2="80"/>
+          <circle cx="160" cy="160" r="34" fill="url(#core)"/>
+          <path d="M160 146a14 14 0 1 0 0 28 14 14 0 0 0 0-28Zm0 6a8 8 0 1 1 0 16 8 8 0 0 1 0-16Z" fill="#04121a"/>
+          <circle cx="160" cy="160" r="3.5" fill="#04121a"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section class="section" id="cases">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span> Pour qui</span>
+      <h2>Fait pour ceux qui <span class="grad-text">vivent du lien.</span></h2>
+    </div>
+    <div class="cases">
+      <div class="case reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg></div>
+        <h4>Fondateurs</h4><p>Trouve partenaires & premiers clients</p>
+      </div>
+      <div class="case reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/></svg></div>
+        <h4>Sales / BizDev</h4><p>Repère les comptes à fort potentiel</p>
+      </div>
+      <div class="case reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M5 8l7-5 7 5M5 16l7 5 7-5"/></svg></div>
+        <h4>Investisseurs</h4><p>Source le bon deal flow, plus vite</p>
+      </div>
+      <div class="case reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+        <h4>Freelances</h4><p>Décroche des missions sur mesure</p>
+      </div>
+      <div class="case reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3-2-2"/></svg></div>
+        <h4>Recruteurs</h4><p>Identifie les talents en direct</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span> Ils ont testé</span>
+      <h2>Des conversations qui <span class="grad-text">deviennent des deals.</span></h2>
+    </div>
+    <div class="quotes">
+      <figure class="quote reveal">
+        <div class="stars" aria-label="5 sur 5">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+        </div>
+        <blockquote>« En 2h de salon, Synap m'a sorti 6 partenaires pertinents que je n'aurais jamais croisés. Deux contrats signés depuis. »</blockquote>
+        <div class="who"><div class="pfp" style="background:linear-gradient(135deg,#60a5fa,#1d4ed8)"></div><div><div class="name">Thomas M.</div><div class="role">CEO · Studio produit</div></div></div>
+      </figure>
+      <figure class="quote reveal">
+        <div class="stars" aria-label="5 sur 5">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+        </div>
+        <blockquote>« Le cross-business suggéré était bluffant de précision. C'est comme avoir un chief of staff qui connaît toute la salle. »</blockquote>
+        <div class="who"><div class="pfp" style="background:linear-gradient(135deg,#22d3ee,#0e7490)"></div><div><div class="name">Nadia B.</div><div class="role">Head of BizDev · Fintech</div></div></div>
+      </figure>
+      <figure class="quote reveal">
+        <div class="stars" aria-label="5 sur 5">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+        </div>
+        <blockquote>« Je hais le networking. Synap a rendu ça… efficace. Je sais qui voir, quoi dire, et je relance sans y penser. »</blockquote>
+        <div class="who"><div class="pfp" style="background:linear-gradient(135deg,#a78bfa,#6d28d9)"></div><div><div class="name">Inès K.</div><div class="role">Consultante indépendante</div></div></div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" id="cta">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <div class="glow a" style="left:50%;top:-180px;transform:translateX(-50%)"></div>
+      <span class="eyebrow"><span class="dot"></span> Beta privée · places limitées</span>
+      <h2 style="margin-top:18px">Transforme ton prochain event <span class="grad-text">en pipeline.</span></h2>
+      <p>Rejoins les 2 400+ pros sur liste d'attente. Accès anticipé, gratuit pendant la beta.</p>
+      <form id="waitlist" style="display:flex;gap:10px;max-width:460px;margin:0 auto;flex-wrap:wrap;justify-content:center">
+        <input type="email" required placeholder="ton@email.com" aria-label="Adresse email"
+          style="flex:1;min-width:220px;padding:14px 18px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px" />
+        <button type="submit" class="btn btn-primary">Rejoindre la beta
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+      <p id="formMsg" style="margin:16px auto 0;font-size:14px;min-height:20px"></p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span> FAQ</span>
+      <h2>Les questions <span class="grad-text">qu'on nous pose.</span></h2>
+    </div>
+    <div class="faq reveal">
+      <details open><summary>Comment Synap connaît-il les participants d'un event ?<span class="pm"></span></summary><div class="answer">Tu peux importer la liste officielle des participants, scanner les badges/QR sur place, ou connecter l'app de l'événement. Synap profile ensuite chaque personne à partir de sources publiques et des objectifs que tu as définis.</div></details>
+      <details><summary>Mes données et celles de mes contacts sont-elles protégées ?<span class="pm"></span></summary><div class="answer">Oui. Synap est conçu RGPD-first : données chiffrées, hébergement européen, et tu gardes le contrôle total sur ce qui est analysé et conservé. Aucune revente de données, jamais.</div></details>
+      <details><summary>En quoi est-ce différent de LinkedIn ?<span class="pm"></span></summary><div class="answer">LinkedIn est un annuaire passif. Synap est un agent actif et contextuel : il raisonne sur un event précis, en temps réel, pour te dire qui rencontrer maintenant et pourquoi — avec l'accroche prête à l'emploi.</div></details>
+      <details><summary>Ça marche pour quels types d'événements ?<span class="pm"></span></summary><div class="answer">Salons, conférences, meetups, soirées business, afterworks, démo days… Tout rassemblement où les bonnes rencontres font la différence.</div></details>
+      <details><summary>Combien ça coûte ?<span class="pm"></span></summary><div class="answer">L'accès est gratuit pendant la beta privée. Les plans tarifaires seront annoncés au lancement — les membres de la beta bénéficieront d'un tarif préférentiel à vie.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a href="#" class="logo" aria-label="Synap">
+          <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.12)"/>
+            <circle cx="10" cy="11" r="3" fill="#38BDF8"/><circle cx="22" cy="10" r="2.4" fill="#3B82F6"/><circle cx="17" cy="22" r="2.6" fill="#22D3EE"/>
+            <path d="M10 11 22 10 17 22Z" stroke="#3B82F6" stroke-width="1.4" fill="none" opacity=".6"/>
+          </svg>
+          Synap
+        </a>
+        <p>L'agent IA qui transforme chaque event de networking en opportunités business concrètes.</p>
+      </div>
+      <div><h5>Produit</h5><ul><li><a href="#features">Fonctionnalités</a></li><li><a href="#how">Comment ça marche</a></li><li><a href="#agent">L'agent IA</a></li><li><a href="#cta">Beta</a></li></ul></div>
+      <div><h5>Entreprise</h5><ul><li><a href="#">À propos</a></li><li><a href="#">Blog</a></li><li><a href="#">Carrières</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div><h5>Légal</h5><ul><li><a href="#">Confidentialité</a></li><li><a href="#">RGPD</a></li><li><a href="#">CGU</a></li><li><a href="#">Sécurité</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Synap. Tous droits réservés.</span>
+      <span>Conçu pour ceux qui transforment les rencontres en résultats.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Mobile menu
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Count-up stats
+  const fmt = (n) => n >= 1000 ? n.toLocaleString('fr-FR') : String(n);
+  const countIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target, target = +el.dataset.count, suffix = el.dataset.suffix || '';
+      const dur = 1400, t0 = performance.now();
+      const tick = (t) => {
+        const p = Math.min((t - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(Math.round(target * eased)) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      countIO.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
+
+  // Waitlist form (front-end demo)
+  const form = document.getElementById('waitlist');
+  const msg = document.getElementById('formMsg');
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    msg.style.color = 'var(--cyan)';
+    msg.textContent = '✓ Bienvenue ! Tu es sur la liste — on te contacte très vite.';
+    form.reset();
+  });
+</script>
+</body>
+</html>
