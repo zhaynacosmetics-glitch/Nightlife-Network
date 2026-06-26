@@ -7,8 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "serve out",
-    "preview": "next build && wrangler pages dev ./out",
-    "deploy": "next build && wrangler pages deploy ./out"
+    "preview": "next build && wrangler dev",
+    "deploy": "next build && wrangler deploy"
   },
   "dependencies": {
     "framer-motion": "^11.3.19",

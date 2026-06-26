@@ -1,5 +1,9 @@
-# Cloudflare Pages configuration for the One Night landing page.
-# The site is a fully static Next.js export, so Pages just serves ./out.
-name = "one-night"
+# Cloudflare config for the One Night landing page.
+# Deployed as a Worker serving static assets (the Next.js static export in ./out).
+# Works with the "Create a Worker" Git flow: `wrangler deploy` uploads ./out as-is.
+name = "nightlife-network"
 compatibility_date = "2025-06-25"
-pages_build_output_dir = "out"
+
+[assets]
+directory = "./out"
+not_found_handling = "404-page"
