@@ -304,6 +304,49 @@
   @media (max-width: 980px) { .ps-grid { grid-template-columns: 1fr; } .values { grid-template-columns: 1fr 1fr; } .contact-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) { .values { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
 
+  /* Audiences (participants / organisateurs) */
+  .aud-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .aud-card { border: 1px solid var(--line); border-radius: 20px; padding: 30px; background: var(--bg); box-shadow: var(--sh-sm); }
+  .aud-card.org { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .aud-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .aud-head .ic { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-50); flex-shrink: 0; }
+  .aud-head .ic svg { width: 22px; height: 22px; color: var(--accent); }
+  .aud-card.org .aud-head .ic { background: rgba(255,255,255,.1); }
+  .aud-card.org .aud-head .ic svg { color: #fff; }
+  .aud-kicker { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-700); }
+  .aud-card.org .aud-kicker { color: #a5b4fc; }
+  .aud-head h3 { font-size: 21px; }
+  .aud-card.org h3 { color: #fff; }
+  .aud-card > p { font-size: 14.5px; color: var(--muted); margin: 6px 0 18px; }
+  .aud-card.org > p { color: #c4c8d4; }
+  .aud-list { list-style: none; display: grid; gap: 12px; }
+  .aud-list li { display: flex; gap: 11px; align-items: flex-start; font-size: 14.5px; color: var(--ink-2); }
+  .aud-card.org .aud-list li { color: #e6e8f0; }
+  .aud-list .ic { width: 22px; height: 22px; border-radius: 7px; background: var(--accent); color: #fff; display: grid; place-items: center; flex-shrink: 0; margin-top: 1px; }
+  .aud-card.org .aud-list .ic { background: rgba(255,255,255,.16); }
+  .aud-list .ic svg { width: 13px; height: 13px; }
+  .aud-cta { margin-top: 22px; }
+
+  /* Booking / agenda showcase */
+  .book-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
+  .book-card { background: var(--bg); border: 1px solid var(--line); border-radius: 20px; padding: 20px; box-shadow: var(--sh-lg); }
+  .book-row { display: flex; align-items: center; gap: 13px; padding: 13px; border: 1px solid var(--line); border-radius: 14px; }
+  .book-row .ic { width: 40px; height: 40px; border-radius: 11px; background: var(--accent-50); display: grid; place-items: center; flex-shrink: 0; }
+  .book-row .ic svg { width: 20px; height: 20px; color: var(--accent); }
+  .book-row .nm { font-size: 14px; font-weight: 700; }
+  .book-row .mt { font-size: 12.5px; color: var(--muted); }
+  .book-when { margin-left: auto; text-align: right; font-size: 12px; color: var(--accent-700); font-weight: 700; }
+  .sync { display: flex; align-items: center; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
+  .sync .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--ink-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 5px 9px; }
+  .sync .chip svg { width: 14px; height: 14px; color: var(--accent); }
+  .sync .ok { margin-left: auto; font-size: 12px; font-weight: 700; color: #16a34a; display: inline-flex; align-items: center; gap: 5px; }
+  .sync .ok svg { width: 14px; height: 14px; }
+  .book-foot { display: flex; gap: 10px; margin-top: 4px; }
+  .book-foot .btn { flex: 1; }
+  .followup { margin-top: 12px; display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--accent-700); background: var(--accent-50); border: 1px solid #d7ddff; border-radius: 11px; padding: 10px 12px; }
+  .followup svg { width: 16px; height: 16px; flex-shrink: 0; }
+  @media (max-width: 980px) { .aud-grid { grid-template-columns: 1fr; } .book-grid { grid-template-columns: 1fr; } .book-foot { flex-direction: column; } }
+
   /* Footer */
   footer { border-top: 1px solid var(--line); padding: 60px 0 34px; background: var(--bg-soft); }
   .foot-grid { display: grid; grid-template-columns: 1.7fr 1fr 1fr 1fr; gap: 40px; }
@@ -364,7 +407,9 @@
             <a class="dd-item" href="#features" role="menuitem"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/></svg></span><span><span class="dt">Scan d'event</span><span class="ds">Profile la salle en temps réel</span></span></a>
             <a class="dd-item" href="#features" role="menuitem"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></span><span><span class="dt">Synergies</span><span class="ds">Cross-business détecté par l'IA</span></span></a>
             <a class="dd-item" href="#agent" role="menuitem"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M12 7V4M9 13h.01M15 13h.01"/></svg></span><span><span class="dt">Agent autonome</span><span class="ds">Il bosse pendant que tu réseautes</span></span></a>
+            <a class="dd-item" href="#rdv" role="menuitem"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><span><span class="dt">Agenda &amp; RDV</span><span class="ds">Synchro iCal + prise de rendez-vous</span></span></a>
             <a class="dd-item" href="#features" role="menuitem"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></span><span><span class="dt">Suivi & CRM</span><span class="ds">Relances post-event automatiques</span></span></a>
+            <a class="dd-item" href="#organisateurs" role="menuitem"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4Z"/></svg></span><span><span class="dt">Pour les organisateurs</span><span class="ds">Billetterie + liste des participants</span></span></a>
           </div>
         </div>
         <a href="#how">Comment ça marche</a>
@@ -632,6 +677,72 @@
   </div>
 </section>
 
+<!-- AGENDA / RDV -->
+<section class="section" id="rdv">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow"><span class="dot"></span> Agenda &amp; rendez-vous</span><h2>Du match au café, <span class="grad-text">en deux taps.</span></h2><p>Synap propose les bonnes rencontres par affinités, puis cale le rendez-vous dans ton agenda — sans le ping-pong d'emails.</p></div>
+    <div class="book-grid">
+      <div class="reveal">
+        <ul class="aud-list" style="gap:16px">
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><div><strong>Suggestions par affinités</strong><div style="color:var(--muted);font-size:13.5px">L'agent analyse les profils et propose les rencontres à plus fort potentiel.</div></div></li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><div><strong>Prise de RDV en un tap</strong><div style="color:var(--muted);font-size:13.5px">Café ou déjeuner : propose un créneau, l'autre confirme. C'est calé.</div></div></li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><div><strong>Synchro agenda</strong><div style="color:var(--muted);font-size:13.5px">Apple, Google, Outlook via iCal. Le rendez-vous apparaît partout, instantanément.</div></div></li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><div><strong>Suivi après l'event</strong><div style="color:var(--muted);font-size:13.5px">L'agent te propose des créneaux de relance pour ne perdre aucune piste.</div></div></li>
+        </ul>
+      </div>
+      <div class="book-card reveal">
+        <div class="book-row">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a3 3 0 0 1 0 6h-1"/><path d="M2 8h16v5a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8Z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg></span>
+          <div><div class="nm">Café avec Camille L.</div><div class="mt">CPO · SaaS RH · Hall A</div></div>
+          <div class="book-when">mar. 26 juin<br>10:30</div>
+        </div>
+        <div class="sync">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg> Apple</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg> Google</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg> Outlook</span>
+          <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg> Synchronisé</span>
+        </div>
+        <div class="book-foot">
+          <a href="#cta" class="btn btn-dark" style="justify-content:center">Confirmer</a>
+          <a href="#cta" class="btn btn-light" style="justify-content:center">Proposer un autre créneau</a>
+        </div>
+        <div class="followup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg> Suivi suggéré après l'event : jeudi 14:00 avec Yanis D.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIENCES -->
+<section class="section" id="organisateurs" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow"><span class="dot"></span> Une plateforme, deux côtés</span><h2>Pensé pour les participants <span class="grad-text">et les organisateurs.</span></h2><p>Côté participant, un agent qui crée des rencontres. Côté organisateur, un event qui génère de vraies connexions.</p></div>
+    <div class="aud-grid">
+      <div class="aud-card reveal">
+        <div class="aud-head"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span><div><div class="aud-kicker">Pour les participants</div><h3>Ton agent de rencontres</h3></div></div>
+        <p>Un copilote IA qui transforme chaque event en opportunités concrètes.</p>
+        <ul class="aud-list">
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Analyse de ton profil et de tes objectifs</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Suggestions de rencontres basées sur les affinités</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Prise de RDV (café, déjeuner) + synchro agenda</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Accompagnement et créneaux de suivi après l'event</li>
+        </ul>
+        <div class="aud-cta"><a href="#cta" class="btn btn-light">Rejoindre la beta</a></div>
+      </div>
+      <div class="aud-card org reveal">
+        <div class="aud-head"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4Z"/><path d="M14 6v12" stroke-dasharray="2 2.5"/></svg></span><div><div class="aud-kicker">Pour les organisateurs</div><h3>Un event qui crée des liens</h3></div></div>
+        <p>Intègre ta billetterie et offre une expérience de networking augmentée.</p>
+        <ul class="aud-list">
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Billetterie intégrée en quelques clics</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Liste des participants rendue visible et exploitable</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Plus d'engagement et de rencontres pendant l'event</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Statistiques : connexions et rendez-vous générés</li>
+        </ul>
+        <div class="aud-cta"><a href="#contact" class="btn btn-dark" style="background:#fff;color:var(--ink)">Devenir organisateur</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- STATS -->
 <section class="section" style="padding-top:0">
   <div class="wrap">
@@ -697,6 +808,8 @@
       <details><summary>Mes données sont-elles protégées ?<span class="pm"></span></summary><div class="answer">Oui. Synap est conçu RGPD-first : données chiffrées, hébergement européen, contrôle total sur ce qui est analysé. Aucune revente, jamais.</div></details>
       <details><summary>En quoi est-ce différent de LinkedIn ?<span class="pm"></span></summary><div class="answer">LinkedIn est un annuaire passif. Synap est un agent actif et contextuel : il raisonne sur un event précis, en temps réel, pour te dire qui rencontrer maintenant et pourquoi.</div></details>
       <details><summary>Ça marche pour quels événements ?<span class="pm"></span></summary><div class="answer">Salons, conférences, meetups, soirées business, afterworks, demo days… Tout rassemblement où les bonnes rencontres font la différence.</div></details>
+      <details><summary>Je suis organisateur : comment intégrer ma billetterie ?<span class="pm"></span></summary><div class="answer">Synap se connecte à ta billetterie en quelques clics (ou via import de la liste). Tu rends ensuite la liste des participants visible et exploitable, et tu offres à ton public un networking augmenté — avec des statistiques sur les connexions et rendez-vous générés.</div></details>
+      <details><summary>Synap se synchronise-t-il avec mon agenda ?<span class="pm"></span></summary><div class="answer">Oui. Les rendez-vous (café, déjeuner) se synchronisent avec Apple Calendar, Google Agenda et Outlook via iCal. Après l'événement, l'agent te propose automatiquement des créneaux de suivi.</div></details>
       <details><summary>Combien ça coûte ?<span class="pm"></span></summary><div class="answer">Gratuit pendant la beta privée. Les membres de la beta garderont un tarif préférentiel à vie au lancement.</div></details>
     </div>
   </div>
