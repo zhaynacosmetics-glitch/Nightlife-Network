@@ -148,6 +148,36 @@
   .float.f2 { bottom: 36px; left: -16px; animation: bob 7s ease-in-out infinite .8s; }
   @keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
 
+  /* iPhone mockup (hero) */
+  .phone-stage { position: relative; z-index: 1; margin: 56px auto 0; width: max-content; max-width: 100%; }
+  .phone-stage .aura { width: 380px; height: 380px; background: #b4bcfc; left: 50%; top: 52%; transform: translate(-50%,-50%); opacity: .42; }
+  .phone { position: relative; z-index: 2; width: 308px; max-width: 86vw; padding: 9px; border-radius: 48px; background: linear-gradient(165deg, #20232e, #0a0b12); box-shadow: var(--sh-lg); }
+  .phone::after { content: ""; position: absolute; inset: 0; border-radius: 48px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); pointer-events: none; }
+  .screen { position: relative; border-radius: 40px; overflow: hidden; background: #fbfbfd; aspect-ratio: 308 / 632; }
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 98px; height: 27px; background: #0a0b12; border-radius: 99px; z-index: 6; }
+  .statusbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px 4px; font-size: 13px; font-weight: 600; color: var(--ink); }
+  .statusbar .si { display: flex; align-items: center; gap: 5px; }
+  .statusbar .si svg { display: block; }
+  .ascreen { padding: 8px 13px 0; }
+  .ahead { background: linear-gradient(180deg, var(--accent-50), #fbfbfd); border: 1px solid var(--line); border-radius: 16px; padding: 13px 14px; margin-bottom: 11px; }
+  .ahead .ah-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+  .ahead .ah-ev { font-size: 11px; color: var(--muted); }
+  .ahead h5 { font-family: var(--display); font-size: 16px; }
+  .ahead p { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .alist .row { padding: 9px; margin-bottom: 7px; }
+  .alist .row .nm { font-size: 12.5px; }
+  .alist .row .rl { font-size: 11px; }
+  .alist .row .tag { font-size: 9.5px; margin-top: 3px; }
+  .alist .row .sc { width: 48px; }
+  .alist .row .sc b { font-size: 13px; }
+  .alist .suggest { margin-top: 10px; padding: 10px 11px; }
+  .alist .suggest .sg-top { font-size: 10px; margin-bottom: 4px; }
+  .alist .suggest p { font-size: 11px; }
+  .tabbar { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; align-items: center; padding: 11px 16px 15px; border-top: 1px solid var(--line); background: rgba(251,251,253,.92); backdrop-filter: blur(8px); }
+  .tabbar svg { width: 22px; height: 22px; color: #aab2bf; }
+  .tabbar .active svg { color: var(--accent); }
+  .tabbar .active { position: relative; }
+
   /* Logos */
   .logos { padding: 20px 0 8px; }
   .logos p { text-align: center; color: var(--muted-2); font-size: 12.5px; text-transform: uppercase; letter-spacing: .14em; margin-bottom: 22px; }
@@ -341,34 +371,44 @@
       </div>
     </div>
 
-    <!-- APP MOCKUP -->
-    <div class="mock-wrap reveal in">
+    <!-- APP MOCKUP (iPhone) -->
+    <div class="phone-stage reveal in">
       <div class="aura"></div>
       <div class="float f1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg> Synergie 94%</div>
       <div class="float f2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg> 128 profils analysés</div>
-      <div class="window">
-        <div class="win-bar">
-          <div class="win-dots"><i></i><i></i><i></i></div>
-          <div class="win-title">Synap · Tech Summit 2026 <span class="live-pill"><span class="d"></span> LIVE</span></div>
-        </div>
-        <div class="win-body">
-          <div class="win-side">
-            <div class="side-label">Mes objectifs</div>
-            <div class="obj active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/></svg> Partenariats</div>
-            <div class="obj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3.2"/></svg> Clients B2B</div>
-            <div class="obj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M5 8l7-5 7 5"/></svg> Levée de fonds</div>
-            <div class="side-label" style="margin-top:18px">Filtres</div>
-            <div class="obj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg> Score &gt; 80%</div>
+      <div class="phone">
+        <div class="screen">
+          <span class="island"></span>
+          <div class="statusbar">
+            <span class="t">9:41</span>
+            <span class="si" aria-hidden="true">
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor"><path d="M7.5 10.5 .8 3.6a9.6 9.6 0 0 1 13.4 0L7.5 10.5Z"/></svg>
+              <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="3" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="currentColor"/><rect x="22" y="3.5" width="1.6" height="5" rx=".8" fill="currentColor" opacity=".4"/></svg>
+            </span>
           </div>
-          <div class="win-main">
-            <div class="wm-head"><h4>Tes meilleurs matchs</h4><span>128 analysés</span></div>
-            <div class="row"><span class="av" style="background:#eef0ff;color:#4f46e5;width:38px;height:38px;font-size:13px">CL</span><div class="info"><div class="nm">Camille L.</div><div class="rl">CPO · SaaS RH</div><span class="tag">RH × ton API</span></div><div class="sc"><b class="grad-text">94%</b><div class="bar"><i style="width:94%"></i></div></div></div>
-            <div class="row"><span class="av" style="background:#e6f3ff;color:#2563eb;width:38px;height:38px;font-size:13px">YD</span><div class="info"><div class="nm">Yanis D.</div><div class="rl">Fondateur · Fintech</div><span class="tag">Distribution croisée</span></div><div class="sc"><b class="grad-text">89%</b><div class="bar"><i style="width:89%"></i></div></div></div>
-            <div class="row"><span class="av" style="background:#f3ecff;color:#7c3aed;width:38px;height:38px;font-size:13px">SR</span><div class="info"><div class="nm">Sofia R.</div><div class="rl">Investisseuse · Seed</div><span class="tag">Thèse alignée</span></div><div class="sc"><b class="grad-text">86%</b><div class="bar"><i style="width:86%"></i></div></div></div>
-            <div class="suggest">
-              <div class="sg-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg> Accroche suggérée pour Camille</div>
-              <p>« Camille, ton onboarding RH + notre API = -40% de churn. On en parle autour d'un café ? »</p>
+          <div class="ascreen">
+            <div class="ahead">
+              <div class="ah-row"><span class="live-pill"><span class="d"></span> LIVE</span><span class="ah-ev">Tech Summit · Hall A</span></div>
+              <h5>Tes meilleurs matchs</h5>
+              <p>128 profils analysés par l'IA</p>
             </div>
+            <div class="alist">
+              <div class="row"><span class="av" style="background:#eef0ff;color:#4f46e5;width:34px;height:34px;font-size:12px">CL</span><div class="info"><div class="nm">Camille L.</div><div class="rl">CPO · SaaS RH</div><span class="tag">RH × ton API</span></div><div class="sc"><b class="grad-text">94%</b><div class="bar"><i style="width:94%"></i></div></div></div>
+              <div class="row"><span class="av" style="background:#e6f3ff;color:#2563eb;width:34px;height:34px;font-size:12px">YD</span><div class="info"><div class="nm">Yanis D.</div><div class="rl">Fondateur · Fintech</div><span class="tag">Distribution</span></div><div class="sc"><b class="grad-text">89%</b><div class="bar"><i style="width:89%"></i></div></div></div>
+              <div class="row"><span class="av" style="background:#f3ecff;color:#7c3aed;width:34px;height:34px;font-size:12px">SR</span><div class="info"><div class="nm">Sofia R.</div><div class="rl">Investisseuse · Seed</div><span class="tag">Thèse alignée</span></div><div class="sc"><b class="grad-text">86%</b><div class="bar"><i style="width:86%"></i></div></div></div>
+              <div class="suggest">
+                <div class="sg-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg> Accroche suggérée · Camille</div>
+                <p>« Camille, ton onboarding RH + notre API = -40% de churn. Un café ? »</p>
+              </div>
+            </div>
+          </div>
+          <div class="tabbar" aria-hidden="true">
+            <span class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/></svg></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 19v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V19"/><circle cx="9" cy="7" r="3.2"/><path d="M22 19v-1.5a4 4 0 0 0-3-3.85"/></svg></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L3 21l1.8-6.5A8 8 0 1 1 21 12Z"/></svg></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span>
           </div>
         </div>
       </div>
