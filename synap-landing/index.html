@@ -263,6 +263,47 @@
   details[open] summary .pm::after { transform: rotate(90deg); opacity: 0; }
   details .answer { padding: 0 20px 18px; color: var(--muted); font-size: 14.5px; }
 
+  /* Problem / Solution */
+  .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .ps-card { border: 1px solid var(--line); border-radius: 20px; padding: 30px; background: var(--bg); }
+  .ps-card.good { border-color: #d7ddff; background: linear-gradient(180deg, var(--accent-50), #fff); box-shadow: var(--sh-md); }
+  .ps-card .ps-tag { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; padding: 5px 11px; border-radius: 99px; margin-bottom: 18px; }
+  .ps-card.bad .ps-tag { background: #fdeef0; color: #c2334a; }
+  .ps-card.good .ps-tag { background: #fff; color: var(--accent-700); border: 1px solid #d7ddff; }
+  .ps-card h3 { font-size: 22px; margin-bottom: 16px; }
+  .ps-list { list-style: none; display: grid; gap: 13px; }
+  .ps-list li { display: flex; gap: 11px; align-items: flex-start; font-size: 14.5px; color: var(--ink-2); }
+  .ps-list .ic { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; flex-shrink: 0; margin-top: 1px; }
+  .ps-card.bad .ic { background: #fdeef0; color: #dc4a5e; }
+  .ps-card.good .ic { background: var(--accent); color: #fff; }
+  .ps-list .ic svg { width: 13px; height: 13px; }
+
+  /* Value props */
+  .values { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .value { border: 1px solid var(--line); border-radius: 16px; padding: 26px; background: var(--bg); transition: box-shadow .25s, transform .25s; }
+  .value:hover { box-shadow: var(--sh-md); transform: translateY(-2px); }
+  .value .ic { width: 42px; height: 42px; border-radius: 11px; background: var(--accent-50); display: grid; place-items: center; margin-bottom: 16px; }
+  .value .ic svg { width: 21px; height: 21px; color: var(--accent); }
+  .value .v { font-family: var(--display); font-size: 30px; font-weight: 700; letter-spacing: -0.03em; }
+  .value h4 { font-family: var(--display); font-size: 16px; margin: 2px 0 6px; }
+  .value p { font-size: 13.5px; color: var(--muted); }
+
+  /* Contact */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 44px; align-items: start; }
+  .ci-item { display: flex; gap: 13px; align-items: flex-start; margin-bottom: 20px; }
+  .ci-item .ic { width: 42px; height: 42px; border-radius: 11px; background: var(--accent-50); display: grid; place-items: center; flex-shrink: 0; }
+  .ci-item .ic svg { width: 20px; height: 20px; color: var(--accent); }
+  .ci-item .t { font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .ci-item .s { font-size: 13.5px; color: var(--muted); }
+  .form { display: grid; gap: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 18px; padding: 26px; box-shadow: var(--sh-sm); }
+  .field { display: grid; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 600; }
+  .field input, .field textarea { font-family: var(--font); font-size: 14.5px; padding: 11px 13px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--bg); color: var(--ink); resize: vertical; }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-50); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .ps-grid { grid-template-columns: 1fr; } .values { grid-template-columns: 1fr 1fr; } .contact-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .values { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+
   /* Footer */
   footer { border-top: 1px solid var(--line); padding: 60px 0 34px; background: var(--bg-soft); }
   .foot-grid { display: grid; grid-template-columns: 1.7fr 1fr 1fr 1fr; gap: 40px; }
@@ -419,6 +460,35 @@
 <!-- LOGOS -->
 <section class="logos"><div class="wrap"><p>Pensé pour les events qui comptent</p><div class="logo-row" aria-hidden="true"><span>VivaTech</span><span>Web Summit</span><span>SaaStr</span><span>Slush</span><span>CES</span><span>Station&nbsp;F</span></div></div></section>
 
+<!-- PROBLEM / SOLUTION -->
+<section class="section" id="probleme">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow"><span class="dot"></span> Problème &amp; solution</span><h2>Le networking, c'est <span class="grad-text">80% de hasard.</span></h2><p>Tu repars d'un event avec des cartes de visite, zéro suivi, et le sentiment d'être passé à côté des bonnes personnes. Synap change ça.</p></div>
+    <div class="ps-grid">
+      <div class="ps-card bad reveal">
+        <span class="ps-tag"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg> Sans Synap</span>
+        <h3>Le networking à l'ancienne</h3>
+        <ul class="ps-list">
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span> Tu cherches à l'aveugle parmi des centaines de participants.</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span> Les meilleures synergies te passent sous le nez.</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span> Tu ne sais jamais comment aborder la bonne personne.</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span> 90% des contacts finissent oubliés, sans relance.</li>
+        </ul>
+      </div>
+      <div class="ps-card good reveal">
+        <span class="ps-tag"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg> Avec Synap</span>
+        <h3>Le networking piloté par l'IA</h3>
+        <ul class="ps-list">
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> L'agent profile toute la salle et classe les profils pour toi.</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Il révèle les synergies et le cross-business invisibles.</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Il te souffle l'accroche parfaite, prête à envoyer.</li>
+          <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Il automatise tes relances et synchronise ton CRM.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- HOW -->
 <section class="section" id="how">
   <div class="wrap">
@@ -496,6 +566,35 @@
           <div class="fu"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> RDV calé avec Yanis D. · jeudi</div>
           <div class="fu"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span> Synchro CRM · 3 deals créés</div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE PROPS -->
+<section class="section" id="valeurs" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow"><span class="dot"></span> Valeurs ajoutées</span><h2>Ce que Synap te fait <span class="grad-text">gagner concrètement.</span></h2><p>Pas juste une app de plus : un retour sur investissement mesurable à chaque événement.</p></div>
+    <div class="values">
+      <div class="value reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div class="v grad-text">3 h</div><h4>de temps gagné / event</h4>
+        <p>Fini le tri manuel des participants : l'agent le fait en secondes.</p>
+      </div>
+      <div class="value reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v5h-5"/></svg></div>
+        <div class="v grad-text">3×</div><h4>plus de deals initiés</h4>
+        <p>Tu parles aux bonnes personnes, avec le bon angle, dès la première phrase.</p>
+      </div>
+      <div class="value reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></div>
+        <div class="v grad-text">0</div><h4>contact perdu</h4>
+        <p>Relances et synchro CRM automatiques : chaque opportunité est suivie.</p>
+      </div>
+      <div class="value reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.4-7 10-4-1.6-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div class="v grad-text">100%</div><h4>RGPD &amp; sécurisé</h4>
+        <p>Données chiffrées, hébergées en Europe. Tu gardes le contrôle total.</p>
       </div>
     </div>
   </div>
@@ -603,6 +702,31 @@
   </div>
 </section>
 
+<!-- CONTACT -->
+<section class="section" id="contact" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow"><span class="dot"></span> Contact</span><h2>Une question ? <span class="grad-text">Parlons-en.</span></h2><p>Beta, partenariats, presse ou support : on te répond sous 24 h ouvrées.</p></div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="ci-item"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><div><div class="t">Email</div><div class="s"><a href="mailto:hello@synap.app">hello@synap.app</a></div></div></div>
+        <div class="ci-item"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L3 21l1.8-6.5A8 8 0 1 1 21 12Z"/></svg></span><div><div class="t">Support</div><div class="s"><a href="mailto:support@synap.app">support@synap.app</a> · chat in-app</div></div></div>
+        <div class="ci-item"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/></svg></span><div><div class="t">Bureaux</div><div class="s">Paris · Station F, 5 parvis Alan Turing</div></div></div>
+        <div class="ci-item"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 17.5V4Z"/></svg></span><div><div class="t">Presse &amp; partenariats</div><div class="s"><a href="mailto:press@synap.app">press@synap.app</a></div></div></div>
+      </div>
+      <form class="form reveal" id="contactForm">
+        <div class="form-row">
+          <div class="field"><label for="cf-name">Nom</label><input id="cf-name" type="text" required placeholder="Ton nom" /></div>
+          <div class="field"><label for="cf-email">Email</label><input id="cf-email" type="email" required placeholder="ton@email.com" /></div>
+        </div>
+        <div class="field"><label for="cf-subject">Sujet</label><input id="cf-subject" type="text" placeholder="Beta, partenariat, presse…" /></div>
+        <div class="field"><label for="cf-msg">Message</label><textarea id="cf-msg" rows="4" required placeholder="Dis-nous tout."></textarea></div>
+        <button type="submit" class="btn btn-dark" style="justify-content:center">Envoyer le message <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <p id="contactMsg" style="font-size:13.5px;min-height:18px;color:var(--accent);margin:0"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
@@ -612,8 +736,8 @@
         <p>L'agent IA qui transforme chaque event de networking en opportunités business concrètes.</p>
       </div>
       <div><h5>Produit</h5><ul><li><a href="#features">Fonctionnalités</a></li><li><a href="#how">Comment ça marche</a></li><li><a href="#agent">L'agent IA</a></li><li><a href="#cta">Beta</a></li></ul></div>
-      <div><h5>Entreprise</h5><ul><li><a href="#">À propos</a></li><li><a href="#">Blog</a></li><li><a href="#">Carrières</a></li><li><a href="#">Contact</a></li></ul></div>
-      <div><h5>Légal</h5><ul><li><a href="#">Confidentialité</a></li><li><a href="#">RGPD</a></li><li><a href="#">CGU</a></li><li><a href="#">Sécurité</a></li></ul></div>
+      <div><h5>Entreprise</h5><ul><li><a href="#valeurs">À propos</a></li><li><a href="#">Blog</a></li><li><a href="#">Carrières</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div><h5>Légal</h5><ul><li><a href="confidentialite.html">Confidentialité</a></li><li><a href="confidentialite.html#rgpd">RGPD</a></li><li><a href="cgu.html">CGU</a></li><li><a href="confidentialite.html#securite">Sécurité</a></li></ul></div>
     </div>
     <div class="foot-bottom"><span>© 2026 Synap. Tous droits réservés.</span><span>Conçu pour ceux qui transforment les rencontres en résultats.</span></div>
   </div>
@@ -642,6 +766,8 @@
   document.querySelectorAll('[data-count]').forEach(el => cIO.observe(el));
   const form = document.getElementById('waitlist'), msg = document.getElementById('formMsg');
   form.addEventListener('submit', (ev) => { ev.preventDefault(); msg.textContent = '✓ Bienvenue ! Tu es sur la liste — on te contacte très vite.'; form.reset(); });
+  const cForm = document.getElementById('contactForm'), cMsg = document.getElementById('contactMsg');
+  if (cForm) cForm.addEventListener('submit', (ev) => { ev.preventDefault(); cMsg.textContent = '✓ Message envoyé ! On te répond sous 24 h ouvrées.'; cForm.reset(); });
 </script>
 </body>
 </html>
