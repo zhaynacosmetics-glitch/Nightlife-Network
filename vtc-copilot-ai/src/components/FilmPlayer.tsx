@@ -32,6 +32,29 @@ export function FilmPlayer() {
   const [failed, setFailed] = useState(false);
   const [muted, setMuted] = useState(true);
 
+  // Tente la lecture avec le son. Les navigateurs refusent souvent le son sans geste préalable du visiteur :
+  // dans ce cas le film part sans le son, qui s'active au premier clic, toucher ou touche du clavier sur la page.
+  const playWithSound = useCallback(() => {
+    const v = video.current;
+    if (!v) return;
+    v.muted = false;
+    setMuted(false);
+    v.play().catch((err: unknown) => {
+      if (!(err instanceof DOMException) || err.name !== "NotAllowedError") return setPlaying(false);
+      v.muted = true;
+      setMuted(true);
+      v.play().catch(() => setPlaying(false));
+      const unmute = (e: Event) => {
+        // Le bouton du son gère lui-même son clic.
+        if (e.target instanceof Element && e.target.closest("[data-sound-toggle]")) return;
+        v.muted = false;
+        setMuted(false);
+        if (v.paused) v.play().catch(() => undefined);
+      };
+      for (const evt of ["pointerdown", "keydown", "touchend"]) window.addEventListener(evt, unmute, { once: true, capture: true });
+    });
+  }, []);
+
   // Charge et lance la vidéo seulement lorsqu'elle est visible.
   useEffect(() => {
     const el = wrap.current;
@@ -43,7 +66,7 @@ export function FilmPlayer() {
         if (entry.isIntersecting) {
           if (auto && !userPaused) {
             setSrc((s) => s ?? pickSource());
-            if (v && v.currentSrc) v.play().catch(() => setPlaying(false));
+            if (v && v.currentSrc) playWithSound();
           }
         } else if (v && !v.paused) {
           v.pause();
@@ -53,14 +76,14 @@ export function FilmPlayer() {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [userPaused]);
+  }, [userPaused, playWithSound]);
 
   useEffect(() => {
     const v = video.current;
     if (!v || !src) return;
     v.load();
-    v.play().catch(() => setPlaying(false));
-  }, [src]);
+    playWithSound();
+  }, [src, playWithSound]);
 
   const toggle = useCallback(() => {
     const v = video.current;
@@ -79,7 +102,6 @@ export function FilmPlayer() {
     }
   }, [src]);
 
-  // Le film démarre toujours sans son ; la musique ne joue que si le visiteur l'active.
   const toggleSound = useCallback(() => {
     const v = video.current;
     if (!v) return;
@@ -93,13 +115,12 @@ export function FilmPlayer() {
         ref={video}
         className="absolute inset-0 size-full object-cover"
         poster={site.media.poster}
-        muted
         playsInline
         loop
         preload="none"
         width={1280}
         height={720}
-        aria-label="Film de présentation de VTC Copilot AI, 27 secondes, avec voix off et musique, son coupé par défaut"
+        aria-label="Film de présentation de VTC Copilot AI, 27 secondes, avec voix off et musique"
         aria-describedby="film-description"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
@@ -122,7 +143,7 @@ export function FilmPlayer() {
             <span className="grid size-9 place-items-center rounded-full bg-white text-ink">
               <Play size={17} fill="currentColor" aria-hidden />
             </span>
-            Voir le film · 27 s<span className="sr-only"> (son coupé par défaut)</span>
+            Voir le film · 27 s
           </span>
         </button>
       )}
@@ -130,6 +151,7 @@ export function FilmPlayer() {
         <button
           type="button"
           onClick={toggleSound}
+          data-sound-toggle
           className="absolute bottom-3 left-3 flex h-11 items-center gap-2 rounded-full bg-ink/75 px-4 text-[14px] font-medium text-white ring-1 ring-white/20 backdrop-blur"
           aria-pressed={!muted}
         >

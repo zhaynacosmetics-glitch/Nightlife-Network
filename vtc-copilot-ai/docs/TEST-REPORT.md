@@ -32,8 +32,9 @@ Les fichiers sont dans `tests/e2e/`.
 - **Accessibilité** : audit axe-core WCAG 2.1 A et AA sur chaque page, sans aucune violation. On y vérifie aussi le lien d'évitement « Aller au contenu ».
 - **Responsive** : aucun débordement horizontal à 320 px de large.
 - **Film**
-  - Il démarre au clic et se met en pause ; le bouton « Activer le son » apparaît pendant la lecture.
-  - On vérifie sa durée (environ 27 s), son ratio 16:9 et qu’il démarre son coupé.
+  - Il démarre au clic avec le son, se met en pause, et le son se coupe puis se remet avec le bouton.
+  - On vérifie sa durée (environ 27 s) et son ratio 16:9.
+  - Lecture automatique : le film démarre seul quand il arrive à l’écran, avec le son si le navigateur l’autorise ; sinon le son s’active au premier clic sur la page.
 - **Problème puis solution (7 écrans au défilement)**
   - Les 7 boutons d'étape font défiler la page et changent l'écran du téléphone (coach IA, pop-up de verdict, notifications…).
   - Les 7 étapes sont listées pour les lecteurs d'écran.

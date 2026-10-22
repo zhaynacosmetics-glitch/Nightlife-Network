@@ -118,20 +118,32 @@ test.describe("film", () => {
     const video = page.getByTestId("film");
     await expect(video).toHaveAttribute("poster", /poster\.webp$/);
     await expect(video).toHaveAttribute("preload", "none");
-    expect(await video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(true);
     await page.getByRole("button", { name: /Voir le film/ }).click();
     await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused && v.currentTime > 0.3), { timeout: 10_000 }).toBe(true);
     const meta = await video.evaluate((v: HTMLVideoElement) => ({ d: v.duration, w: v.videoWidth, h: v.videoHeight }));
     expect(Math.round(meta.d)).toBe(27);
     expect(meta.w / meta.h).toBeCloseTo(16 / 9, 2);
-    // son coupé au départ, activable par le visiteur
-    await page.getByRole("button", { name: "Activer le son" }).click();
+    // lancé par un clic : le son est actif, et le visiteur peut le couper puis le remettre
     expect(await video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(false);
     await page.getByRole("button", { name: "Couper le son" }).click();
     expect(await video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(true);
+    await page.getByRole("button", { name: "Activer le son" }).click();
+    expect(await video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(false);
     await video.hover();
     await page.getByRole("button", { name: "Mettre le film en pause" }).click();
     await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+  });
+});
+
+test.describe("film en lecture automatique", () => {
+  test("démarre seul à l'écran, avec le son dès que le navigateur l'autorise", async ({ page }) => {
+    await page.goto("/");
+    const video = page.getByTestId("film");
+    await video.scrollIntoViewIfNeeded();
+    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused && v.currentTime > 0.3), { timeout: 10_000 }).toBe(true);
+    // sans geste préalable, le navigateur peut imposer le silence : le premier clic sur la page rétablit le son
+    await page.locator("h1").click();
+    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(false);
   });
 });
 

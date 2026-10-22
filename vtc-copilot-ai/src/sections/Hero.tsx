@@ -66,7 +66,7 @@ export function Hero() {
           </Pop>
         </div>
       </Container>
-      <p className="mt-12 text-center text-[13px] text-muted">Film de 27 s avec voix off et musique, son coupé par défaut · Exemples illustratifs, données fictives</p>
+      <p className="mt-12 text-center text-[13px] text-muted">Film de 27 s avec voix off et musique · Exemples illustratifs, données fictives</p>
       <p id="film-description" className="sr-only">
         Voix off : « Am, stram, gram… Vous êtes VTC ? Vous voulez gagner plus ? 32 euros ?! Jackpot ?! Approche… pschit ! Retour à vide… pschit ! Bouchons, station, usure… pschiiit ! Résultat :
         6 euros de l’heure. VTC Copilot ! Trafic, météo, demande, votre voiture : l’IA calcule tout. En une seconde. Une course ? VTC Copilot tranche. Adieu les courses au pif… bonjour celles qui font
