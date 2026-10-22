@@ -52,7 +52,7 @@ Pour travailler sur l’interface avec rechargement à chaud : `npm run preview`
 | `npm run deploy` | Build, migrations D1 distantes, déploiement Cloudflare |
 | `node scripts/screenshots.mjs` | Captures sur 5 tailles d’écran (film, 7 écrans, inscription, fenêtres) |
 
-Film : voir [`video/STORYBOARD.md`](video/STORYBOARD.md) (`npm run studio`, `npm run render` dans `video/`).
+Film : scénario dans [`video/SCENARIO.md`](video/SCENARIO.md), découpage dans [`video/STORYBOARD.md`](video/STORYBOARD.md) (`npm run studio`, `npm run render` dans `video/`).
 
 ## Modifier les contenus
 

@@ -68,9 +68,10 @@ export function Hero() {
       </Container>
       <p className="mt-12 text-center text-[13px] text-muted">Film de 20 s, sans son · Exemples illustratifs, données fictives</p>
       <p id="film-description" className="sr-only">
-        Le film montre un chauffeur qui reçoit des propositions de course en rafale, puis une course à 32 € qui, une fois l’approche, le retour à vide et les coûts du véhicule comptés,
-        ne rapporte qu’environ 6 € de l’heure. Le copilote analyse ensuite une autre course et affiche un verdict vert, orange ou rouge. Le chauffeur garde la décision. Le film se termine sur
-        le logo VTC Copilot AI et l’invitation à rejoindre la waitlist.
+        Le film montre un chauffeur qui choisit ses courses au hasard, comme dans la comptine « Am, stram, gram ». Une course à 32 € semble un jackpot, mais une fois l’approche, le retour à vide
+        et les coûts comptés, elle ne rapporte qu’environ 6 € de l’heure. Le logo VTC Copilot AI apparaît alors : c’est une app. Son IA calcule en un instant, à partir de douze paramètres (trafic,
+        météo, demande, offre de chauffeurs, voiture, coûts…), si une course est rentable, et affiche « Bonne course », « Course moyenne » ou « Mauvaise course ». Le chauffeur garde le dernier mot.
+        Le film se termine sur « Chaque course compte » et l’invitation à rejoindre la waitlist. Données fictives.
       </p>
     </section>
   );

@@ -44,7 +44,7 @@ for (const v of [
     path.join(site, v.name),
   ]);
 }
-// Affiche (poster) : « Analysez. Comparez. Décidez. » et l'écran d'analyse (12,4 s).
+// Affiche (poster) : « Vous conduisez. L’IA calcule. En un instant. » et le pop-up « Bonne course » (12,4 s).
 const POSTER_AT = "12.4";
 run("ffmpeg", ["-y", "-loglevel", "error", "-ss", POSTER_AT, "-i", master, "-frames:v", "1", "-vf", "scale=1280:-1", "-c:v", "libwebp", "-quality", "82", path.join(site, "vtc-copilot-ai-film-poster.webp")]);
 run("ffmpeg", ["-y", "-loglevel", "error", "-ss", POSTER_AT, "-i", master, "-frames:v", "1", "-vf", "scale=1280:-1", "-q:v", "4", path.join(site, "vtc-copilot-ai-film-poster.jpg")]);

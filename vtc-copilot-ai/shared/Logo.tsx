@@ -11,7 +11,7 @@ interface MarkProps {
 const ARC = "M11.98 38.02 A17 17 0 1 1 36.02 38.02";
 const ARC_LEN = 80.1; // 270° d'un cercle de rayon 17
 
-/** Symbole : une jauge de décision dont l'aiguille est une flèche de navigation. */
+/** Symbole : une jauge de décision dont l'aiguille est une flèche de navigation, terminée par € (la rentabilité). */
 export function LogoMark({ size = 40, draw = 1, id = "vca", title }: MarkProps) {
   const arc = Math.min(1, draw / 0.7);
   const needle = Math.max(0, Math.min(1, (draw - 0.45) / 0.55));
@@ -51,7 +51,13 @@ export function LogoMark({ size = 40, draw = 1, id = "vca", title }: MarkProps) 
       >
         <path d="M24 12.5 L30 30 L24 26.6 L18 30 Z" fill={C.ink} strokeLinejoin="round" />
       </g>
-      <circle cx="36.02" cy="38.02" r={2.6 * arc} fill={C.green} />
+      {/* le bout de la jauge : €, la rentabilité */}
+      <g style={{ transformBox: "fill-box", transformOrigin: "center", transform: `scale(${Math.max(0, (arc - 0.75) / 0.25)})` }}>
+        <circle cx="36.02" cy="38.02" r={5.6} fill={C.green} />
+        <text x="36.02" y="40.7" textAnchor="middle" fontSize="8" fontWeight="800" fontFamily="Arial, Helvetica, sans-serif" fill="#fff">
+          €
+        </text>
+      </g>
     </svg>
   );
 }
