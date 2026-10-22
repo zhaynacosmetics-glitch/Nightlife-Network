@@ -114,27 +114,26 @@ function OfferToast({ price, dest, timer, width = 420 }: { price: number; dest: 
   );
 }
 
-/* ------------------------------------------------------------------ 0 → 3,3 s : la comptine */
+/* ------------------------------------------------------------------ 0 → 1,4 s : « Am… stram… gram… » */
 
 const RAIN = [
   { at: 0, x: 110, y: 110, r: -5, price: 18, dest: "Paris 11e" },
-  { at: 5, x: 1390, y: 130, r: 4, price: 41, dest: "Roissy (95)" },
-  { at: 9, x: 150, y: 700, r: 3, price: 12, dest: "Paris 3e" },
-  { at: 13, x: 1360, y: 690, r: -3, price: 27, dest: "Créteil (94)" },
-  { at: 17, x: 760, y: 70, r: 2, price: 23, dest: "Nanterre (92)" },
-  { at: 21, x: 760, y: 780, r: -2, price: 15, dest: "Paris 18e" },
+  { at: 2, x: 1390, y: 130, r: 4, price: 41, dest: "Roissy (95)" },
+  { at: 4, x: 150, y: 700, r: 3, price: 12, dest: "Paris 3e" },
+  { at: 6, x: 1360, y: 690, r: -3, price: 27, dest: "Créteil (94)" },
+  { at: 8, x: 760, y: 70, r: 2, price: 23, dest: "Nanterre (92)" },
+  { at: 10, x: 760, y: 780, r: -2, price: 15, dest: "Paris 18e" },
 ];
 // le doigt saute d'une proposition à l'autre, au rythme de la comptine
 const HOPS = [
-  { at: 18, toast: 0, word: "Am." },
-  { at: 38, toast: 3, word: "Stram." },
-  { at: 58, toast: 1, word: "Gram." },
+  { at: 8, toast: 0, word: "Am…" },
+  { at: 20, toast: 3, word: "Stram…" },
+  { at: 32, toast: 1, word: "Gram…" },
 ];
 
 function SceneRhyme() {
   const f = useCurrentFrame();
-  const blur = ip(f, [70, 84], [0, 6]);
-  const exit = ip(f, [92, 100], [0, 1], INOUT);
+  const exit = ip(f, [36, 42], [0, 1], INOUT);
   const center = (i: number) => ({ x: RAIN[i].x + 210, y: RAIN[i].y + 95 });
 
   // position du doigt : saut en arc entre deux propositions
@@ -143,8 +142,8 @@ function SceneRhyme() {
   for (let k = 0; k < HOPS.length; k++) {
     const from = k === 0 ? { x: 960, y: 1200 } : center(HOPS[k - 1].toast);
     const to = center(HOPS[k].toast);
-    const t = ip(f, [HOPS[k].at - 10, HOPS[k].at], [0, 1], INOUT);
-    if (f >= HOPS[k].at - 10) {
+    const t = ip(f, [HOPS[k].at - 8, HOPS[k].at], [0, 1], INOUT);
+    if (f >= HOPS[k].at - 8) {
       hx = from.x + (to.x - from.x) * t;
       hy = from.y + (to.y - from.y) * t - Math.sin(t * Math.PI) * 220;
     }
@@ -155,14 +154,14 @@ function SceneRhyme() {
   return (
     <AbsoluteFill style={{ opacity: 1 - exit, scale: 1 + exit * 0.08 }}>
       <Backdrop tint={C.blue} tint2={C.violet} drift={f / 100} />
-      <AbsoluteFill style={{ filter: `blur(${blur}px)`, opacity: 1 - blur / 12 }}>
+      <AbsoluteFill>
         {RAIN.map((t, i) => {
-          const fall = ip(f, [t.at, t.at + 14], [-700, 0], BACK);
+          const fall = ip(f, [t.at, t.at + 10], [-700, 0], BACK);
           const picked = HOPS.find((h) => h.toast === i && f >= h.at);
           const bump = picked ? interpolate(f, [picked.at, picked.at + 3, picked.at + 9], [1, 1.08, 1], { extrapolateRight: "clamp" }) : 1;
           return (
             <div key={i} style={{ position: "absolute", left: t.x, top: t.y, translate: `0 ${fall}px`, rotate: `${t.r + Math.sin((f + i * 9) / 9) * 1.2}deg`, scale: bump }}>
-              <OfferToast price={t.price} dest={t.dest} timer={ip(f, [t.at, t.at + 100], [1, 0.12], Easing.linear)} />
+              <OfferToast price={t.price} dest={t.dest} timer={ip(f, [t.at, t.at + 60], [1, 0.2], Easing.linear)} />
             </div>
           );
         })}
@@ -174,9 +173,8 @@ function SceneRhyme() {
       </AbsoluteFill>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
         {HOPS.map((h, k) => {
-          const next = HOPS[k + 1]?.at ?? 72;
-          const vis = f >= h.at && f < next;
-          return vis ? (
+          const next = HOPS[k + 1]?.at ?? 99;
+          return f >= h.at && f < next ? (
             <div key={h.word} style={{ position: "absolute" }}>
               <Pop at={h.at} size={210} color={k === 2 ? C.violet : C.text}>
                 {h.word}
@@ -184,37 +182,112 @@ function SceneRhyme() {
             </div>
           ) : null;
         })}
-        {f >= 72 && <Pop at={72} size={124}>Vous choisissez au hasard ?</Pop>}
       </AbsoluteFill>
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 3,3 → 8 s : le ballon qui se dégonfle */
+/* ------------------------------------------------------------------ 1,4 → 4,1 s : la question */
 
-const PINS = [
-  { at: 30, icon: <Navigation size={32} />, label: "Approche", value: `${RIDE_TRAP.approachMin} min`, color: C.orange },
-  { at: 44, icon: <Undo2 size={32} />, label: "Retour à vide", value: `${RIDE_TRAP.returnMin ?? 0} min`, color: C.red },
-  { at: 58, icon: <Fuel size={32} />, label: "Carburant et usure", value: `− ${fmtEUR(TRAP.costs)}`, color: C.red },
+const COINS = [
+  { a: -2.7, d: 640, s: 120, at: 18 },
+  { a: -0.4, d: 660, s: 96, at: 20 },
+  { a: 0.5, d: 700, s: 80, at: 22 },
+  { a: 2.6, d: 660, s: 104, at: 24 },
+  { a: -1.9, d: 560, s: 70, at: 26 },
+  { a: 1.3, d: 600, s: 86, at: 28 },
 ];
 
-function SceneBalloon() {
+function SceneHook() {
   const f = useCurrentFrame();
-  const enter = ip(f, [0, 12], [0, 1]);
-  const deflate = ip(f, [70, 100], [0, 1], Easing.in(Easing.quad));
-  const wobble = f >= 70 && f < 100 ? Math.sin(f * 2.1) * 9 * (1 - deflate) : 0;
-  const pinJolt = PINS.reduce((s, p) => s + (f >= p.at && f < p.at + 6 ? (6 - (f - p.at)) * 2 : 0), 0);
-  const hourly = ip(f, [84, 108], [RIDE_TRAP.price, TRAP.hourly], Easing.out(Easing.cubic));
-  const exit = ip(f, [132, 140], [0, 1], INOUT);
+  const swap = ip(f, [38, 44], [0, 1], INOUT);
+  const exit = ip(f, [74, 80], [0, 1], INOUT);
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
-      <Backdrop tint={deflate > 0.3 ? C.red : C.orange} tint2={C.violet} drift={0.4 + f / 200} />
+      <Backdrop tint={swap > 0.5 ? C.red : C.green} tint2={C.violet} drift={f / 120} />
+      {/* les pièces jaillissent quand on parle d'argent */}
+      {COINS.map((c, i) => {
+        const t = ip(f, [c.at, c.at + 12], [0, 1], BACK);
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              left: 960 + Math.cos(c.a) * c.d * t - c.s / 2,
+              top: 540 + Math.sin(c.a) * c.d * 0.6 * t - c.s / 2,
+              width: c.s,
+              height: c.s,
+              borderRadius: c.s,
+              background: C.green,
+              color: "#fff",
+              display: "grid",
+              placeItems: "center",
+              fontSize: c.s * 0.55,
+              fontWeight: 800,
+              opacity: ip(f, [c.at, c.at + 2], [0, 1], Easing.linear) * (1 - swap),
+              scale: t,
+              rotate: `${Math.sin((f - c.at) / 5) * 14 * (i % 2 ? 1 : -1)}deg`,
+              boxShadow: `0 20px 40px -18px ${C.green}`,
+            }}
+          >
+            €
+          </div>
+        );
+      })}
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 34, opacity: 1 - swap, scale: 1 - swap * 0.1 }}>
+        <Pop at={2} size={150}>
+          Vous êtes VTC
+        </Pop>
+        {f >= 12 && (
+          <Pop at={12} size={86}>
+            et vous voulez gagner <span style={{ color: C.green }}>plus d’argent</span> ?
+          </Pop>
+        )}
+      </AbsoluteFill>
+      {f >= 42 && (
+        <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20 }}>
+          <Pop at={42} size={100} color={C.muted}>
+            Alors arrêtez de choisir
+          </Pop>
+          <Pop at={48} size={136}>
+            vos courses <span style={{ color: C.red, textDecoration: "line-through", textDecorationThickness: 10 }}>au hasard</span>.
+          </Pop>
+        </AbsoluteFill>
+      )}
+    </AbsoluteFill>
+  );
+}
 
-      {/* la course « jackpot » */}
-      <div style={{ position: "absolute", left: 160, top: 210, width: 820, height: 520 }}>
-        <div style={{ position: "absolute", left: 0, top: 0 }}>
-          <Pop at={10} size={84} color={C.orange} style={{ opacity: f < 70 ? 1 : 1 - ip(f, [70, 78], [0, 1]) }}>
+/* ------------------------------------------------------------------ 4,1 → 8 s : le problème, « Pschiit » ×3 */
+
+const PINS = [
+  { at: 14, icon: <Navigation size={32} />, label: "pour aller chercher le client", value: `${RIDE_TRAP.approachMin} min`, color: C.orange, pschit: "Pschiit.", size: 80 },
+  { at: 34, icon: <Undo2 size={32} />, label: "Retour à vide depuis Roissy", value: `${RIDE_TRAP.returnMin ?? 0} min`, color: C.red, pschit: "Pschiit.", size: 92 },
+  { at: 54, icon: <Fuel size={32} />, label: "Bouchons, station bondée, usure", value: `− ${fmtEUR(TRAP.costs, 0)}`, color: C.red, pschit: "Pschiiiit.", size: 120 },
+];
+const RESULT_AT = 76;
+const hm = (min: number) => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, "0")}`;
+
+function SceneBalloon() {
+  const f = useCurrentFrame();
+  const enter = ip(f, [0, 10], [0, 1]);
+  // le ballon se dégonfle par paliers, à chaque « Pschiit »
+  const steps = PINS.map((p, i) => ip(f, [p.at + 6, p.at + 14], [0, [0.2, 0.2, 0.45][i]], Easing.in(Easing.quad)));
+  const deflate = steps.reduce((a, b) => a + b, 0);
+  const hiss = PINS.find((p) => f >= p.at + 6 && f < p.at + 14);
+  const wobble = hiss ? Math.sin(f * 2.3) * 7 : 0;
+  const hourly = ip(f, [RESULT_AT, RESULT_AT + 14], [RIDE_TRAP.price, TRAP.hourly], Easing.out(Easing.cubic));
+  const exit = ip(f, [112, 118], [0, 1], INOUT);
+
+  return (
+    <AbsoluteFill style={{ opacity: 1 - exit }}>
+      <Backdrop tint={deflate > 0.4 ? C.red : C.orange} tint2={C.violet} drift={0.4 + f / 200} />
+
+      <div style={{ position: "absolute", left: 140, top: 150, width: 860, height: 620 }}>
+        {/* « 32 € ? Jackpot ? » */}
+        <div style={{ position: "absolute", left: 10, top: 0, opacity: 1 - ip(f, [12, 18], [0, 1]) }}>
+          <Pop at={4} size={92} color={C.orange}>
             Jackpot ?
           </Pop>
         </div>
@@ -222,51 +295,55 @@ function SceneBalloon() {
           style={{
             position: "absolute",
             left: 0,
-            top: 110,
-            fontSize: 330,
+            top: 120,
+            fontSize: 290,
             fontWeight: 720,
             letterSpacing: "-0.07em",
+            whiteSpace: "nowrap",
             lineHeight: 1,
             color: deflate > 0.5 ? C.red : C.text,
             transformOrigin: "30% 60%",
-            opacity: enter * (1 - ip(f, [92, 100], [0, 1])),
-            scale: `${ip(f, [0, 12], [0.6, 1], BIGBACK) * (1 - deflate * 0.75) * (1 + pinJolt / 200)} ${ip(f, [0, 12], [0.6, 1], BIGBACK) * (1 - deflate * 0.85)}`,
+            opacity: enter * (1 - ip(f, [RESULT_AT - 4, RESULT_AT], [0, 1])),
+            scale: `${ip(f, [0, 10], [0.6, 1], BIGBACK) * (1 - deflate * 0.8)} ${ip(f, [0, 10], [0.6, 1], BIGBACK) * (1 - deflate * 0.9)}`,
             rotate: `${wobble}deg`,
-            translate: `${wobble * 3}px ${deflate * 120}px`,
+            translate: `${wobble * 3}px ${deflate * 160}px`,
             ...tab,
           }}
         >
-          {fmtEUR(RIDE_TRAP.price, 0)}
+          {fmtEUR(RIDE_TRAP.price, 0)} ?
         </div>
-        {/* étincelles qui s'éteignent avec le ballon */}
         {[
-          { x: 600, y: 120, s: 74, d: 0 },
-          { x: 680, y: 300, s: 44, d: 6 },
-          { x: -30, y: 140, s: 52, d: 3 },
-          { x: 420, y: 470, s: 38, d: 9 },
+          { x: 640, y: 140, s: 74, d: 0 },
+          { x: 720, y: 330, s: 44, d: 3 },
+          { x: -30, y: 150, s: 52, d: 1 },
+          { x: 420, y: 480, s: 38, d: 5 },
         ].map((s, i) => (
           <Sparkle
             key={i}
             size={s.s}
-            style={{ left: s.x, top: s.y, opacity: ip(f, [s.d + 4, s.d + 10], [0, 1]) * (1 - ip(f, [66, 76], [0, 1])), scale: 0.7 + 0.3 * Math.abs(Math.sin((f + s.d * 5) / 6)), rotate: `${f * 3}deg` }}
+            style={{ left: s.x, top: s.y, opacity: ip(f, [s.d + 2, s.d + 7], [0, 1]) * (1 - ip(f, [18, 24], [0, 1])), scale: 0.7 + 0.3 * Math.abs(Math.sin((f + s.d * 5) / 6)), rotate: `${f * 3}deg` }}
           />
         ))}
-        {/* ce qu'elle rapporte vraiment */}
-        <div style={{ position: "absolute", left: 0, top: 170, opacity: ip(f, [86, 92], [0, 1]), scale: ip(f, [86, 98], [0.5, 1], BIGBACK), transformOrigin: "left center" }}>
-          <div style={{ fontSize: 210, fontWeight: 720, letterSpacing: "-0.06em", color: C.red, lineHeight: 1, ...tab }}>≈ {fmtEUR(hourly, 0)}/h</div>
-          <div style={{ fontSize: 32, color: C.muted, marginTop: 14 }}>net estimé, sur 1 h 50 mobilisée</div>
-        </div>
-        {f >= 72 && (
-          <div style={{ position: "absolute", left: 470, top: 60 }}>
-            <Pop at={72} size={96} color={C.red} style={{ opacity: 1 - ip(f, [88, 96], [0, 1]) }}>
-              Pschiiit.
-            </Pop>
-          </div>
+        {/* les trois « Pschiit », de plus en plus longs */}
+        {PINS.map((p) =>
+          f >= p.at + 6 && f < p.at + 20 ? (
+            <div key={p.pschit + p.at} style={{ position: "absolute", left: 420, top: 40 }}>
+              <Pop at={p.at + 6} size={p.size} color={C.red}>
+                {p.pschit}
+              </Pop>
+            </div>
+          ) : null,
         )}
+        {/* « Résultat : 6 € de l'heure. » */}
+        <div style={{ position: "absolute", left: 0, top: 120, opacity: ip(f, [RESULT_AT, RESULT_AT + 4], [0, 1]), scale: ip(f, [RESULT_AT, RESULT_AT + 10], [0.5, 1], BIGBACK), transformOrigin: "left center" }}>
+          <div style={{ fontSize: 60, fontWeight: 650, color: C.text, letterSpacing: "-0.03em" }}>Résultat :</div>
+          <div style={{ fontSize: 210, fontWeight: 720, letterSpacing: "-0.06em", color: C.red, lineHeight: 1, ...tab }}>≈ {fmtEUR(hourly, 0)}/h</div>
+          <div style={{ fontSize: 30, color: C.muted, marginTop: 12 }}>net estimé, sur {hm(TRAP.totalMin)} mobilisées</div>
+        </div>
       </div>
 
       {/* les épingles qui piquent le ballon */}
-      <div style={{ position: "absolute", left: 1100, top: 250, display: "flex", flexDirection: "column", gap: 26 }}>
+      <div style={{ position: "absolute", left: 1040, top: 230, display: "flex", flexDirection: "column", gap: 26 }}>
         {PINS.map((p) => (
           <div
             key={p.label}
@@ -274,33 +351,46 @@ function SceneBalloon() {
               display: "flex",
               alignItems: "center",
               gap: 20,
-              padding: "20px 30px",
-              width: 640,
+              padding: "20px 28px",
+              width: 760,
               borderRadius: 26,
               background: "#fff",
               border: `1.5px solid ${p.color}55`,
               boxShadow: "0 24px 50px -30px rgba(11,13,18,0.3)",
               opacity: ip(f, [p.at, p.at + 3], [0, 1], Easing.linear),
-              translate: `${ip(f, [p.at, p.at + 9], [-260, 0], BACK)}px 0`,
-              rotate: `${ip(f, [p.at, p.at + 9], [-10, 0])}deg`,
+              translate: `${ip(f, [p.at, p.at + 8], [-260, 0], BACK)}px 0`,
+              rotate: `${ip(f, [p.at, p.at + 8], [-10, 0])}deg`,
             }}
           >
-            <span style={{ width: 62, height: 62, borderRadius: 20, display: "grid", placeItems: "center", background: `${p.color}1f`, color: p.color }}>{p.icon}</span>
-            <span style={{ fontSize: 34, color: C.muted, flex: 1 }}>{p.label}</span>
-            <span style={{ fontSize: 40, fontWeight: 720, color: p.color, ...tab }}>{p.value}</span>
+            <span style={{ width: 62, height: 62, flex: "none", borderRadius: 20, display: "grid", placeItems: "center", background: `${p.color}1f`, color: p.color }}>{p.icon}</span>
+            {p.at === PINS[0].at ? (
+              <>
+                <span style={{ fontSize: 40, fontWeight: 720, color: p.color, ...tab }}>{p.value}</span>
+                <span style={{ fontSize: 32, color: C.muted, flex: 1 }}>{p.label}</span>
+              </>
+            ) : (
+              <>
+                <span style={{ fontSize: 32, color: C.muted, flex: 1 }}>{p.label}</span>
+                <span style={{ fontSize: 40, fontWeight: 720, color: p.color, ...tab }}>{p.value}</span>
+              </>
+            )}
           </div>
         ))}
       </div>
 
-      <div style={{ position: "absolute", left: 160, bottom: 130, fontSize: 64, fontWeight: 640, letterSpacing: "-0.04em", opacity: ip(f, [108, 116], [0, 1]), translate: `0 ${ip(f, [108, 120], [30, 0])}px` }}>
-        Ce qui brille ne paie pas toujours.
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 130, display: "flex", justifyContent: "center" }}>
+        {f >= 90 && (
+          <Pop at={90} size={64} style={{ fontWeight: 640, letterSpacing: "-0.035em" }}>
+            Un gros prix, ce n’est pas forcément une <span style={{ color: C.green }}>bonne course</span>.
+          </Pop>
+        )}
       </div>
       <DemoNotice opacity={enter} right />
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 8 → 9 s : le logo, au milieu de l'écran */
+/* ------------------------------------------------------------------ 8 → 9 s : « La solution », le logo au milieu de l'écran */
 
 function SceneLogo() {
   const f = useCurrentFrame();
@@ -332,6 +422,11 @@ function SceneLogo() {
           <LogoMark size={440} id="film-slam" />
         </div>
       </div>
+      <div style={{ position: "absolute", top: 70 }}>
+        <Pop at={0} size={64} color={C.violet} style={{ letterSpacing: "-0.03em" }}>
+          La solution :
+        </Pop>
+      </div>
       <div style={{ position: "absolute", top: 760, textAlign: "center", opacity: ip(f, [17, 22], [0, 1]), translate: `0 ${ip(f, [17, 26], [30, 0])}px` }}>
         <div style={{ fontSize: 96, fontWeight: 680, letterSpacing: "-0.05em" }}>
           VTC Copilot <span style={{ color: C.muted, fontWeight: 420 }}>AI</span>
@@ -342,7 +437,7 @@ function SceneLogo() {
   );
 }
 
-/* ------------------------------------------------------------------ 9 → 13 s : l'IA calcule */
+/* ------------------------------------------------------------------ 9 → 12,7 s : l'IA calcule */
 
 const PARAMS: { label: string; icon: ReactNode }[] = [
   { label: "Trafic", icon: <TrafficCone size={28} /> },
@@ -360,23 +455,23 @@ const PARAMS: { label: string; icon: ReactNode }[] = [
 ];
 const PHONE = { x: 1290, y: 540, w: 430 };
 const PARAM_START = 4;
-const PARAM_GAP = 4;
+const PARAM_GAP = 3;
 const PARAM_FLY = 14;
 
 function SceneCompute() {
   const f = useCurrentFrame();
   const phoneIn = ip(f, [0, 14], [0, 1], BACK);
   const absorbed = PARAMS.filter((_, i) => f >= PARAM_START + i * PARAM_GAP + PARAM_FLY).length;
-  const counter = ip(f, [8, 14], [0, 1]) * (1 - ip(f, [60, 68], [0, 1]));
-  const exit = ip(f, [112, 120], [0, 1], INOUT);
+  const counter = ip(f, [8, 14], [0, 1]) * (1 - ip(f, [52, 60], [0, 1]));
+  const exit = ip(f, [104, 110], [0, 1], INOUT);
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
       <Backdrop tint={C.violet} tint2={C.blue} drift={f / 150} />
 
-      <div style={{ position: "absolute", left: PHONE.x - PHONE.w / 2, top: 80, opacity: phoneIn, translate: `0 ${(1 - phoneIn) * 160}px`, scale: 1 + (f >= 16 && f < 62 ? Math.sin(f * 1.4) * 0.006 : 0) }}>
+      <div style={{ position: "absolute", left: PHONE.x - PHONE.w / 2, top: 80, opacity: phoneIn, translate: `0 ${(1 - phoneIn) * 160}px`, scale: 1 + (f >= 16 && f < 54 ? Math.sin(f * 1.4) * 0.006 : 0) }}>
         <Phone width={PHONE.w} glow={C.violet}>
-          <OverlayScreen p={ip(f, [56, 112], [0, 0.33], Easing.linear)} />
+          <OverlayScreen p={ip(f, [50, 104], [0, 0.33], Easing.linear)} />
           {/* le calcul : compteur de paramètres */}
           <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.94)", display: "grid", placeItems: "center", opacity: counter }}>
             <div style={{ textAlign: "center" }}>
@@ -436,15 +531,17 @@ function SceneCompute() {
         );
       })}
 
-      <div style={{ position: "absolute", left: 130, top: 270, display: "flex", flexDirection: "column", gap: 28 }}>
-        <Pop at={8} size={118} style={{ opacity: ip(f, [8, 11], [0, 1], Easing.linear) * ip(f, [30, 40], [1, 0.35]) }}>
-          Vous conduisez.
+      <div style={{ position: "absolute", left: 130, top: 250, display: "flex", flexDirection: "column", gap: 26 }}>
+        <Pop at={4} size={50} color={C.muted} style={{ fontWeight: 560, letterSpacing: "-0.02em", lineHeight: 1.25 }}>
+          Trafic, météo, demande, offre,
+          <br />
+          votre voiture, vos coûts :
         </Pop>
-        <Pop at={30} size={118} color={C.violet}>
-          L’IA calcule.
+        <Pop at={18} size={118} color={C.violet}>
+          l’IA calcule tout,
         </Pop>
-        <Pop at={70} size={118} color={C.green}>
-          En un instant.
+        <Pop at={40} size={118} color={C.green}>
+          en une seconde.
         </Pop>
       </div>
       <DemoNotice opacity={phoneIn} />
@@ -452,160 +549,209 @@ function SceneCompute() {
   );
 }
 
-/* ------------------------------------------------------------------ 13 → 17 s : le tri */
+/* ------------------------------------------------------------------ 12,7 → 16,3 s : la pastille */
 
-const SORT: { price: number; dest: string; verdict: Verdict; hourly: string; out: number }[] = [
-  { price: 58, dest: "Puteaux → CDG", verdict: "green", hourly: "57 €/h", out: 1 },
-  { price: 14, dest: "Paris 12e → 20e", verdict: "red", hourly: "11 €/h", out: -1 },
-  { price: 27, dest: "Neuilly → Saint-Denis", verdict: "orange", hourly: "17 €/h", out: 0 },
+const SORT: { price: number; dest: string; verdict: Verdict; hourly: string; out: number; at: number }[] = [
+  { price: 58, dest: "Puteaux → CDG", verdict: "green", hourly: "57 €/h", out: 1, at: 6 },
+  { price: 14, dest: "Paris 12e → 20e", verdict: "red", hourly: "11 €/h", out: -1, at: 40 },
 ];
-const SORT_GAP = 34;
 
-function Stamp({ verdict, hourly, at }: { verdict: Verdict; hourly: string; at: number }) {
+/** La pastille VTC Copilot AI, qui s'affiche juste sous la proposition. */
+function Pastille({ verdict, hourly, at }: { verdict: Verdict; hourly: string; at: number }) {
   const f = useCurrentFrame();
   const v = VERDICT[verdict];
   return (
-    <div
-      style={{
-        position: "absolute",
-        right: -60,
-        top: -96,
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        padding: "14px 26px 14px 16px",
-        borderRadius: 99,
-        background: v.color,
-        color: "#fff",
-        fontSize: 40,
-        fontWeight: 700,
-        letterSpacing: "-0.02em",
-        whiteSpace: "nowrap",
-        boxShadow: `0 24px 40px -18px ${v.color}`,
-        opacity: ip(f, [at, at + 2], [0, 1], Easing.linear),
-        scale: ip(f, [at, at + 7], [2.6, 1], Easing.out(Easing.quad)),
-        rotate: `${ip(f, [at, at + 7], [-20, -6])}deg`,
-      }}
-    >
-      <span style={{ width: 50, height: 50, borderRadius: 50, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.25)" }}>
-        {verdict === "green" ? <Check size={30} strokeWidth={3} /> : verdict === "red" ? <X size={30} strokeWidth={3} /> : <span style={{ fontSize: 34, fontWeight: 800 }}>~</span>}
-      </span>
-      {v.label}
-      <span style={{ fontWeight: 560, opacity: 0.85, fontSize: 32 }}>· {hourly}</span>
+    <div style={{ display: "flex", justifyContent: "center", marginTop: 22 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          padding: "14px 28px 14px 16px",
+          borderRadius: 99,
+          background: v.color,
+          color: "#fff",
+          fontSize: 42,
+          fontWeight: 700,
+          letterSpacing: "-0.02em",
+          whiteSpace: "nowrap",
+          boxShadow: `0 24px 40px -18px ${v.color}`,
+          opacity: ip(f, [at, at + 2], [0, 1], Easing.linear),
+          scale: ip(f, [at, at + 8], [0.2, 1], BIGBACK),
+          translate: `0 ${ip(f, [at, at + 8], [-40, 0])}px`,
+        }}
+      >
+        <span style={{ width: 52, height: 52, borderRadius: 52, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.25)" }}>
+          {verdict === "green" ? <Check size={32} strokeWidth={3} /> : <X size={32} strokeWidth={3} />}
+        </span>
+        {v.label}
+        <span style={{ fontWeight: 560, opacity: 0.85, fontSize: 34 }}>· {hourly}</span>
+      </div>
     </div>
   );
 }
 
 function SceneSort() {
   const f = useCurrentFrame();
-  const exit = ip(f, [112, 120], [0, 1], INOUT);
+  const outro = 74;
+  const exit = ip(f, [104, 110], [0, 1], INOUT);
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
       <Backdrop tint={C.green} tint2={C.violet} drift={0.2 + f / 240} />
-      <div style={{ position: "absolute", left: 0, right: 0, top: 120, display: "flex", justifyContent: "center" }}>
-        <Pop at={2} size={104}>
-          Chaque course a sa note.
+      <div style={{ position: "absolute", left: 0, right: 0, top: 110, display: "flex", flexDirection: "column", alignItems: "center", gap: 18, opacity: 1 - ip(f, [outro - 4, outro], [0, 1]) }}>
+        <Pop at={0} size={104}>
+          Une course arrive ?
         </Pop>
+        {f >= 14 && (
+          <Pop at={14} size={50} color={C.muted} style={{ fontWeight: 560, letterSpacing: "-0.02em" }}>
+            Une pastille <span style={{ color: C.green }}>verte</span> ou <span style={{ color: C.red }}>rouge</span> s’affiche direct en dessous.
+          </Pop>
+        )}
       </div>
 
-      {SORT.map((o, i) => {
-        const s = 10 + i * SORT_GAP;
-        const enter = ip(f, [s, s + 9], [0, 1], BACK);
-        const leave = o.out === 0 ? 0 : ip(f, [s + 24, s + 34], [0, 1], Easing.in(Easing.cubic));
-        const visible = f >= s && leave < 1;
-        if (!visible) return null;
+      {SORT.map((o) => {
+        const s = o.at;
+        const enter = ip(f, [s, s + 8], [0, 1], BACK);
+        const leave = ip(f, [s + 26, s + 34], [0, 1], Easing.in(Easing.cubic));
+        if (f < s || leave >= 1) return null;
         return (
           <div
             key={o.price}
             style={{
               position: "absolute",
               left: 960 - 320,
-              top: 430,
+              top: 420,
               opacity: enter,
               translate: `${(1 - enter) * 500 + leave * o.out * 1500}px ${leave * (o.out < 0 ? 200 : -120)}px`,
               rotate: `${leave * o.out * 18 + (1 - enter) * 8}deg`,
             }}
           >
-            <OfferToast price={o.price} dest={o.dest} timer={ip(f, [s, s + 60], [1, 0.4], Easing.linear)} width={640} />
-            <Stamp verdict={o.verdict} hourly={o.hourly} at={s + 12} />
-            {o.out === 1 && (
-              <div style={{ position: "absolute", left: 0, right: 0, bottom: -86, textAlign: "center", fontSize: 34, fontWeight: 650, color: C.green, opacity: ip(f, [s + 18, s + 22], [0, 1]) }}>
-                Accepter →
-              </div>
-            )}
-            {o.out === 0 && (
-              <div style={{ position: "absolute", left: 0, right: 0, bottom: -86, textAlign: "center", fontSize: 34, fontWeight: 600, color: C.orange, opacity: ip(f, [s + 18, s + 24], [0, 1]) }}>
-                À vous de voir.
-              </div>
-            )}
+            <OfferToast price={o.price} dest={o.dest} timer={ip(f, [s, s + 50], [1, 0.4], Easing.linear)} width={640} />
+            <Pastille verdict={o.verdict} hourly={o.hourly} at={s + 9} />
           </div>
         );
       })}
 
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 150, display: "flex", justifyContent: "center" }}>
-        <Pop at={88} size={72} color={C.muted}>
-          Vous gardez le dernier mot.
-        </Pop>
-      </div>
-      <DemoNotice opacity={ip(f, [0, 10], [0, 1])} />
+      {f >= outro && (
+        <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 24 }}>
+          <Pop at={outro} size={130}>
+            Fini le pifomètre,
+          </Pop>
+          {f >= outro + 10 && (
+            <Pop at={outro + 10} size={96} color={C.violet}>
+              et vous gardez le dernier mot.
+            </Pop>
+          )}
+        </AbsoluteFill>
+      )}
+      <DemoNotice opacity={ip(f, [0, 10], [0, 1]) * (1 - ip(f, [outro - 4, outro], [0, 1]))} />
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 17 → 20 s : signature */
+/* ------------------------------------------------------------------ 16,3 → 20 s : la chute et la signature */
+
+const BIFF = [
+  { a: -2.8, d: 700, s: 110, at: 16 },
+  { a: -0.3, d: 720, s: 90, at: 18 },
+  { a: 0.35, d: 740, s: 76, at: 20 },
+  { a: 2.8, d: 700, s: 100, at: 17 },
+  { a: -1.6, d: 520, s: 70, at: 22 },
+  { a: 1.6, d: 540, s: 84, at: 19 },
+];
+const SIGN = 44;
 
 function SceneBrand() {
   const f = useCurrentFrame();
-  const draw = ip(f, [2, 30], [0, 1], INOUT);
-  const spark = ip(f, [28, 40], [0, 1]);
+  const punch = 1 - ip(f, [SIGN - 6, SIGN], [0, 1], INOUT);
+  const g = f - SIGN;
+  const draw = ip(g, [0, 24], [0, 1], INOUT);
+  const spark = ip(g, [22, 32], [0, 1]);
   const letters = "VTC Copilot AI".split("");
 
   return (
     <AbsoluteFill>
-      <AbsoluteFill style={{ background: C.night }} />
-      <AbsoluteFill
-        style={{
-          background: `radial-gradient(50% 55% at 50% 40%, ${C.violet}22 0%, transparent 70%), radial-gradient(40% 40% at 50% 82%, ${C.green}14 0%, transparent 70%)`,
-          scale: ip(f, [0, 90], [1.3, 1]),
-        }}
-      />
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-        <div style={{ position: "relative", scale: ip(f, [2, 30], [0.7, 1], BACK), marginTop: -40 }}>
-          <LogoMark size={240} draw={draw} id="film-end" />
-          {/* le € s'allume */}
-          <Sparkle size={70} color={C.green} style={{ left: 170, top: 150, opacity: spark * (1 - ip(f, [44, 56], [0, 1])), scale: 0.4 + spark * 0.8, rotate: `${f * 4}deg` }} />
-        </div>
-        <div style={{ display: "flex", marginTop: 36, fontSize: 140, fontWeight: 680, letterSpacing: "-0.05em", color: C.text }}>
-          {letters.map((l, i) => {
-            const s = 14 + i * 1.4;
+      <Backdrop tint={C.green} tint2={C.violet} drift={f / 160} />
+
+      {/* « Adieu les courses au pif, bonjour les courses qui font du biff ! » */}
+      {punch > 0 && (
+        <AbsoluteFill style={{ opacity: punch }}>
+          {BIFF.map((c, i) => {
+            const t = ip(f, [c.at, c.at + 12], [0, 1], BACK);
             return (
-              <span key={i} style={{ display: "inline-block", whiteSpace: "pre", opacity: ip(f, [s, s + 8], [0, 1]), translate: `0 ${ip(f, [s, s + 14], [50, 0])}px`, fontWeight: i >= 12 ? 420 : 680, color: i >= 12 ? C.muted : C.text }}>
-                {l}
-              </span>
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  left: 960 + Math.cos(c.a) * c.d * t - c.s / 2,
+                  top: 540 + Math.sin(c.a) * c.d * 0.6 * t - c.s / 2,
+                  width: c.s,
+                  height: c.s,
+                  borderRadius: c.s,
+                  background: C.green,
+                  color: "#fff",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: c.s * 0.55,
+                  fontWeight: 800,
+                  opacity: ip(f, [c.at, c.at + 2], [0, 1], Easing.linear),
+                  scale: t,
+                  rotate: `${Math.sin((f - c.at) / 5) * 14 * (i % 2 ? 1 : -1)}deg`,
+                }}
+              >
+                €
+              </div>
             );
           })}
-        </div>
-        <div style={{ fontSize: 58, fontWeight: 600, letterSpacing: "-0.03em", color: C.text, marginTop: 18, opacity: ip(f, [32, 42], [0, 1]), translate: `0 ${ip(f, [32, 46], [20, 0])}px` }}>
-          Chaque course <span style={{ color: C.green }}>compte.</span>
-        </div>
-        <div
-          style={{
-            marginTop: 52,
-            padding: "26px 56px",
-            borderRadius: 99,
-            fontSize: 44,
-            fontWeight: 560,
-            color: "#fff",
-            background: C.ink,
-            boxShadow: "0 30px 60px -20px rgba(11,13,18,0.5)",
-            opacity: ip(f, [44, 54], [0, 1]),
-            scale: ip(f, [44, 58], [0.8, 1], BACK),
-          }}
-        >
-          Rejoignez la waitlist
-        </div>
-      </AbsoluteFill>
+          <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 22 }}>
+            <Pop at={0} size={96} color={C.muted}>
+              Adieu les courses au pif,
+            </Pop>
+            {f >= 12 && (
+              <Pop at={12} size={112}>
+                bonjour les courses qui font du <span style={{ color: C.green }}>biff</span> !
+              </Pop>
+            )}
+          </AbsoluteFill>
+        </AbsoluteFill>
+      )}
+
+      {f >= SIGN && (
+        <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+          <div style={{ position: "relative", scale: ip(g, [0, 24], [0.7, 1], BACK), marginTop: -30 }}>
+            <LogoMark size={240} draw={draw} id="film-end" />
+            {/* le € s'allume */}
+            <Sparkle size={70} color={C.green} style={{ left: 170, top: 150, opacity: spark * (1 - ip(g, [36, 48], [0, 1])), scale: 0.4 + spark * 0.8, rotate: `${f * 4}deg` }} />
+          </div>
+          <div style={{ display: "flex", marginTop: 36, fontSize: 140, fontWeight: 680, letterSpacing: "-0.05em", color: C.text }}>
+            {letters.map((l, i) => {
+              const s = 8 + i * 1.2;
+              return (
+                <span key={i} style={{ display: "inline-block", whiteSpace: "pre", opacity: ip(g, [s, s + 8], [0, 1]), translate: `0 ${ip(g, [s, s + 12], [50, 0])}px`, fontWeight: i >= 12 ? 420 : 680, color: i >= 12 ? C.muted : C.text }}>
+                  {l}
+                </span>
+              );
+            })}
+          </div>
+          <div
+            style={{
+              marginTop: 54,
+              padding: "26px 56px",
+              borderRadius: 99,
+              fontSize: 46,
+              fontWeight: 560,
+              color: "#fff",
+              background: C.ink,
+              boxShadow: "0 30px 60px -20px rgba(11,13,18,0.5)",
+              opacity: ip(g, [22, 30], [0, 1]),
+              scale: ip(g, [22, 34], [0.8, 1], BACK),
+            }}
+          >
+            Rejoignez-nous sur la waitlist
+          </div>
+        </AbsoluteFill>
+      )}
     </AbsoluteFill>
   );
 }
@@ -613,12 +759,13 @@ function SceneBrand() {
 /* ------------------------------------------------------------------ montage */
 
 const SCENES: { name: string; from: number; frames: number; Scene: () => ReactNode }[] = [
-  { name: "1. La comptine", from: 0, frames: 100, Scene: SceneRhyme },
-  { name: "2. Le ballon", from: 100, frames: 140, Scene: SceneBalloon },
-  { name: "3. Le logo", from: 240, frames: 30, Scene: SceneLogo },
-  { name: "4. L'IA calcule", from: 270, frames: 120, Scene: SceneCompute },
-  { name: "5. Le tri", from: 390, frames: 120, Scene: SceneSort },
-  { name: "6. Signature", from: 510, frames: 90, Scene: SceneBrand },
+  { name: "1. Am, stram, gram", from: 0, frames: 42, Scene: SceneRhyme },
+  { name: "2. Vous êtes VTC ?", from: 42, frames: 80, Scene: SceneHook },
+  { name: "3. Pschiit", from: 122, frames: 118, Scene: SceneBalloon },
+  { name: "4. La solution", from: 240, frames: 30, Scene: SceneLogo },
+  { name: "5. L'IA calcule", from: 270, frames: 110, Scene: SceneCompute },
+  { name: "6. La pastille", from: 380, frames: 110, Scene: SceneSort },
+  { name: "7. Biff et signature", from: 490, frames: 110, Scene: SceneBrand },
 ];
 
 export const Film = () => (

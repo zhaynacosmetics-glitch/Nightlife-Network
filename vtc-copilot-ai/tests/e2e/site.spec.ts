@@ -124,6 +124,11 @@ test.describe("film", () => {
     const meta = await video.evaluate((v: HTMLVideoElement) => ({ d: v.duration, w: v.videoWidth, h: v.videoHeight }));
     expect(Math.round(meta.d)).toBe(20);
     expect(meta.w / meta.h).toBeCloseTo(16 / 9, 2);
+    // son coupé au départ, activable par le visiteur
+    await page.getByRole("button", { name: "Activer le son" }).click();
+    expect(await video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(false);
+    await page.getByRole("button", { name: "Couper le son" }).click();
+    expect(await video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(true);
     await video.hover();
     await page.getByRole("button", { name: "Mettre le film en pause" }).click();
     await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);

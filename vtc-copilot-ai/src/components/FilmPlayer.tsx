@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { site } from "../config/site";
 
 type NetInfo = { saveData?: boolean; effectiveType?: string };
@@ -30,6 +30,7 @@ export function FilmPlayer() {
   const [playing, setPlaying] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [muted, setMuted] = useState(true);
 
   // Charge et lance la vidéo seulement lorsqu'elle est visible.
   useEffect(() => {
@@ -78,6 +79,14 @@ export function FilmPlayer() {
     }
   }, [src]);
 
+  // Le film démarre toujours sans son ; la musique ne joue que si le visiteur l'active.
+  const toggleSound = useCallback(() => {
+    const v = video.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+  }, []);
+
   return (
     <div ref={wrap} className="group relative aspect-video w-full overflow-hidden rounded-[20px] bg-mist ring-1 ring-line shadow-[0_60px_120px_-50px_rgba(11,13,18,0.45),0_30px_80px_-40px_rgba(110,75,255,0.35)] sm:rounded-[28px]">
       <video
@@ -90,7 +99,7 @@ export function FilmPlayer() {
         preload="none"
         width={1280}
         height={720}
-        aria-label="Film de présentation de VTC Copilot AI, 20 secondes, sans son"
+        aria-label="Film de présentation de VTC Copilot AI, 20 secondes, son coupé par défaut"
         aria-describedby="film-description"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
@@ -113,8 +122,19 @@ export function FilmPlayer() {
             <span className="grid size-9 place-items-center rounded-full bg-white text-ink">
               <Play size={17} fill="currentColor" aria-hidden />
             </span>
-            Voir le film · 20 s<span className="sr-only"> (sans son)</span>
+            Voir le film · 20 s<span className="sr-only"> (son coupé par défaut)</span>
           </span>
+        </button>
+      )}
+      {playing && (
+        <button
+          type="button"
+          onClick={toggleSound}
+          className="absolute bottom-3 left-3 flex h-11 items-center gap-2 rounded-full bg-ink/75 px-4 text-[14px] font-medium text-white ring-1 ring-white/20 backdrop-blur"
+          aria-pressed={!muted}
+        >
+          {muted ? <VolumeX size={18} aria-hidden /> : <Volume2 size={18} aria-hidden />}
+          {muted ? "Activer le son" : "Couper le son"}
         </button>
       )}
       {playing && (

@@ -49,13 +49,13 @@ export const RIDE_TRAP: Ride = {
   platform: "Plateforme VTC (exemple)",
   price: 32,
   approachKm: 16,
-  approachMin: 28,
+  approachMin: 25,
   tripKm: 28,
   tripMin: 52,
   returnKm: 20,
   returnMin: 30,
   from: "Paris 20e",
-  to: "Grande couronne (77)",
+  to: "Aéroport de Roissy (95)",
 };
 
 /** Course intermédiaire. */

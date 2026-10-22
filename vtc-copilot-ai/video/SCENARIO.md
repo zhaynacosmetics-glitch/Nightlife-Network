@@ -1,17 +1,34 @@
 # Scénario du film : « Am, stram, gram ? »
 
-**Durée :** 20 s · **Format :** 16:9, 1920 × 1080, sans voix off ni musique · **Ton :** léger, rythmé, une idée par plan.
+**Durée :** 20 s · **Format :** 16:9, 1920 × 1080 · **Son :** musique originale, voix off à venir (voir [VOIX-OFF.md](VOIX-OFF.md)) · **Ton :** drôle, rythmé, une idée par plan.
 
-**Idée :** aujourd'hui, un chauffeur VTC choisit ses courses un peu au hasard, comme on tire au sort une comptine. VTC Copilot AI arrive au milieu du film : c'est une app, et c'est son IA qui fait le calcul, pas le chauffeur.
+Script validé le 22 octobre 2026 :
 
-| Temps | Plan | Ce qu'on voit | Texte à l'écran |
+> Am… stram… gram…
+> Vous êtes VTC et vous voulez gagner plus d'argent ?
+> Alors arrêtez de choisir vos courses au hasard.
+> 32 € ? Jackpot ?
+> 25 minutes pour aller chercher le client. Pschiit.
+> Retour à vide depuis Roissy. Pschiit.
+> Bouchons, trop de monde à la station, usure. Pschiiiit.
+> Résultat : 6 € de l'heure.
+> Un gros prix, ce n'est pas forcément une bonne course.
+> La solution : VTC Copilot AI, l'app des chauffeurs VTC.
+> Trafic, météo, demande, offre, votre voiture, vos coûts : l'IA calcule tout, en une seconde.
+> Une course arrive ? Une pastille verte ou rouge s'affiche direct en dessous.
+> Fini le pifomètre, et vous gardez le dernier mot.
+> Adieu les courses au pif, bonjour les courses qui font du biff !
+> VTC Copilot AI. Rejoignez-nous sur la waitlist.
+
+| Temps | Plan | Ce qu'on voit | Musique |
 | --- | --- | --- | --- |
-| 0:00 → 3:10 | **1. La comptine** | Des propositions de course tombent du haut de l'écran et rebondissent : 18 €, 41 €, 12 €, 27 €… Un doigt (un point qui pulse) saute de l'une à l'autre, au rythme de la comptine. Les minuteurs se vident. | « Am. » « Stram. » « Gram. » puis « Vous choisissez au hasard ? » |
-| 3:10 → 8:00 | **2. Le ballon qui se dégonfle** | Une course à 32 € entre au centre, entourée d'étincelles : « Jackpot ? ». Trois épingles la piquent l'une après l'autre : approche 28 min, retour à vide 30 min, carburant et usure −20,48 €. Le gros « 32 € » se dégonfle comme un ballon, en tremblant, jusqu'à « ≈ 6 €/h », en rouge. | « Jackpot ? » · « Pschiiit. » · « Ce qui brille ne paie pas toujours. » |
-| 8:00 → 9:00 | **3. Le logo** | Flash. Le logo VTC Copilot AI claque au milieu de l'écran, très grand, pendant un demi-seconde (la jauge se termine par €). Il se range aussitôt dans une icône d'app. | « VTC Copilot AI » · « L'app des chauffeurs VTC » |
-| 9:00 → 13:00 | **4. L'IA calcule** | Un smartphone au centre. Douze paramètres foncent vers lui de tous les côtés, comme aspirés : trafic, météo, demande, offre de chauffeurs, votre voiture, approche, retour à vide, péages, horaires, événements, vos coûts, vos préférences. Un compteur grimpe jusqu'à 12. Une proposition à 58 € arrive, et le pop-up « Bonne course · 57 €/h » saute au-dessus. | « Vous conduisez. » « L'IA calcule. » « En un instant. » |
-| 13:00 → 17:00 | **5. Le tri** | Trois propositions défilent. Sur chacune, un tampon tombe d'un coup : « Bonne course » (vert, la carte file vers « Accepter »), « Mauvaise course » (rouge, la carte est balayée), « Course moyenne » (orange, elle reste à décider). | « Chaque course a sa note. » · « Vous gardez le dernier mot. » |
-| 17:00 → 20:00 | **6. Signature** | Le logo se dessine : l'aiguille de la jauge balaie jusqu'au €, qui s'allume avec une étincelle. Nom, signature, bouton. L'image finale reste fixe plus d'une seconde. | « VTC Copilot AI » · « Chaque course compte. » · « Rejoignez la waitlist » |
+| 0,0 → 1,4 s | **1. Am, stram, gram** | Des propositions de course tombent, un doigt saute de l'une à l'autre. | Boîte à musique, une note par saut |
+| 1,4 → 4,1 s | **2. La question** | « Vous êtes VTC et vous voulez gagner plus d'argent ? », des pièces € jaillissent, puis « Alors arrêtez de choisir vos courses ~~au hasard~~. » | Pizzicati sautillants en la mineur, tic-tac, « ka-ching » |
+| 4,1 → 8,0 s | **3. Pschiit** | « 32 € ? Jackpot ? » Trois épingles (25 min d'approche, retour à vide depuis Roissy 30 min, bouchons, station bondée, usure −20 €) dégonflent le prix en trois « Pschiit ». « Résultat : ≈ 6 €/h. » « Un gros prix, ce n'est pas forcément une bonne course. » | Trois souffles « pschiit », trombone triste, montée vers le logo |
+| 8,0 → 9,0 s | **4. La solution** | « La solution : » puis le logo claque au centre, devient une icône d'app. « L'app des chauffeurs VTC ». | Impact, carillon, passage en do majeur |
+| 9,0 → 12,7 s | **5. L'IA calcule** | Douze paramètres foncent dans le téléphone, le compteur monte à 12, puis le pop-up « Bonne course ». « Trafic, météo, demande, offre, votre voiture, vos coûts : l'IA calcule tout, en une seconde. » | Pad lumineux, arpèges, rythmique |
+| 12,7 → 16,3 s | **6. La pastille** | « Une course arrive ? » Pastille verte sous une course à 58 € (elle part vers « Accepter »), pastille rouge sous une course à 14 € (balayée). « Fini le pifomètre, et vous gardez le dernier mot. » | Idem |
+| 16,3 → 20,0 s | **7. Biff et signature** | « Adieu les courses au pif, bonjour les courses qui font du biff ! » avec une pluie de pièces, puis le logo (l'aiguille balaie jusqu'au €), le nom et « Rejoignez-nous sur la waitlist ». | Pièces, accord final de do majeur |
 
 **Mention permanente** sur les plans chiffrés : « Exemple illustratif · données fictives ».
 

@@ -66,12 +66,12 @@ export function Hero() {
           </Pop>
         </div>
       </Container>
-      <p className="mt-12 text-center text-[13px] text-muted">Film de 20 s, sans son · Exemples illustratifs, données fictives</p>
+      <p className="mt-12 text-center text-[13px] text-muted">Film de 20 s avec musique, son coupé par défaut · Exemples illustratifs, données fictives</p>
       <p id="film-description" className="sr-only">
-        Le film montre un chauffeur qui choisit ses courses au hasard, comme dans la comptine « Am, stram, gram ». Une course à 32 € semble un jackpot, mais une fois l’approche, le retour à vide
-        et les coûts comptés, elle ne rapporte qu’environ 6 € de l’heure. Le logo VTC Copilot AI apparaît alors : c’est une app. Son IA calcule en un instant, à partir de douze paramètres (trafic,
-        météo, demande, offre de chauffeurs, voiture, coûts…), si une course est rentable, et affiche « Bonne course », « Course moyenne » ou « Mauvaise course ». Le chauffeur garde le dernier mot.
-        Le film se termine sur « Chaque course compte » et l’invitation à rejoindre la waitlist. Données fictives.
+        Am, stram, gram : un chauffeur choisit ses courses au hasard. Vous êtes VTC et vous voulez gagner plus d’argent ? Alors arrêtez de choisir vos courses au hasard. Une course à 32 € semble
+        un jackpot, mais 25 minutes pour aller chercher le client, le retour à vide depuis Roissy, les bouchons et l’usure la dégonflent : résultat, environ 6 € de l’heure. La solution : VTC Copilot
+        AI, l’app des chauffeurs VTC. Trafic, météo, demande, offre, votre voiture, vos coûts : l’IA calcule tout en une seconde. Quand une course arrive, une pastille verte ou rouge s’affiche juste en
+        dessous, et vous gardez le dernier mot. Adieu les courses au pif, bonjour les courses qui font du biff. Le film se termine par l’invitation à rejoindre la waitlist. Données fictives.
       </p>
     </section>
   );

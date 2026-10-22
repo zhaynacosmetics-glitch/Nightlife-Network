@@ -1,30 +1,32 @@
 # Storyboard du film VTC Copilot AI
 
-**Durée :** 20,000 s · **Format :** 16:9, 1920 × 1080, 30 images/s (600 images) · **Style :** fond blanc, police Geist, accent violet · **Son :** aucun (version muette, compréhensible sans voix off) · **Données :** toutes fictives, mention « Exemple illustratif · données fictives » à l’écran pendant les scènes chiffrées.
+**Durée :** 20,000 s · **Format :** 16:9, 1920 × 1080, 30 images/s (600 images) · **Style :** fond blanc, police Geist, accent violet · **Son :** musique originale ([MUSIQUE.md](MUSIQUE.md)), voix off à venir ([VOIX-OFF.md](VOIX-OFF.md)) ; le film reste compréhensible son coupé · **Données :** toutes fictives, mention « Exemple illustratif · données fictives » à l’écran pendant les scènes chiffrées.
 
-Le scénario et ses intentions sont dans [SCENARIO.md](SCENARIO.md) (« Am, stram, gram ? »). Ce document donne le découpage image par image.
+Le scénario et le script validé sont dans [SCENARIO.md](SCENARIO.md) (« Am, stram, gram ? »). Ce document donne le découpage image par image.
 
 Sources : [`src/Film.tsx`](src/Film.tsx) (scènes), [`../shared/`](../shared) (logo, pop-up de verdict, couleurs, données de démo partagés avec le site).
 
-| Timecode | Images | Scène | Ce qu’on voit | Texte à l’écran |
-| --- | --- | --- | --- | --- |
-| 00:00 → 03:10 | 0 → 99 | **1. La comptine** | Six propositions de course tombent du haut et rebondissent. Un doigt (point violet) saute de l’une à l’autre en arc, au rythme de la comptine. Puis les cartes se floutent. | « Am. » « Stram. » « Gram. » · « Vous choisissez au hasard ? » |
-| 03:10 → 08:00 | 100 → 239 | **2. Le ballon** | Une course à 32 € jaillit, entourée d’étincelles. Trois épingles la piquent : approche 28 min, retour à vide 30 min, carburant et usure − 20,48 €. Le prix tremble, se dégonfle, et devient « ≈ 6 €/h » en rouge. | « Jackpot ? » · « Pschiiit. » · « Ce qui brille ne paie pas toujours. » |
-| 08:00 → 09:00 | 240 → 269 | **3. Le logo** | Flash. Le logo claque très grand au milieu de l’écran (environ 0,5 s), avec une onde de choc. Il se range dans une icône d’app. La jauge se termine par €. | « VTC Copilot AI » · « L’app des chauffeurs VTC » |
-| 09:00 → 13:00 | 270 → 389 | **4. L’IA calcule** | Un smartphone. Douze paramètres foncent vers lui : trafic, météo, demande, offre de chauffeurs, votre voiture, approche, retour à vide, péages, horaires, événements, vos coûts, vos préférences. Un compteur grimpe jusqu’à 12. Puis une demande de course à 58 € arrive et le pop-up « Bonne course · 57 €/h » saute au-dessus. | « Vous conduisez. » « L’IA calcule. » « En un instant. » |
-| 13:00 → 17:00 | 390 → 509 | **5. Le tri** | Trois propositions arrivent l’une après l’autre et reçoivent un tampon : « Bonne course · 57 €/h » (la carte file vers « Accepter »), « Mauvaise course · 11 €/h » (balayée), « Course moyenne · 17 €/h » (elle reste : « À vous de voir. »). | « Chaque course a sa note. » · « Vous gardez le dernier mot. » |
-| 17:00 → 20:00 | 510 → 599 | **6. Signature** | Le logo se dessine, l’aiguille balaie jusqu’au €, qui s’allume d’une étincelle verte. Le nom apparaît lettre par lettre, puis la signature et le bouton. L’image finale reste fixe plus d’une seconde. | « VTC Copilot AI » · « Chaque course compte. » · « Rejoignez la waitlist » |
+| Timecode | Images | Scène | Ce qu’on voit et lit |
+| --- | --- | --- | --- |
+| 00:00 → 01:12 | 0 → 41 | **1. Am, stram, gram** | Six propositions tombent ; un doigt saute sur trois d’entre elles : « Am… » « Stram… » « Gram… ». |
+| 01:12 → 04:02 | 42 → 121 | **2. La question** | « Vous êtes VTC / et vous voulez gagner plus d’argent ? » avec des pièces €, puis « Alors arrêtez de choisir / vos courses ~~au hasard~~. » |
+| 04:02 → 08:00 | 122 → 239 | **3. Pschiit** | « Jackpot ? 32 € ? » Épingles : « 25 min pour aller chercher le client », « Retour à vide depuis Roissy 30 min », « Bouchons, station bondée, usure −20 € ». Trois « Pschiit. » de plus en plus longs, le prix se dégonfle. « Résultat : ≈ 6 €/h » puis « Un gros prix, ce n’est pas forcément une bonne course. » |
+| 08:00 → 09:00 | 240 → 269 | **4. La solution** | « La solution : », le logo claque au centre (0,5 s) puis devient une icône d’app : « VTC Copilot AI · L’app des chauffeurs VTC ». |
+| 09:00 → 12:20 | 270 → 379 | **5. L’IA calcule** | Douze paramètres foncent dans le téléphone, compteur jusqu’à 12, puis le pop-up « Bonne course · 57 €/h ». « Trafic, météo, demande, offre, votre voiture, vos coûts : l’IA calcule tout, en une seconde. » |
+| 12:20 → 16:10 | 380 → 489 | **6. La pastille** | « Une course arrive ? Une pastille verte ou rouge s’affiche direct en dessous. » 58 € → pastille verte (part vers la droite), 14 € → pastille rouge (balayée). « Fini le pifomètre, / et vous gardez le dernier mot. » |
+| 16:10 → 20:00 | 490 → 599 | **7. Biff et signature** | « Adieu les courses au pif, / bonjour les courses qui font du biff ! » avec une pluie de pièces, puis le logo se dessine, le nom et « Rejoignez-nous sur la waitlist ». |
 
 Les €/h affichés sont calculés avec le même modèle que le site (`shared/demo.ts`, coût fictif de 0,32 €/km).
 
 ## Contrôle qualité (22 octobre 2026)
 
 - Durée mesurée par `ffprobe` : 20,000 s, 600 images, 30/1 i/s.
-- Résolution et ratio : 1920 × 1080, 16:9, H.264 High ; versions web en yuv420p avec `faststart`, sans piste audio.
-- Lisibilité : images clés et planche contact (une image toutes les 2 s, `docs/screenshots/film-planche-contact.jpg`) inspectées. Corrections faites après inspection : tampons du « tri » remontés (ils masquaient la destination), cartes agrandies, €/h du tri recalculés avec le modèle de démonstration (11 et 17 €/h).
-- Logo plein centre de 8,00 s à 8,50 s, puis icône d’app jusqu’à 9,00 s.
-- Affiche (poster) extraite à 12,4 s (« L’IA calcule. » et le pop-up « Bonne course ») ; image de partage 1200 × 630 extraite à 19,9 s.
-- Poids : master 6,3 Mo (CRF 16) ; web 1080p 2,0 Mo, 720p 1,0 Mo ; repli WebM 2,1 Mo / 1,2 Mo.
+- Image : 1920 × 1080, 16:9, H.264 High ; versions web en yuv420p avec `faststart`.
+- Son : musique originale, AAC stéréo 44,1 kHz (192 kb/s dans le master, 128 kb/s sur le web, Opus dans les WebM), −18 LUFS, crête −4 dBFS.
+- Lisibilité : images clés et planche contact (une image toutes les 2 s, `docs/screenshots/film-planche-contact.jpg`) inspectées. Corrections faites après inspection : seconde ligne de « La question » réduite (elle débordait), « 32 € ? » sur une seule ligne, épingle « bouchons » raccourcie.
+- Logo plein centre de 8,00 s à 8,50 s, sous « La solution : », puis icône d’app jusqu’à 9,00 s.
+- Affiche (poster) extraite à 12,4 s (« l’IA calcule tout, en une seconde » et le pop-up « Bonne course ») ; image de partage 1200 × 630 extraite à 19,9 s.
+- Poids : master 7,0 Mo ; web 1080p 2,6 Mo, 720p 1,5 Mo ; repli WebM 2,6 Mo / 1,6 Mo.
 
 ## Régénérer le film
 
