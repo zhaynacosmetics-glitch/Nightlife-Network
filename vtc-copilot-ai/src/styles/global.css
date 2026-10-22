@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@import "@fontsource-variable/archivo/wdth.css";
+
+@theme {
+  --font-sans: "Archivo Variable", "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-night: #050918;
+  --color-abyss: #0a1130;
+  --color-panel: #10193f;
+  --color-panel-hi: #16224f;
+  --color-violet: #7c5cff;
+  --color-violet-soft: #a08bff;
+  --color-signal: #38b6ff;
+  --color-go: #2bd99a;
+  --color-maybe: #ffaa3b;
+  --color-stop: #ff5c70;
+  --color-mist: #f2f4fa;
+  --color-ink: #0a0f26;
+  --color-text: #eaedff;
+  --color-muted: #9aa3c7;
+  --color-slate: #4a5378;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    background: var(--color-night);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    background: var(--color-night);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: rgba(124, 92, 255, 0.25);
+  }
+  :where(a, button, summary, [role="button"], input, select, textarea) {
+    touch-action: manipulation;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-signal);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  [id] {
+    scroll-margin-top: 88px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: rgba(124, 92, 255, 0.45);
+  }
+}
+
+@utility display {
+  font-stretch: 118%;
+  font-weight: 780;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility hairline {
+  border-color: rgba(160, 172, 255, 0.14);
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(rgba(160, 172, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(160, 172, 255, 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
