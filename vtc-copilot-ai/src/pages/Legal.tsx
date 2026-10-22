@@ -4,10 +4,10 @@ import { site } from "../config/site";
 
 export function Prose({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="pb-24 pt-[calc(72px+4rem+env(safe-area-inset-top))]">
+    <section className="pb-24 pt-[calc(64px+4rem+env(safe-area-inset-top))]">
       <Container className="max-w-[820px]">
-        <h1 className="display text-[clamp(2.2rem,5vw,3.4rem)]">{title}</h1>
-        <div className="prose-legal mt-10 space-y-6 text-[17px] leading-relaxed text-muted [&_a]:text-signal [&_a]:underline [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-text [&_li]:ml-5 [&_li]:list-disc [&_strong]:text-text">
+        <h1 className="display text-[clamp(2.4rem,6vw,3.8rem)]">{title}</h1>
+        <div className="prose-legal mt-10 space-y-6 text-[16.5px] leading-relaxed text-muted [&_a]:text-violet [&_a]:underline [&_h2]:mt-10 [&_h2]:text-[22px] [&_h2]:font-semibold [&_h2]:tracking-[-0.02em] [&_h2]:text-ink [&_li]:ml-5 [&_li]:list-disc [&_strong]:text-ink">
           {children}
         </div>
       </Container>

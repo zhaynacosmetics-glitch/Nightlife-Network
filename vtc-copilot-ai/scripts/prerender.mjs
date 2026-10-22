@@ -16,7 +16,7 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g
 
 // Précharge la police variable latine (évite le saut de mise en page).
 const assets = readdirSync(path.join(dist, "assets"));
-const font = assets.find((f) => /^archivo-latin-wdth-normal.*\.woff2$/.test(f));
+const font = assets.find((f) => /^geist-latin-wght-normal.*\.woff2$/.test(f));
 const fontPreload = font ? `<link rel="preload" href="/assets/${font}" as="font" type="font/woff2" crossorigin />` : "";
 
 function jsonLd(route) {

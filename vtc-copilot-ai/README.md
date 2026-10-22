@@ -50,7 +50,7 @@ Pour travailler sur l’interface avec rechargement à chaud : `npm run preview`
 | `npm test` | Tout ce qui précède, dans l’ordre |
 | `npm run preview` | Worker + site + D1 locale (`wrangler dev`) |
 | `npm run deploy` | Build, migrations D1 distantes, déploiement Cloudflare |
-| `node scripts/screenshots.mjs` | Captures pleine page sur 5 tailles d’écran |
+| `node scripts/screenshots.mjs` | Captures sur 5 tailles d’écran (film, 7 écrans, inscription, fenêtres) |
 
 Film : voir [`video/STORYBOARD.md`](video/STORYBOARD.md) (`npm run studio`, `npm run render` dans `video/`).
 
@@ -58,8 +58,8 @@ Film : voir [`video/STORYBOARD.md`](video/STORYBOARD.md) (`npm run studio`, `npm
 
 - **Textes de marque, contact, mentions légales, objectif, zones, médias** : `src/config/site.ts`.
 - **Nombre d’inscrits affiché** : `waitlist.verifiedSignups` dans `src/config/site.ts`. Laisser `null` tant que le chiffre n’est pas vérifié ; seul l’objectif de 10 000 est alors affiché, comme objectif.
-- **Sections de la page** : `src/sections/` (une section par fichier). FAQ : `src/sections/Faq.tsx`.
-- **Écrans de l’application et données de démo** : `shared/screens.tsx`, `shared/demo.ts` (modifie à la fois le site et le film).
+- **Page d’accueil en trois temps** : `src/sections/Hero.tsx` (film), `src/sections/Story.tsx` (problème puis solution, 7 écrans au défilement), `src/sections/Join.tsx` (inscription). FAQ : `src/content/faq.ts`, affichée dans une fenêtre (`src/components/Dialogs.tsx`), comme le contact partenaires.
+- **Écrans de l’application et données de démo** : `shared/screens.tsx`, `shared/coach.tsx` (coach IA, contexte, pop-up de verdict, notifications), `shared/demo.ts` (modifie à la fois le site et le film).
 - **Typographie française** : `node scripts/typo-fr.cjs src/**/*.tsx` ajoute les espaces insécables avant `: ; ? !`.
 
 ## Waitlist : fonctionnement
@@ -82,5 +82,5 @@ npx wrangler d1 execute vtc-copilot-ai-waitlist --remote --command "SELECT email
 - 10 000 chauffeurs est présenté comme un **objectif** ; aucun compteur n’est affiché sans chiffre réel vérifié.
 - Aucun témoignage, aucune statistique, aucun logo de partenaire inventés.
 - Aucune intégration Uber, Bolt ou Heetch n’est présentée comme opérationnelle ; aucune disponibilité sur les stores n’est annoncée.
-- Toutes les données de démonstration sont signalées comme fictives, à l’écran comme dans le film.
+- Toutes les données de démonstration sont signalées comme fictives, à l’écran comme dans le film. Les écrans « contexte » (trafic, météo, vols) et le pop-up au-dessus d’une proposition sont présentés comme un concept : aucune donnée réelle n’est branchée et la proposition affichée est une interface générique, sans marque de plateforme.
 - Les mentions légales affichent « À compléter » tant que l’éditeur n’est pas renseigné dans la configuration.

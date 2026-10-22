@@ -1,53 +1,77 @@
-import { Phone } from "../../shared/Phone";
-import { OfferScreen } from "../../shared/screens";
+import { Navigation, TrendingDown, Undo2 } from "lucide-react";
+import { Chip, NotifCard, VerdictPill } from "../components/Bubbles";
 import { FilmPlayer } from "../components/FilmPlayer";
-import { ButtonLink, Container, useProgress } from "../components/ui";
+import { ButtonLink, Container, Pop } from "../components/ui";
+import { fmtEUR } from "../../shared/brand";
+import { RIDE_MAIN, RIDE_TRAP, estimate } from "../../shared/demo";
 
+const MAIN = estimate(RIDE_MAIN);
+const TRAP = estimate(RIDE_TRAP);
+
+const WORDS = ["Chaque", "course", "compte."];
+
+/** Phase 1 : le film, entouré de notifications qui surgissent. */
 export function Hero() {
-  const { ref, p } = useProgress({ duration: 4 });
+  const word = (i: number) => ({ className: "animate-rise", style: { animationDelay: `${0.1 + i * 0.09}s` } });
 
   return (
-    <section aria-labelledby="hero-title" className="relative overflow-hidden pt-[calc(72px+env(safe-area-inset-top))]">
-      <div aria-hidden className="pointer-events-none absolute inset-0 grid-bg [mask-image:radial-gradient(70%_60%_at_50%_20%,black,transparent)]" />
-      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 h-[720px] w-[1200px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(124,92,255,0.35),transparent)]" />
-
-      <Container className="relative pt-12 sm:pt-20">
-        <div className="grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-end lg:gap-14">
-          <h1 id="hero-title" className="display text-[clamp(2.5rem,6.2vw,4.7rem)]">
-            Chaque course compte. Voyez ce qu’elle vaut vraiment.
-          </h1>
-          <div className="lg:pb-3">
-            <p className="max-w-[46ch] text-lg leading-relaxed text-muted sm:text-xl">
-              <span translate="no">VTC Copilot AI</span> analyse chaque proposition de course (prix, approche, durée, destination et vos coûts réels) pour vous donner une estimation claire de sa rentabilité.{" "}
-              <span className="text-text">La décision reste la vôtre.</span>
-            </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="#waitlist">Rejoindre la waitlist</ButtonLink>
-              <ButtonLink href="#demo" variant="ghost">
-                Découvrir l’application
-              </ButtonLink>
-            </div>
-            <p className="mt-4 text-sm text-muted">Inscription gratuite · Projet en préparation pour l’<span className="whitespace-nowrap">Île-de-France</span></p>
-          </div>
+    <section id="film" aria-labelledby="hero-title" className="relative overflow-x-clip pb-16 pt-[calc(64px+2.75rem+env(safe-area-inset-top))] sm:pb-24 sm:pt-[calc(64px+4.5rem)]">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[620px] bg-[radial-gradient(50%_60%_at_50%_0%,rgba(110,75,255,0.10),transparent_75%)]" />
+      <Container className="relative text-center">
+        <span className="animate-pop-in inline-block">
+          <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-medium text-muted">
+            <span className="size-1.5 rounded-full bg-go" /> Bientôt en <span className="whitespace-nowrap">Île-de-France</span>
+          </span>
+        </span>
+        <h1 id="hero-title" className="display mx-auto mt-6 text-[clamp(3rem,9vw,6.6rem)]">
+          {WORDS.map((w, i) => (
+            <span key={w} className={`inline-block ${word(i).className}`} style={word(i).style}>
+              {w}
+              {i < WORDS.length - 1 && " "}
+            </span>
+          ))}
+        </h1>
+        <p className="mx-auto mt-5 max-w-[30ch] text-[clamp(1.1rem,2.2vw,1.4rem)] leading-snug text-muted animate-rise" style={word(3).style}>
+          Voyez ce qu’une course rapporte vraiment, avant de l’accepter.
+        </p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row animate-rise" style={word(4).style}>
+          <ButtonLink href="#waitlist">Rejoindre la waitlist</ButtonLink>
+          <ButtonLink href="#solution" variant="ghost">
+            Découvrir l’application
+          </ButtonLink>
         </div>
-
-        <div className="relative mt-12 sm:mt-16 lg:mr-[150px]">
-          <FilmPlayer />
-          <div ref={ref} className="pointer-events-none absolute -right-[150px] -bottom-16 hidden lg:block" style={{ rotate: "4deg" }}>
-            <Phone width={290} glow="#38B6FF" label="Aperçu de l’application : une nouvelle proposition de course arrive et le copilote l’analyse (données fictives)">
-              <OfferScreen p={p} />
-            </Phone>
-          </div>
-        </div>
-        <details className="mt-5 max-w-3xl text-sm text-muted lg:mt-8">
-          <summary className="cursor-pointer select-none rounded-md py-1 hover:text-text">Description textuelle du film</summary>
-          <p id="film-description" className="mt-2 leading-relaxed">
-            Des propositions de courses s’affichent en rafale : « Une course à accepter ? ». Une course à 32 € paraît intéressante, puis l’approche, la durée, le retour à vide et les coûts du véhicule ramènent son
-            gain estimé à environ 6 € de l’heure : « Le bon prix ne suffit pas. ». L’interface de VTC Copilot AI rassemble ces informations et classe la course : potentiellement rentable, à analyser ou
-            potentiellement peu rentable. « Votre activité. Vos coûts. Vos décisions. » Le film se termine sur le logo et l’invitation à rejoindre la waitlist. Toutes les données sont fictives.
-          </p>
-        </details>
       </Container>
+
+      <Container className="relative mt-14 max-w-[1080px] sm:mt-20">
+        <div className="animate-film-in">
+          <FilmPlayer />
+        </div>
+
+        {/* Pop-ups autour du film (exemples fictifs) */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <Pop delay={1.1} rotate={-4} float className="absolute -left-2 -top-10 sm:-left-10 lg:-left-20">
+            <NotifCard price={fmtEUR(RIDE_TRAP.price)} route={`${RIDE_TRAP.from} → ${RIDE_TRAP.to}`} />
+          </Pop>
+          <Pop delay={1.6} rotate={3} float className="absolute -right-2 top-[14%] hidden sm:block lg:-right-16">
+            <Chip tone="stop" icon={<TrendingDown size={16} aria-hidden />} label="Net estimé" value={`≈ ${fmtEUR(TRAP.hourly, 0)}/h`} />
+          </Pop>
+          <Pop delay={2.0} rotate={-2} float className="absolute -left-14 bottom-[22%] hidden lg:block">
+            <Chip tone="maybe" icon={<Undo2 size={16} aria-hidden />} label="Retour à vide" value={`${RIDE_TRAP.returnMin} min`} />
+          </Pop>
+          <Pop delay={2.3} rotate={-3} float className="absolute -left-8 bottom-[48%] hidden xl:block">
+            <Chip tone="violet" icon={<Navigation size={16} aria-hidden />} label="Approche" value={`${RIDE_TRAP.approachMin} min`} />
+          </Pop>
+          <Pop delay={2.7} rotate={2} float className="absolute -bottom-7 -right-1 sm:-right-8 lg:-right-14">
+            <VerdictPill verdict="green" value={`${fmtEUR(MAIN.hourly)}/h`} />
+          </Pop>
+        </div>
+      </Container>
+      <p className="mt-12 text-center text-[13px] text-muted">Film de 20 s, sans son · Exemples illustratifs, données fictives</p>
+      <p id="film-description" className="sr-only">
+        Le film montre un chauffeur qui reçoit des propositions de course en rafale, puis une course à 32 € qui, une fois l’approche, le retour à vide et les coûts du véhicule comptés,
+        ne rapporte qu’environ 6 € de l’heure. Le copilote analyse ensuite une autre course et affiche un verdict vert, orange ou rouge. Le chauffeur garde la décision. Le film se termine sur
+        le logo VTC Copilot AI et l’invitation à rejoindre la waitlist.
+      </p>
     </section>
   );
 }

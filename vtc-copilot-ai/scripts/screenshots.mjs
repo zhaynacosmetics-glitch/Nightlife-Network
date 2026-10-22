@@ -1,4 +1,4 @@
-// Captures de validation (pleine page) sur plusieurs tailles d'écran.
+// Captures de validation sur plusieurs tailles d'écran (animations jouées).
 // Usage : node scripts/screenshots.mjs [baseURL] [dossier]
 /* global document, window */
 import { chromium } from "@playwright/test";
@@ -9,64 +9,70 @@ const out = process.argv[3] ?? "docs/screenshots";
 mkdirSync(out, { recursive: true });
 
 const VIEWPORTS = [
-  { name: "mobile-etroit-320", width: 320, height: 640, mobile: true },
-  { name: "mobile-390", width: 390, height: 844, mobile: true },
-  { name: "tablette-820", width: 820, height: 1180, mobile: true },
-  { name: "laptop-1366", width: 1366, height: 800, mobile: false },
-  { name: "grand-ecran-1920", width: 1920, height: 1080, mobile: false },
+  { name: "mobile-etroit-320", width: 320, height: 640, mobile: true, steps: [4] },
+  { name: "mobile-390", width: 390, height: 844, mobile: true, steps: [0, 1, 2, 3, 4, 5, 6] },
+  { name: "tablette-820", width: 820, height: 1180, mobile: true, steps: [4] },
+  { name: "laptop-1366", width: 1366, height: 800, mobile: false, steps: [0, 1, 2, 3, 4, 5, 6] },
+  { name: "grand-ecran-1920", width: 1920, height: 1080, mobile: false, steps: [4] },
 ];
+const LONG = new Set([4, 6]); // écrans à animation longue
 const only = process.env.ONLY?.split(",");
 
 const browser = await chromium.launch();
 for (const vp of VIEWPORTS.filter((v) => !only || only.includes(v.name))) {
-  const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: 1, isMobile: vp.mobile, hasTouch: vp.mobile, reducedMotion: "reduce" });
+  const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: 1, isMobile: vp.mobile, hasTouch: vp.mobile });
   const page = await ctx.newPage();
   await page.goto(base + "/", { waitUntil: "networkidle" });
-  await page.screenshot({ path: `${out}/${vp.name}-hero.jpg`, quality: 80 });
-  // Fait défiler pour déclencher les apparitions, puis capture pleine page.
-  await page.evaluate(async () => {
-    for (let y = 0; y < document.body.scrollHeight; y += 500) {
-      window.scrollTo(0, y);
-      await new Promise((r) => setTimeout(r, 60));
-    }
-    window.scrollTo(0, 0);
+  await page.waitForTimeout(3500);
+  await page.screenshot({ path: `${out}/${vp.name}-1-film.jpg`, quality: 80 });
+
+  // Phase 2 : chaque écran du récit, au milieu de son étape de défilement.
+  const sec = await page.evaluate(() => {
+    const e = document.getElementById("solution");
+    return { top: e.getBoundingClientRect().top + window.scrollY, h: e.offsetHeight };
   });
-  await page.waitForTimeout(400);
-  await page.screenshot({ path: `${out}/${vp.name}-page.jpg`, fullPage: true, quality: 72 });
-  // Sections clés
-  for (const id of ["waitlist", "faq"]) {
-    await page.locator(`#${id}`).screenshot({ path: `${out}/${vp.name}-section-${id}.jpg`, quality: 80 });
+  for (const i of vp.steps) {
+    const y = sec.top + (sec.h - vp.height) * ((i + 0.5) / 7);
+    await page.evaluate((y) => window.scrollTo(0, y), y);
+    await page.waitForTimeout(LONG.has(i) ? 7000 : 3200);
+    await page.screenshot({ path: `${out}/${vp.name}-2-ecran-${i + 1}.jpg`, quality: 80 });
   }
-  await page.locator("footer").screenshot({ path: `${out}/${vp.name}-footer.jpg`, quality: 80 });
+
+  // Phase 3 : l'inscription.
+  await page.locator("#waitlist").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1500);
+  await page.locator("#waitlist").screenshot({ path: `${out}/${vp.name}-3-inscription.jpg`, quality: 80 });
+  await page.locator("footer").screenshot({ path: `${out}/${vp.name}-pied-de-page.jpg`, quality: 80 });
   console.log("✓", vp.name);
   await ctx.close();
 }
 
-// Les quatre diapositives de la démonstration, animations jouées (desktop et mobile).
-for (const vp of [VIEWPORTS[1], VIEWPORTS[3]]) {
+// Fenêtres et états du formulaire (mobile et laptop).
+for (const vp of [VIEWPORTS[1], VIEWPORTS[3]].filter((v) => !only || only.includes(v.name))) {
   const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, isMobile: vp.mobile, hasTouch: vp.mobile });
   const page = await ctx.newPage();
-  await page.goto(base + "/#demo", { waitUntil: "networkidle" });
-  const region = page.getByRole("region", { name: "Démonstration de l’application" });
-  await region.scrollIntoViewIfNeeded();
-  const pause = region.getByRole("button", { name: "Mettre en pause" });
-  if (await pause.count()) await pause.click();
-  for (let i = 1; i <= 4; i++) {
-    await region.getByRole("tab", { name: new RegExp(`Étape ${i}`) }).click();
-    await page.waitForTimeout(3800);
-    await region.screenshot({ path: `${out}/${vp.name}-demo-slide-${i}.jpg`, quality: 85 });
-  }
-  // Confirmation d'inscription (adresse de test unique)
+  await page.goto(base + "/#faq", { waitUntil: "networkidle" });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${out}/${vp.name}-fenetre-faq.jpg`, quality: 80 });
+  await page.keyboard.press("Escape");
+  await page.goto(base + "/#partenaires", { waitUntil: "networkidle" });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${out}/${vp.name}-fenetre-partenaires.jpg`, quality: 80 });
+  await page.keyboard.press("Escape");
+
   await page.goto(base + "/#waitlist", { waitUntil: "networkidle" });
   await page.waitForTimeout(1800);
-  const form = page.locator("form[aria-labelledby=waitlist-form-title]");
+  const form = page.locator('form[aria-label="Rejoindre la waitlist"]');
   await form.getByRole("button", { name: "Rejoindre la waitlist" }).click();
-  await form.screenshot({ path: `${out}/${vp.name}-waitlist-erreurs.jpg`, quality: 85 });
+  await form.screenshot({ path: `${out}/${vp.name}-inscription-erreurs.jpg`, quality: 85 });
   await form.getByLabel("Prénom").fill("Capture");
   await form.getByLabel("Adresse e-mail").fill(`capture+${Date.now()}@exemple.fr`);
-  await form.getByLabel(/J’accepte de recevoir/).check();
+  await form.getByLabel(/Je veux être informé/).check();
   await form.getByRole("button", { name: "Rejoindre la waitlist" }).click();
-  await page.getByRole("status").filter({ hasText: "Merci" }).screenshot({ path: `${out}/${vp.name}-waitlist-confirmation.jpg`, quality: 85 });
+  const done = page.getByRole("status").filter({ hasText: "Merci" });
+  await done.waitFor();
+  await page.waitForTimeout(1200);
+  await done.screenshot({ path: `${out}/${vp.name}-inscription-confirmation.jpg`, quality: 85 });
   await ctx.close();
 }
 await browser.close();

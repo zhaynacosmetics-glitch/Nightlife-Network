@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { renderToString } from "react-dom/server";
 import { App } from "./App";
 import { ROUTES } from "./routes";
-import { FAQ } from "./sections/Faq";
+import { FAQ } from "./content/faq";
 import { site } from "./config/site";
 
 export { ROUTES, site, FAQ };

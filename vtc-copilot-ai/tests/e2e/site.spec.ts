@@ -21,7 +21,8 @@ test.describe("pages et SEO", () => {
 
   test("le HTML pré-rendu contient le contenu (sans JavaScript)", async ({ request }) => {
     const html = await (await request.get("/")).text();
-    expect(html).toContain("Chaque course compte.");
+    expect(html).toMatch(/Chaque.{0,200}course.{0,200}compte\./s);
+    expect(html).toContain("Parlez à votre coach.");
     expect(html).toContain("Rejoindre la waitlist");
     expect(html).toContain('"@type":"FAQPage"');
     expect(html).toContain('lang="fr"');
@@ -83,15 +84,23 @@ test.describe("accessibilité", () => {
 });
 
 test.describe("navigation", () => {
-  test("menu mobile", async ({ page, isMobile }) => {
-    test.skip(!isMobile, "mobile uniquement");
+  test("FAQ et partenaires s'ouvrent en fenêtre", async ({ page }) => {
     await page.goto("/");
-    const btn = page.getByRole("button", { name: "Ouvrir le menu" });
-    await btn.click();
-    await expect(page.locator("#menu-mobile")).toBeVisible();
-    await page.locator("#menu-mobile").getByRole("link", { name: "FAQ" }).click();
-    await expect(page.locator("#menu-mobile")).toBeHidden();
-    await expect(page).toHaveURL(/#faq$/);
+    await page.locator("footer").getByRole("link", { name: "FAQ" }).click();
+    const faq = page.getByRole("dialog", { name: "Questions fréquentes" });
+    await expect(faq).toBeVisible();
+    await faq.getByText("L’application est-elle déjà disponible ?").click();
+    await expect(faq.getByText(/n’est publiée ni sur l’App Store/)).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(faq).toBeHidden();
+    // le lien rouvre la fenêtre après fermeture
+    await page.locator("footer").getByRole("link", { name: "FAQ" }).click();
+    await expect(faq).toBeVisible();
+    await faq.getByRole("button", { name: "Fermer" }).click();
+    await expect(faq).toBeHidden();
+    await page.goto("/mentions-legales/");
+    await page.goto("/#partenaires");
+    await expect(page.getByRole("dialog", { name: "Partenaires et contact" })).toBeVisible();
   });
 
   test("lien d'évitement au clavier", async ({ page, isMobile }) => {
@@ -121,40 +130,34 @@ test.describe("film", () => {
   });
 });
 
-test.describe("démonstration", () => {
-  test("boutons, onglets et clavier", async ({ page }) => {
-    await page.goto("/#demo");
-    const region = page.getByRole("region", { name: "Démonstration de l’application" });
-    await expect(region.getByRole("group")).toHaveAttribute("aria-label", /^1 sur 4/);
-    await region.getByRole("button", { name: "Diapositive suivante" }).click();
-    await expect(region.getByRole("group")).toHaveAttribute("aria-label", /^2 sur 4/);
-    await region.getByRole("tab", { name: /Étape 4/ }).click();
-    await expect(region.getByRole("group")).toHaveAttribute("aria-label", /^4 sur 4/);
-    await region.getByRole("button", { name: "Diapositive suivante" }).click();
-    await expect(region.getByRole("group")).toHaveAttribute("aria-label", /^1 sur 4/);
-    await region.focus();
-    await page.keyboard.press("ArrowLeft");
-    await expect(region.getByRole("group")).toHaveAttribute("aria-label", /^4 sur 4/);
-  });
+test.describe("problème puis solution", () => {
+  const steps = (page: import("@playwright/test").Page) => page.locator("#solution").getByRole("button", { name: /^Étape/ });
 
-  test("lecture automatique interruptible", async ({ page }) => {
+  test("le défilement fait avancer les 7 écrans", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#demo").scrollIntoViewIfNeeded();
-    const region = page.getByRole("region", { name: "Démonstration de l’application" });
-    await region.scrollIntoViewIfNeeded();
-    const pause = region.getByRole("button", { name: "Mettre en pause" });
-    await expect(pause).toBeVisible();
-    await expect(region.getByRole("group")).toHaveAttribute("aria-label", /^2 sur 4/, { timeout: 9000 });
-    await pause.click();
-    await expect(region.getByRole("button", { name: "Lecture auto" })).toBeVisible();
-    await page.waitForTimeout(7000);
-    await expect(region.getByRole("group")).toHaveAttribute("aria-label", /^2 sur 4/);
+    await expect(steps(page)).toHaveCount(7);
+    const phone = page.locator("#solution").getByRole("img", { name: /^Démonstration, écran/ });
+    await steps(page).nth(2).click();
+    await expect(phone).toHaveAttribute("aria-label", /écran 3 sur 7 : Profil avec le coach IA/, { timeout: 8000 });
+    await expect(steps(page).nth(2)).toHaveAttribute("aria-current", "step");
+    await steps(page).nth(4).click();
+    await expect(phone).toHaveAttribute("aria-label", /écran 5 sur 7 : Pop-up de verdict/, { timeout: 8000 });
+    await steps(page).nth(6).click();
+    await expect(phone).toHaveAttribute("aria-label", /écran 7 sur 7 : Notifications du coach/, { timeout: 8000 });
   });
 
-  test("animations réduites : pas de lecture automatique", async ({ page }) => {
+  test("les étapes sont lisibles par les lecteurs d'écran", async ({ page }) => {
+    await page.goto("/");
+    const list = page.locator("#solution ol");
+    await expect(list.locator("li")).toHaveCount(7);
+    await expect(list).toContainText("Parlez à votre coach.");
+    await expect(list).toContainText("Chaque course a sa note.");
+  });
+
+  test("animations réduites : écran affiché dans son état final", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/#demo");
-    const region = page.getByRole("region", { name: "Démonstration de l’application" });
-    await expect(region.getByRole("button", { name: "Mettre en pause" })).toHaveCount(0);
+    await page.goto("/");
+    await steps(page).nth(4).click();
+    await expect(page.locator("#solution").getByText("Course moyenne").first()).toBeVisible();
   });
 });

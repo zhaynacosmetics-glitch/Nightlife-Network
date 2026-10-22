@@ -9,7 +9,7 @@ test.describe("waitlist", () => {
   });
 
   test("erreurs de validation côté client", async ({ page }) => {
-    const form = page.locator("form[aria-labelledby=waitlist-form-title]");
+    const form = page.locator('form[aria-label="Rejoindre la waitlist"]');
     await form.getByRole("button", { name: "Rejoindre la waitlist" }).click();
     await expect(form.getByText("Indiquez votre prénom.")).toBeVisible();
     await expect(form.getByText("Indiquez votre adresse e-mail.")).toBeVisible();
@@ -22,11 +22,11 @@ test.describe("waitlist", () => {
 
   test("inscription, doublon puis suppression", async ({ page }) => {
     const email = unique();
-    const form = page.locator("form[aria-labelledby=waitlist-form-title]");
+    const form = page.locator('form[aria-label="Rejoindre la waitlist"]');
     await form.getByLabel("Prénom").fill("Karim");
     await form.getByLabel("Adresse e-mail").fill(`  ${email.toUpperCase()} `);
     await form.getByLabel(/Zone d’activité/).selectOption("93");
-    await form.getByLabel(/J’accepte de recevoir/).check();
+    await form.getByLabel(/Je veux être informé/).check();
     await form.getByRole("button", { name: "Rejoindre la waitlist" }).click();
     const done = page.getByRole("status").filter({ hasText: "Merci Karim" });
     await expect(done).toBeVisible();
@@ -39,7 +39,7 @@ test.describe("waitlist", () => {
     await page.waitForTimeout(1700);
     await form.getByLabel("Prénom").fill("Karim");
     await form.getByLabel("Adresse e-mail").fill(email);
-    await form.getByLabel(/J’accepte de recevoir/).check();
+    await form.getByLabel(/Je veux être informé/).check();
     await form.getByRole("button", { name: "Rejoindre la waitlist" }).click();
     await expect(page.getByRole("status").filter({ hasText: "déjà inscrit" })).toBeVisible();
 

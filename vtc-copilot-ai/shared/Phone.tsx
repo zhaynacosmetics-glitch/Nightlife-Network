@@ -35,8 +35,8 @@ export function Phone({ width, children, style, glow = C.violet, label }: PhoneP
           transform: `scale(${scale})`,
           transformOrigin: "0 0",
           borderRadius: 64,
-          background: "linear-gradient(150deg, #2B3566 0%, #121A3C 38%, #0B1129 70%, #27305C 100%)",
-          boxShadow: `0 0 0 1.5px rgba(255,255,255,0.10) inset, 0 40px 90px -30px ${glow}88, 0 30px 60px -20px rgba(0,0,0,0.7)`,
+          background: "linear-gradient(150deg, #3B3E46 0%, #1D1F24 38%, #121317 70%, #30333A 100%)",
+          boxShadow: `0 0 0 1.5px rgba(255,255,255,0.12) inset, 0 50px 90px -40px ${glow}66, 0 30px 60px -28px rgba(15,18,30,0.45)`,
         }}
       >
         <div
@@ -48,7 +48,7 @@ export function Phone({ width, children, style, glow = C.violet, label }: PhoneP
             height: SCREEN_H,
             borderRadius: 53,
             overflow: "hidden",
-            background: C.night,
+            background: C.abyss,
             fontFamily: FONT,
             color: C.text,
             // isole le rendu de l'écran (perf + évite les débordements)

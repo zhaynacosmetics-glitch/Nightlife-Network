@@ -31,7 +31,7 @@ export function LogoMark({ size = 40, draw = 1, id = "vca", title }: MarkProps) 
           <stop offset="1" stopColor={C.blue} />
         </linearGradient>
       </defs>
-      <path d={ARC} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={4.6} strokeLinecap="round" />
+      <path d={ARC} fill="none" stroke={C.line} strokeWidth={4.6} strokeLinecap="round" />
       <path
         d={ARC}
         fill="none"
@@ -49,7 +49,7 @@ export function LogoMark({ size = 40, draw = 1, id = "vca", title }: MarkProps) 
           opacity: needle > 0 ? 1 : 0,
         }}
       >
-        <path d="M24 12.5 L30 30 L24 26.6 L18 30 Z" fill="#fff" strokeLinejoin="round" />
+        <path d="M24 12.5 L30 30 L24 26.6 L18 30 Z" fill={C.ink} strokeLinejoin="round" />
       </g>
       <circle cx="36.02" cy="38.02" r={2.6 * arc} fill={C.green} />
     </svg>
@@ -70,15 +70,14 @@ export function Logo({ size = 34, color = C.text, draw = 1, id }: LogoProps) {
       <span
         style={{
           fontSize: size * 0.56,
-          fontWeight: 760,
-          fontStretch: "125%",
-          letterSpacing: "-0.01em",
+          fontWeight: 650,
+          letterSpacing: "-0.035em",
           color,
           whiteSpace: "nowrap",
           lineHeight: 1,
         }}
       >
-        VTC Copilot <span style={{ fontWeight: 420 }}>AI</span>
+        VTC Copilot <span style={{ fontWeight: 400, color: C.muted }}>AI</span>
       </span>
     </span>
   );

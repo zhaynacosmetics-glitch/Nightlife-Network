@@ -24,9 +24,9 @@ const MAIN = estimate(RIDE_MAIN);
 
 /* ---------------------------------- primitives ---------------------------------- */
 
-const tabular: CSSProperties = { fontVariantNumeric: "tabular-nums" };
+export const tabular: CSSProperties = { fontVariantNumeric: "tabular-nums" };
 
-function StatusBar() {
+export function StatusBar() {
   return (
     <div
       style={{
@@ -66,7 +66,7 @@ export function DemoTag({ style }: { style?: CSSProperties }) {
         padding: "4px 9px",
         borderRadius: 999,
         border: `1px solid ${C.line}`,
-        background: "rgba(255,255,255,0.03)",
+        background: "rgba(255,255,255,0.7)",
         whiteSpace: "nowrap",
         ...style,
       }}
@@ -77,7 +77,7 @@ export function DemoTag({ style }: { style?: CSSProperties }) {
   );
 }
 
-function Header({ title, back = false }: { title: string; back?: boolean }) {
+export function Header({ title, back = false }: { title: string; back?: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 22px 14px" }}>
       {back && (
@@ -95,13 +95,13 @@ function Header({ title, back = false }: { title: string; back?: boolean }) {
           <ArrowLeft size={17} aria-hidden />
         </span>
       )}
-      <span style={{ fontSize: 19, fontWeight: 700, fontStretch: "112%", letterSpacing: "-0.01em" }}>{title}</span>
+      <span style={{ fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em" }}>{title}</span>
       <DemoTag style={{ marginLeft: "auto" }} />
     </div>
   );
 }
 
-function Card({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+export function Card({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
     <div
       style={{
@@ -117,7 +117,7 @@ function Card({ children, style }: { children: ReactNode; style?: CSSProperties 
   );
 }
 
-function appear(t: number, dy = 14): CSSProperties {
+export function appear(t: number, dy = 14): CSSProperties {
   const e = easeOut(t);
   return { opacity: e, transform: `translateY(${(1 - e) * dy}px)` };
 }
@@ -133,7 +133,7 @@ function Row({ icon, label, value, t, accent }: { icon: ReactNode; label: string
           borderRadius: 11,
           display: "grid",
           placeItems: "center",
-          background: "rgba(124,92,255,0.14)",
+          background: "rgba(110,75,255,0.09)",
           color: accent ?? C.violetSoft,
         }}
       >
@@ -149,7 +149,7 @@ function CityLines({ opacity = 1 }: { opacity?: number }) {
   // trame de rues stylisée, purement décorative
   return (
     <svg width="390" height="844" viewBox="0 0 390 844" style={{ position: "absolute", inset: 0, opacity }} aria-hidden>
-      <g stroke="rgba(130,150,255,0.09)" strokeWidth="1.2" fill="none">
+      <g stroke="rgba(20,30,60,0.07)" strokeWidth="1.2" fill="none">
         <path d="M-20 160 C 80 140 160 210 260 190 S 380 120 420 140" />
         <path d="M-20 300 C 90 330 170 260 250 300 S 360 380 420 350" />
         <path d="M-20 470 C 120 430 200 520 300 480 S 380 440 420 460" />
@@ -158,7 +158,7 @@ function CityLines({ opacity = 1 }: { opacity?: number }) {
         <path d="M190 -20 C 170 140 230 300 200 460 S 230 700 190 880" />
         <path d="M320 -20 C 300 160 350 330 310 500 S 340 720 320 880" />
       </g>
-      <path d="M-20 560 C 80 520 140 600 220 560 S 340 500 420 540" stroke="rgba(56,182,255,0.16)" strokeWidth="9" fill="none" />
+      <path d="M-20 560 C 80 520 140 600 220 560 S 340 500 420 540" stroke="rgba(46,139,255,0.10)" strokeWidth="9" fill="none" />
     </svg>
   );
 }
@@ -174,7 +174,7 @@ export function OfferScreen({ p, ride = RIDE_MAIN }: { p: number; ride?: Ride })
   const pulse = 0.5 + 0.5 * Math.sin(p * Math.PI * 6);
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(120% 70% at 50% 0%, #142057 0%, ${C.night} 60%)` }}>
+    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(120% 70% at 50% 0%, #ECE8FF 0%, ${C.abyss} 60%)` }}>
       <CityLines />
       <StatusBar />
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "2px 22px", fontSize: 14, color: C.muted }}>
@@ -199,7 +199,7 @@ export function OfferScreen({ p, ride = RIDE_MAIN }: { p: number; ride?: Ride })
           opacity: seg(p, 0.02, 0.1),
         }}
       >
-        <Card style={{ padding: 18, boxShadow: `0 24px 60px -24px ${C.violet}aa`, borderColor: C.lineStrong }}>
+        <Card style={{ padding: 18, boxShadow: `0 24px 50px -24px ${C.violet}66`, borderColor: C.lineStrong }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span
               style={{
@@ -237,7 +237,7 @@ export function OfferScreen({ p, ride = RIDE_MAIN }: { p: number; ride?: Ride })
           </div>
 
           <div style={{ marginTop: 14, display: "flex", alignItems: "baseline", gap: 10 }}>
-            <span style={{ fontSize: 46, fontWeight: 760, fontStretch: "118%", letterSpacing: "-0.02em", ...tabular }}>
+            <span style={{ fontSize: 46, fontWeight: 760, letterSpacing: "-0.02em", ...tabular }}>
               {fmtEUR(ride.price)}
             </span>
             <span style={{ fontSize: 14, color: C.muted }}>prix proposé</span>
@@ -294,7 +294,7 @@ export function AnalysisScreen({ p }: { p: number }) {
   const v = VERDICT[MAIN.verdict];
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, #0D1640 0%, ${C.night} 55%)` }}>
+    <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, #EEEBFF 0%, ${C.abyss} 55%)` }}>
       <StatusBar />
       <Header title="Analyse" back />
 
@@ -306,7 +306,7 @@ export function AnalysisScreen({ p }: { p: number }) {
               {ride.from} → Orly
             </span>
           </div>
-          <div style={{ fontSize: 38, fontWeight: 760, fontStretch: "118%", marginTop: 4, ...tabular }}>{fmtEUR(ride.price)}</div>
+          <div style={{ fontSize: 38, fontWeight: 760, marginTop: 4, ...tabular }}>{fmtEUR(ride.price)}</div>
 
           {/* décomposition du prix */}
           <div style={{ marginTop: 14, height: 14, borderRadius: 8, background: C.line, display: "flex", overflow: "hidden" }}>
@@ -336,10 +336,22 @@ export function AnalysisScreen({ p }: { p: number }) {
           <Row t={seg(p, 0.34, 0.48)} icon={<Wallet size={17} aria-hidden />} label="Estimation nette" value={fmtEUR(MAIN.net)} />
         </Card>
 
+        <Card style={{ padding: "12px 16px", ...appear(seg(p, 0.36, 0.5)) }}>
+          <div style={{ fontSize: 13.5, color: C.muted }}>Selon votre profil</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+            {["Aéroport", "Nuit", "Van : bagages OK", "Trafic fluide"].map((c, i) => (
+              <span key={c} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, fontWeight: 600, padding: "5px 10px", borderRadius: 99, background: `${C.green}14`, color: C.ink, ...appear(seg(p, 0.42 + i * 0.05, 0.52 + i * 0.05), 6) }}>
+                <Check size={13} strokeWidth={3} color={C.green} aria-hidden />
+                {c}
+              </span>
+            ))}
+          </div>
+        </Card>
+
         <Card style={{ display: "flex", alignItems: "center", gap: 14, borderColor: `${v.color}55`, ...appear(seg(p, 0.45, 0.6)) }}>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 13.5, color: C.muted }}>Taux horaire net estimé</div>
-            <div style={{ fontSize: 34, fontWeight: 760, fontStretch: "115%", color: v.color, ...tabular }}>
+            <div style={{ fontSize: 34, fontWeight: 760, color: v.color, ...tabular }}>
               {fmtEUR(MAIN.hourly * count)}
               <span style={{ fontSize: 17, fontWeight: 600 }}>/h</span>
             </div>
@@ -387,11 +399,11 @@ export function MapScreen({ p }: { p: number }) {
   ];
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: C.night }}>
+    <div style={{ position: "absolute", inset: 0, background: C.abyss }}>
       <StatusBar />
       <Header title="Destination" back />
 
-      <div style={{ position: "relative", margin: "0 16px", height: 452, borderRadius: 24, overflow: "hidden", border: `1px solid ${C.line}`, background: "#081032" }}>
+      <div style={{ position: "relative", margin: "0 16px", height: 452, borderRadius: 24, overflow: "hidden", border: `1px solid ${C.line}`, background: "#EEF1F6" }}>
         <svg width="358" height="452" viewBox="0 0 390 480" aria-hidden style={{ display: "block", width: "100%", height: "100%" }}>
           <defs>
             <linearGradient id="routeG" x1="0" y1="0" x2="0" y2="1">
@@ -399,30 +411,30 @@ export function MapScreen({ p }: { p: number }) {
               <stop offset="1" stopColor={C.violet} />
             </linearGradient>
             <radialGradient id="mapGlow" cx="0.5" cy="0.45" r="0.6">
-              <stop offset="0" stopColor="#1A2A6E" />
-              <stop offset="1" stopColor="#081032" />
+              <stop offset="0" stopColor="#FFFFFF" />
+              <stop offset="1" stopColor="#EAEEF5" />
             </radialGradient>
           </defs>
           <rect width="390" height="480" fill="url(#mapGlow)" />
           {/* Île-de-France stylisée : grande couronne, A86, périphérique */}
           <path
             d="M40 170 C 30 90 120 30 210 34 S 370 80 372 190 S 330 420 220 448 S 50 420 34 320 Z"
-            fill="rgba(124,92,255,0.07)"
-            stroke="rgba(160,172,255,0.30)"
+            fill="rgba(110,75,255,0.06)"
+            stroke="rgba(40,50,90,0.25)"
             strokeWidth="1.4"
             strokeDasharray="4 5"
           />
-          <ellipse cx="206" cy="232" rx="104" ry="92" fill="none" stroke="rgba(160,172,255,0.20)" strokeWidth="1.2" />
-          <ellipse cx="204" cy="214" rx="44" ry="34" fill="rgba(56,182,255,0.10)" stroke="rgba(160,172,255,0.45)" strokeWidth="1.6" />
+          <ellipse cx="206" cy="232" rx="104" ry="92" fill="none" stroke="rgba(40,50,90,0.14)" strokeWidth="1.2" />
+          <ellipse cx="204" cy="214" rx="44" ry="34" fill="rgba(46,139,255,0.08)" stroke="rgba(40,50,90,0.3)" strokeWidth="1.6" />
           {/* la Seine */}
-          <path d="M20 160 C 90 200 120 140 170 210 S 250 230 268 280 S 330 330 380 340" stroke="rgba(56,182,255,0.35)" strokeWidth="5" fill="none" strokeLinecap="round" />
+          <path d="M20 160 C 90 200 120 140 170 210 S 250 230 268 280 S 330 330 380 340" stroke="rgba(46,139,255,0.28)" strokeWidth="5" fill="none" strokeLinecap="round" />
           {dept.map(([n, x, y]) => (
-            <text key={n} x={x} y={y} fontSize="13" fontWeight="700" fill="rgba(234,237,255,0.38)" textAnchor="middle">
+            <text key={n} x={x} y={y} fontSize="13" fontWeight="700" fill="rgba(20,25,40,0.38)" textAnchor="middle">
               {n}
             </text>
           ))}
           {/* trajet */}
-          <path d={ROUTE} stroke="rgba(0,0,0,0.35)" strokeWidth="9" fill="none" strokeLinecap="round" />
+          <path d={ROUTE} stroke="rgba(0,0,0,0.08)" strokeWidth="9" fill="none" strokeLinecap="round" />
           <path
             d={ROUTE}
             stroke="url(#routeG)"
@@ -439,17 +451,17 @@ export function MapScreen({ p }: { p: number }) {
           </g>
           {/* pôle aéroportuaire (point d'intérêt) */}
           <g opacity={seg(p, 0.62, 0.74)}>
-            <circle cx="206" cy="389" r={34 + 6 * seg(p, 0.62, 0.9)} fill="none" stroke="rgba(43,217,154,0.45)" strokeDasharray="3 4" />
+            <circle cx="206" cy="389" r={34 + 6 * seg(p, 0.62, 0.9)} fill="none" stroke="rgba(14,159,90,0.5)" strokeDasharray="3 4" />
           </g>
         </svg>
 
         <div style={{ position: "absolute", left: 14, top: 14, ...appear(seg(p, 0.08, 0.2), 8) }}>
-          <span style={{ fontSize: 12.5, fontWeight: 650, background: "rgba(5,9,24,0.78)", border: `1px solid ${C.line}`, padding: "6px 10px", borderRadius: 10 }}>
+          <span style={{ fontSize: 12.5, fontWeight: 650, background: "rgba(255,255,255,0.94)", border: `1px solid ${C.line}`, padding: "6px 10px", borderRadius: 10 }}>
             Départ · Paris 10e
           </span>
         </div>
         <div style={{ position: "absolute", right: 14, bottom: 14, ...appear(seg(p, 0.58, 0.7), 8) }}>
-          <span style={{ fontSize: 12.5, fontWeight: 650, background: "rgba(5,9,24,0.78)", border: `1px solid ${C.line}`, padding: "6px 10px", borderRadius: 10 }}>
+          <span style={{ fontSize: 12.5, fontWeight: 650, background: "rgba(255,255,255,0.94)", border: `1px solid ${C.line}`, padding: "6px 10px", borderRadius: 10 }}>
             Arrivée · Aéroport d’Orly (94)
           </span>
         </div>
@@ -492,7 +504,7 @@ export function VerdictScreen({ p }: { p: number }) {
   const others = [RIDE_MID, RIDE_TRAP].map((r) => ({ r, e: estimate(r) }));
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(90% 50% at 50% 22%, ${v.color}22 0%, ${C.night} 70%)` }}>
+    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(90% 50% at 50% 22%, ${v.color}1f 0%, ${C.abyss} 70%)` }}>
       <StatusBar />
       <Header title="Recommandation" />
 
@@ -512,7 +524,7 @@ export function VerdictScreen({ p }: { p: number }) {
               style={{ filter: `drop-shadow(0 0 10px ${ringColor}88)` }}
             />
           </g>
-          <text x="100" y="98" textAnchor="middle" fontSize="30" fontWeight="760" fill={C.text} style={{ ...tabular, fontStretch: "112%" }}>
+          <text x="100" y="98" textAnchor="middle" fontSize="30" fontWeight="760" fill={C.text} style={{ ...tabular }}>
             {fmtEUR(MAIN.hourly * fill, 0)}/h
           </text>
           <text x="100" y="122" textAnchor="middle" fontSize="13" fill={C.muted}>

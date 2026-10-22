@@ -2,33 +2,34 @@
 // Toute modification de couleur se fait ici, puis se répercute partout.
 
 export const C = {
-  night: "#050918",
-  abyss: "#0A1130",
-  panel: "#10193F",
-  panelHi: "#16224F",
-  line: "rgba(160, 172, 255, 0.14)",
-  lineStrong: "rgba(160, 172, 255, 0.28)",
-  violet: "#7C5CFF",
-  violetSoft: "#A08BFF",
-  blue: "#38B6FF",
-  green: "#2BD99A",
-  orange: "#FFAA3B",
-  red: "#FF5C70",
-  mist: "#F2F4FA",
-  ink: "#0A0F26",
-  text: "#EAEDFF",
-  muted: "#9AA3C7",
-  faint: "#5E6790",
+  // Thème clair : fond blanc, gris très légers, un seul accent (violet) et les trois couleurs de verdict.
+  night: "#FFFFFF",
+  abyss: "#F4F5F7",
+  panel: "#FFFFFF",
+  panelHi: "#FFFFFF",
+  line: "rgba(15, 18, 30, 0.09)",
+  lineStrong: "rgba(15, 18, 30, 0.18)",
+  violet: "#6E4BFF",
+  violetSoft: "#6E4BFF",
+  blue: "#2E8BFF",
+  green: "#0E9F5A",
+  orange: "#E27A00",
+  red: "#E5364B",
+  mist: "#F4F5F7",
+  ink: "#0B0D12",
+  text: "#0B0D12",
+  muted: "#5E6472",
+  faint: "#878D9B",
 } as const;
 
-export const FONT = "'Archivo Variable', 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif";
+export const FONT = "'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif";
 
 export type Verdict = "green" | "orange" | "red";
 
 export const VERDICT: Record<Verdict, { color: string; label: string; short: string }> = {
-  green: { color: C.green, label: "Potentiellement rentable", short: "Rentable" },
-  orange: { color: C.orange, label: "À analyser", short: "À analyser" },
-  red: { color: C.red, label: "Potentiellement peu rentable", short: "Peu rentable" },
+  green: { color: C.green, label: "Bonne course", short: "Bonne" },
+  orange: { color: C.orange, label: "Course moyenne", short: "Moyenne" },
+  red: { color: C.red, label: "Mauvaise course", short: "Mauvaise" },
 };
 
 /* ---------- petites fonctions d'animation sans hooks (utilisables partout) ---------- */

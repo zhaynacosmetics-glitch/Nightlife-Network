@@ -69,10 +69,9 @@ export const site = {
   },
 
   nav: [
-    { href: "/#solution", label: "Solution" },
-    { href: "/#demo", label: "Démo" },
-    { href: "/#partenaires", label: "Partenaires" },
+    { href: "/#solution", label: "L’application" },
     { href: "/#faq", label: "FAQ" },
+    { href: "/#partenaires", label: "Partenaires" },
   ],
 } as const;
 

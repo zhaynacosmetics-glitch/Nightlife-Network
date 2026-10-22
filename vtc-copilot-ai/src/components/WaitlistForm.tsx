@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { site } from "../config/site";
 import { validateWaitlist } from "../lib/validation";
 import type { FieldErrors } from "../lib/validation";
@@ -11,7 +12,7 @@ type State = { kind: "idle" } | { kind: "sending" } | { kind: "done"; already: b
 const FIELD_ORDER = ["firstName", "email", "zone", "consentMarketing"] as const;
 
 const input =
-  "mt-2 block w-full rounded-xl border bg-white/[0.04] px-4 py-3.5 text-[16px] text-text placeholder:text-muted/70 transition-[border-color,box-shadow] focus:border-signal focus:outline-none focus:ring-4 focus:ring-signal/25";
+  "block w-full rounded-2xl border bg-white px-4 py-3.5 text-[16px] text-ink placeholder:text-faint transition-[border-color,box-shadow] focus:border-violet focus:outline-none focus:ring-4 focus:ring-violet/15";
 
 export function WaitlistForm() {
   const [state, setState] = useState<State>({ kind: "idle" });
@@ -73,58 +74,34 @@ export function WaitlistForm() {
 
   if (state.kind === "done") {
     const link = state.token ? `/desinscription/?t=${encodeURIComponent(state.token)}` : null;
-    return (
-      <div role="status" className="rounded-[26px] border border-go/40 bg-go/[0.07] p-7 sm:p-9">
-        <CheckCircle2 size={36} className="text-go" aria-hidden />
-        <h3 className="display mt-4 text-3xl">{state.already ? "Vous êtes déjà inscrit·e." : `Merci ${state.firstName}, c’est enregistré.`}</h3>
-        <p className="mt-3 leading-relaxed text-muted">
-          {state.already
-            ? "Cette adresse figure déjà sur la waitlist : inutile de vous réinscrire. Vous recevrez les informations de lancement."
-            : "Vous recevrez les informations de lancement de VTC Copilot AI en Île-de-France. Aucune autre utilisation de vos données."}
-        </p>
-        {link && (
-          <p className="mt-5 text-sm leading-relaxed text-muted">
-            Conservez ce lien : il permet de supprimer votre inscription à tout moment.
-            <br />
-            <a className="break-all font-medium text-signal underline underline-offset-4" href={link}>
-              Supprimer mon inscription
-            </a>
-          </p>
-        )}
-      </div>
-    );
+    return <Success already={state.already} firstName={state.firstName} link={link} />;
   }
 
   const sending = state.kind === "sending";
   const err = (k: keyof FieldErrors) =>
     errors[k] ? (
-      <p id={`${k}-error`} className="mt-2 text-sm text-stop">
+      <p id={`${k}-error`} className="mt-1.5 pl-2 text-left text-[13px] text-[#C42A3D]">
         {errors[k]}
       </p>
     ) : null;
-  const border = (k: keyof FieldErrors) => (errors[k] ? "border-stop/70" : "border-white/15");
+  const border = (k: keyof FieldErrors) => (errors[k] ? "border-stop" : "border-line");
 
   return (
-    <form ref={form} noValidate onSubmit={onSubmit} className="rounded-[26px] border border-white/12 bg-[linear-gradient(180deg,rgba(22,34,79,0.9),rgba(16,25,63,0.9))] p-6 shadow-[0_40px_100px_-40px_rgba(124,92,255,0.8)] sm:p-8" aria-labelledby="waitlist-form-title">
-      <h3 id="waitlist-form-title" className="text-xl font-semibold">
-        Rejoindre la waitlist
-      </h3>
-      <p className="mt-1 text-sm text-muted">Trois informations, moins d’une minute.</p>
-
-      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+    <form ref={form} noValidate onSubmit={onSubmit} className="relative rounded-[28px] border border-line bg-white p-5 text-left shadow-[0_40px_80px_-40px_rgba(11,13,18,0.25)] sm:p-7" aria-label="Rejoindre la waitlist">
+      <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor="firstName" className="text-[15px] font-medium">
+          <label htmlFor="firstName" className="sr-only">
             Prénom
           </label>
-          <input id="firstName" name="firstName" type="text" autoComplete="given-name" maxLength={50} placeholder="Karim…" required aria-invalid={!!errors.firstName} aria-describedby={errors.firstName ? "firstName-error" : undefined} className={`${input} ${border("firstName")}`} />
+          <input id="firstName" name="firstName" type="text" autoComplete="given-name" maxLength={50} placeholder="Prénom" required aria-invalid={!!errors.firstName} aria-describedby={errors.firstName ? "firstName-error" : undefined} className={`${input} ${border("firstName")}`} />
           {err("firstName")}
         </div>
         <div>
-          <label htmlFor="zone" className="text-[15px] font-medium">
-            Zone d’activité <span className="font-normal text-muted">(facultatif)</span>
+          <label htmlFor="zone" className="sr-only">
+            Zone d’activité (facultatif)
           </label>
-          <select id="zone" name="zone" defaultValue="" aria-invalid={!!errors.zone} aria-describedby={errors.zone ? "zone-error" : undefined} className={`${input} ${border("zone")} appearance-none bg-[#121b44] text-text`}>
-            <option value="">Choisir…</option>
+          <select id="zone" name="zone" defaultValue="" aria-invalid={!!errors.zone} aria-describedby={errors.zone ? "zone-error" : undefined} className={`${input} ${border("zone")} appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%235E6472' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")] bg-[position:right_1rem_center] bg-no-repeat pr-10`}>
+            <option value="">Zone (facultatif)</option>
             {site.waitlist.zones.map((z) => (
               <option key={z.value} value={z.value}>
                 {z.label}
@@ -134,10 +111,10 @@ export function WaitlistForm() {
           {err("zone")}
         </div>
         <div className="sm:col-span-2">
-          <label htmlFor="email" className="text-[15px] font-medium">
+          <label htmlFor="email" className="sr-only">
             Adresse e-mail
           </label>
-          <input id="email" name="email" type="email" inputMode="email" autoComplete="email" spellCheck={false} maxLength={254} placeholder="prenom@exemple.fr" required aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} className={`${input} ${border("email")}`} />
+          <input id="email" name="email" type="email" inputMode="email" autoComplete="email" spellCheck={false} maxLength={254} placeholder="Adresse e-mail" required aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} className={`${input} ${border("email")}`} />
           {err("email")}
         </div>
       </div>
@@ -148,23 +125,21 @@ export function WaitlistForm() {
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="mt-6 space-y-3">
-        <label className="flex cursor-pointer gap-3 rounded-xl p-1 text-[15px] leading-relaxed">
-          <input type="checkbox" name="consentMarketing" aria-invalid={!!errors.consentMarketing} aria-describedby={errors.consentMarketing ? "consentMarketing-error" : undefined} className="mt-1 size-5 flex-none accent-violet" />
-          <span>
-            J’accepte de recevoir par e-mail des informations sur le lancement de VTC Copilot AI. Je peux me désinscrire à tout moment.
-          </span>
+      <div className="mt-4 space-y-2">
+        <label className="flex cursor-pointer gap-3 rounded-xl p-1 text-[14px] leading-snug text-ink">
+          <input type="checkbox" name="consentMarketing" aria-invalid={!!errors.consentMarketing} aria-describedby={errors.consentMarketing ? "consentMarketing-error" : undefined} className="mt-0.5 size-5 flex-none accent-violet" />
+          <span>Je veux être informé·e du lancement par e-mail (désinscription à tout moment).</span>
         </label>
         {err("consentMarketing")}
-        <label className="flex cursor-pointer gap-3 rounded-xl p-1 text-[15px] leading-relaxed text-muted">
-          <input type="checkbox" name="consentResearch" className="mt-1 size-5 flex-none accent-violet" />
-          <span>Facultatif : j’accepte d’être contacté·e pour participer à des entretiens ou à des tests du produit.</span>
+        <label className="flex cursor-pointer gap-3 rounded-xl p-1 text-[14px] leading-snug text-muted">
+          <input type="checkbox" name="consentResearch" className="mt-0.5 size-5 flex-none accent-violet" />
+          <span>Facultatif : je veux bien tester l’application.</span>
         </label>
       </div>
 
       {site.turnstileSiteKey && <Turnstile siteKey={site.turnstileSiteKey} onToken={(t) => (turnstileToken.current = t)} />}
 
-      <button type="submit" disabled={sending} className="mt-7 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(100deg,var(--color-violet),#5b7cff_55%,var(--color-signal))] px-6 py-3.5 text-[16px] font-semibold text-white shadow-[0_12px_40px_-12px_rgba(124,92,255,0.9)] transition-[filter,transform] hover:brightness-110 active:scale-[0.99] disabled:cursor-wait disabled:opacity-80">
+      <button type="submit" disabled={sending} className="mt-5 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[16px] font-medium text-white shadow-[0_14px_30px_-12px_rgba(11,13,18,0.6)] transition-[background-color,transform] hover:bg-[#23262f] active:scale-[0.99] disabled:cursor-wait disabled:opacity-80">
         {sending ? (
           <>
             <Loader2 size={18} className="animate-spin motion-reduce:animate-none" aria-hidden /> Inscription en cours…
@@ -173,14 +148,67 @@ export function WaitlistForm() {
           "Rejoindre la waitlist"
         )}
       </button>
-      <div aria-live="polite">{state.kind === "error" && <p className="mt-4 rounded-xl border border-stop/40 bg-stop/10 px-4 py-3 text-sm">{state.message}</p>}</div>
-      <p className="mt-5 text-[13px] leading-relaxed text-muted">
-        Vos données servent uniquement à vous informer du lancement et, si vous l’acceptez, à vous proposer de participer aux tests. Elles ne sont ni vendues ni cédées. Conservation : {site.waitlist.retentionMonths} mois au maximum.{" "}
-        <a href="/confidentialite/" className="underline underline-offset-2 hover:text-text">
-          Politique de confidentialité
+      <div aria-live="polite">{state.kind === "error" && <p className="mt-4 rounded-xl border border-stop/30 bg-stop/5 px-4 py-3 text-sm text-ink">{state.message}</p>}</div>
+      <p className="mt-4 text-center text-[12.5px] leading-relaxed text-muted">
+        Vos données ne servent qu’à vous informer du lancement, et ne sont ni vendues ni cédées. Conservation : {site.waitlist.retentionMonths} mois maximum.{" "}
+        <a href="/confidentialite/" className="underline underline-offset-2 hover:text-ink">
+          Confidentialité
         </a>
-        .
       </p>
     </form>
+  );
+}
+
+const BURST = ["#6E4BFF", "#0E9F5A", "#E27A00", "#2E8BFF", "#E5364B", "#6E4BFF", "#0E9F5A", "#2E8BFF"];
+
+/** Confirmation : la coche jaillit, entourée d'un éclat de pastilles. */
+function Success({ already, firstName, link }: { already: boolean; firstName: string; link: string | null }) {
+  const reduced = useReducedMotion();
+  return (
+    <div role="status" className="relative rounded-[28px] border border-line bg-white p-8 text-center shadow-[0_40px_80px_-40px_rgba(11,13,18,0.25)] sm:p-10">
+      <div className="relative mx-auto grid size-20 place-items-center">
+        {!reduced &&
+          BURST.map((c, i) => {
+            const a = (i / BURST.length) * Math.PI * 2;
+            return (
+              <motion.span
+                key={i}
+                aria-hidden
+                className="absolute size-2.5 rounded-full"
+                style={{ background: c }}
+                initial={{ x: 0, y: 0, opacity: 1, scale: 0.4 }}
+                animate={{ x: Math.cos(a) * 70, y: Math.sin(a) * 70, opacity: 0, scale: 1 }}
+                transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
+              />
+            );
+          })}
+        <motion.span
+          className="grid size-20 place-items-center rounded-full bg-go text-white"
+          initial={reduced ? false : { scale: 0, rotate: -40 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", stiffness: 420, damping: 14 }}
+        >
+          <Check size={40} strokeWidth={3} aria-hidden />
+        </motion.span>
+      </div>
+      <h3 className="display mt-6 text-[2rem]">{already ? "Déjà inscrit·e !" : `Merci ${firstName} !`}</h3>
+      <p className="mx-auto mt-3 max-w-[36ch] leading-relaxed text-muted">
+        {already ? (
+          "Cette adresse est déjà sur la waitlist. Vous recevrez les informations de lancement."
+        ) : (
+          <>
+            C’est enregistré. Vous serez parmi les premiers informés du lancement en <span className="whitespace-nowrap">Île-de-France</span>.
+          </>
+        )}
+      </p>
+      {link && (
+        <p className="mt-6 text-[13px] leading-relaxed text-muted">
+          Conservez ce lien pour supprimer votre inscription à tout moment :{" "}
+          <a className="font-medium text-violet underline underline-offset-4" href={link}>
+            Supprimer mon inscription
+          </a>
+        </p>
+      )}
+    </div>
   );
 }

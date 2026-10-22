@@ -1,6 +1,6 @@
 # Rapport de tests
 
-Date : 22 octobre 2026. Tous les résultats ci-dessous ont été obtenus **en local** : le site tournait dans `wrangler dev`, qui simule le Worker Cloudflare et la base D1. Aucun test n'a encore été lancé sur une URL publique, parce que le site n'est pas encore déployé (voir [DEPLOIEMENT.md](DEPLOIEMENT.md)).
+Date : 22 octobre 2026, après la refonte (fond blanc, page en trois temps, écrans coach IA). Tous les résultats ci-dessous ont été obtenus **en local** : le site tournait dans `wrangler dev`, qui simule le Worker Cloudflare et la base D1. Aucun test n'a encore été lancé sur une URL publique, parce que le site n'est pas encore déployé (voir [DEPLOIEMENT.md](DEPLOIEMENT.md)).
 
 ## Synthèse
 
@@ -12,8 +12,8 @@ Toutes les commandes ont été relancées après les dernières modifications.
 | Lint | `npm run lint` | OK, 0 erreur, 0 avertissement |
 | Build + pré-rendu | `npm run build` | OK, 5 pages générées |
 | Tests unitaires (validation, normalisation, modèle de calcul) | `npm run test:unit` | 7 réussis sur 7 |
-| Tests de bout en bout Playwright (desktop + mobile Pixel 7) | `npm run test:e2e` | 44 réussis, 2 ignorés par conception (un test réservé au desktop et un test réservé au mobile) |
-| Lighthouse mobile | voir plus bas | Performance 97 · Accessibilité 100 · Bonnes pratiques 100 · SEO 100 |
+| Tests de bout en bout Playwright (desktop + mobile Pixel 7) | `npm run test:e2e` | 45 réussis, 1 ignoré par conception (lien d’évitement au clavier, testé sur desktop uniquement) |
+| Lighthouse mobile | voir plus bas | Performance 98 · Accessibilité 100 · Bonnes pratiques 100 · SEO 100 |
 | Lighthouse desktop | voir plus bas | 100 · 100 · 100 · 100 |
 | Film | `ffprobe` | 20,000 s, 600 images, 1920 × 1080, H.264 High, yuv420p |
 
@@ -29,15 +29,16 @@ Les fichiers sont dans `tests/e2e/`.
 - **Liens**
   - Toutes les ancres internes pointent vers une section existante.
   - Tous les liens internes et tous les médias (MP4, WebM, affiche, image de partage) répondent en 200.
-- **Accessibilité** : audit axe-core WCAG 2.1 A et AA sur chaque page, sans aucune violation. On y vérifie aussi le lien d'évitement « Aller au contenu » et le menu mobile.
+- **Accessibilité** : audit axe-core WCAG 2.1 A et AA sur chaque page, sans aucune violation. On y vérifie aussi le lien d'évitement « Aller au contenu ».
 - **Responsive** : aucun débordement horizontal à 320 px de large.
 - **Film**
   - Il démarre au clic et se met en pause.
   - On vérifie sa durée (environ 20 s), son ratio 16:9 et son mode muet.
-- **Démo à 4 slides**
-  - Boutons précédent et suivant, onglets, flèches du clavier.
-  - Défilement automatique, que l'on peut mettre en pause.
-  - Avec `prefers-reduced-motion`, aucun défilement automatique et les écrans sont affichés directement à leur état final.
+- **Problème puis solution (7 écrans au défilement)**
+  - Les 7 boutons d'étape font défiler la page et changent l'écran du téléphone (coach IA, pop-up de verdict, notifications…).
+  - Les 7 étapes sont listées pour les lecteurs d'écran.
+  - Avec `prefers-reduced-motion`, chaque écran s'affiche directement dans son état final.
+- **Fenêtres FAQ et partenaires** : ouverture depuis le pied de page et par l'adresse (`/#faq`, `/#partenaires`), fermeture par Échap et par le bouton, réouverture.
 - **Waitlist**
   - Le formulaire affiche ses erreurs côté navigateur.
   - Parcours complet : inscription, deuxième inscription signalée comme doublon, suppression par lien personnel, puis réutilisation du lien refusée.
@@ -72,8 +73,8 @@ Lighthouse a tourné sur `http://localhost:8787` avec le Chromium de l'environne
 
 | Profil | Performance | Accessibilité | Bonnes pratiques | SEO | FCP | LCP | TBT | CLS |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Mobile (4G simulée, CPU ×4) | 97 | 100 | 100 | 100 | 1,9 s | 2,3 s | 30 ms | 0 |
-| Desktop | 100 | 100 | 100 | 100 | 0,5 s | — | — | 0 |
+| Mobile (4G simulée, CPU ×4) | 98 | 100 | 100 | 100 | 1,7 s | 2,1 – 2,3 s | 30 – 40 ms | 0 |
+| Desktop | 100 | 100 | 100 | 100 | 0,4 s | 0,4 s | 0 ms | 0 |
 
 Les vrais en-têtes Cloudflare (compression Brotli, HTTP/3, cache) ne sont pas simulés en local. Les scores en ligne devraient donc être égaux ou meilleurs, mais il faudra le vérifier après le déploiement.
 
@@ -81,9 +82,9 @@ Les vrais en-têtes Cloudflare (compression Brotli, HTTP/3, cache) ne sont pas s
 
 Les captures sont dans `docs/screenshots/` et ont été générées par `node scripts/screenshots.mjs`.
 
-- **Cinq tailles d'écran** : 320, 390, 820, 1366 et 1920 px de large. Pour chacune : la page entière, le haut de page, la waitlist, la FAQ et le pied de page.
-- **Démo** : les 4 slides, sur mobile 390 px et sur laptop 1366 px.
-- **Waitlist** : l'état « erreurs » et l'état « confirmation », sur mobile 390 px et sur laptop 1366 px.
+- **Cinq tailles d'écran** : 320, 390, 820, 1366 et 1920 px de large. Pour chacune : le film (`-1-film`), l'écran « pop-up de verdict » (`-2-ecran-5`), l'inscription (`-3-inscription`) et le pied de page.
+- **Les 7 écrans du récit** (`-2-ecran-1` à `-2-ecran-7`), sur mobile 390 px et sur laptop 1366 px.
+- **Fenêtres et formulaire** : FAQ, partenaires, état « erreurs » et état « confirmation », sur mobile 390 px et sur laptop 1366 px.
 - **Film** : `film-planche-contact.jpg`, une image toutes les 2 secondes.
 
 ## Limites connues

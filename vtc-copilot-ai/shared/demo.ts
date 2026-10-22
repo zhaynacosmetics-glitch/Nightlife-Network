@@ -89,3 +89,12 @@ export function estimate(r: Ride, c: Costs = DEMO_COSTS, prefs: Prefs = DEMO_PRE
   const verdict: Verdict = hourly >= prefs.greenFrom ? "green" : hourly >= prefs.orangeFrom ? "orange" : "red";
   return { totalKm, totalMin, costs, net, hourly, verdict };
 }
+
+/** Profil du chauffeur de la démonstration (fictif). */
+export const DRIVER = {
+  name: "Paul",
+  vehicle: "Van",
+  base: "Puteaux (92)",
+  hours: "Nuit, 21 h – 5 h",
+  focus: "Aéroports CDG et Orly",
+} as const;
