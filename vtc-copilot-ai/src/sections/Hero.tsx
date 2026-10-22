@@ -66,12 +66,12 @@ export function Hero() {
           </Pop>
         </div>
       </Container>
-      <p className="mt-12 text-center text-[13px] text-muted">Film de 20 s avec musique, son coupé par défaut · Exemples illustratifs, données fictives</p>
+      <p className="mt-12 text-center text-[13px] text-muted">Film de 27 s avec voix off et musique, son coupé par défaut · Exemples illustratifs, données fictives</p>
       <p id="film-description" className="sr-only">
-        Am, stram, gram : un chauffeur choisit ses courses au hasard. Vous êtes VTC et vous voulez gagner plus d’argent ? Alors arrêtez de choisir vos courses au hasard. Une course à 32 € semble
-        un jackpot, mais 25 minutes pour aller chercher le client, le retour à vide depuis Roissy, les bouchons et l’usure la dégonflent : résultat, environ 6 € de l’heure. La solution : VTC Copilot
-        AI, l’app des chauffeurs VTC. Trafic, météo, demande, offre, votre voiture, vos coûts : l’IA calcule tout en une seconde. Quand une course arrive, une pastille verte ou rouge s’affiche juste en
-        dessous, et vous gardez le dernier mot. Adieu les courses au pif, bonjour les courses qui font du biff. Le film se termine par l’invitation à rejoindre la waitlist. Données fictives.
+        Voix off : « Am, stram, gram… Vous êtes VTC ? Vous voulez gagner plus ? 32 euros ?! Jackpot ?! Approche… pschit ! Retour à vide… pschit ! Bouchons, station, usure… pschiiit ! Résultat :
+        6 euros de l’heure. VTC Copilot ! Trafic, météo, demande, votre voiture : l’IA calcule tout. En une seconde. Une course ? VTC Copilot tranche. Adieu les courses au pif… bonjour celles qui font
+        du biff ! » À l’image : des propositions de course tirées au sort, un prix de 32 € qui se dégonfle à chaque « pschit » jusqu’à 6 € de l’heure, le logo de l’app, douze paramètres absorbés par le
+        téléphone, puis une pastille verte « Bonne course » et une pastille rouge « Mauvaise course » sous deux propositions. Le film se termine par l’invitation à rejoindre la waitlist. Données fictives.
       </p>
     </section>
   );

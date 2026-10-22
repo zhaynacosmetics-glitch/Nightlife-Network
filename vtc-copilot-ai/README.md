@@ -13,7 +13,7 @@ Site de présentation de **VTC Copilot AI**, le copilote d’aide à la décisio
 | Configuration centrale (textes, liens, contact, objectif, nombre réel d’inscrits, médias) | [`src/config/site.ts`](src/config/site.ts) |
 | API waitlist + contact (Cloudflare Worker) | `worker/index.ts` |
 | Schéma de base de données (D1) | `migrations/` |
-| Film motion design de 20 s (sources Remotion) | `video/` |
+| Film motion design de 27 s avec voix off et musique (sources Remotion) | `video/` |
 | Film final (master 1080p) | [`video/out/vtc-copilot-ai-film-master-1080p.mp4`](video/out/vtc-copilot-ai-film-master-1080p.mp4) |
 | Versions web du film, affiche, image de partage | `public/media/` |
 | Storyboard avec timecodes | [`video/STORYBOARD.md`](video/STORYBOARD.md) |

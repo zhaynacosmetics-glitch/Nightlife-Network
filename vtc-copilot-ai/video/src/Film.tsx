@@ -1,4 +1,4 @@
-// Film motion design « VTC Copilot AI » — 20 s, 1920×1080, 30 i/s, muet.
+// Film motion design « VTC Copilot AI » — 27 s, 1920×1080, 30 i/s, calé sur la voix off ElevenLabs (public/audio).
 // Scénario « Am, stram, gram ? » : ../SCENARIO.md · timecodes : ../STORYBOARD.md
 
 import type { CSSProperties, ReactNode } from "react";
@@ -114,7 +114,24 @@ function OfferToast({ price, dest, timer, width = 420 }: { price: number; dest: 
   );
 }
 
-/* ------------------------------------------------------------------ 0 → 1,4 s : « Am… stram… gram… » */
+/* ------------------------------------------------------------------ minutage, calé sur la voix off (secondes → images) */
+
+const fr = (sec: number) => Math.round(sec * 30);
+// repères relevés sur voix-off-elevenlabs.mp3 (silences et fricatives)
+const VO = {
+  am: 0.05, stram: 0.55, gram: 1.1,
+  vtc: 1.91, plus: 2.89,
+  prix: 4.14, jackpot: 4.95,
+  approche: 5.98, pschit1: 6.55, retour: 6.95, pschit2: 7.72, bouchons: 8.05, pschit3: 9.77,
+  resultat: 10.54, six: 11.34,
+  copilot: 12.53,
+  trafic: 14.28, calcule: 16.45, seconde: 17.64,
+  course: 18.7, tranche: 19.47,
+  adieu: 21.26, bonjour: 22.6, biff: 23.85,
+  fin: 24.6,
+};
+
+/* ------------------------------------------------------------------ « Am, stram, gram… » */
 
 const RAIN = [
   { at: 0, x: 110, y: 110, r: -5, price: 18, dest: "Paris 11e" },
@@ -126,14 +143,15 @@ const RAIN = [
 ];
 // le doigt saute d'une proposition à l'autre, au rythme de la comptine
 const HOPS = [
-  { at: 8, toast: 0, word: "Am…" },
-  { at: 20, toast: 3, word: "Stram…" },
-  { at: 32, toast: 1, word: "Gram…" },
+  { at: fr(VO.am) + 2, toast: 0, word: "Am," },
+  { at: fr(VO.stram), toast: 3, word: "stram," },
+  { at: fr(VO.gram), toast: 1, word: "gram…" },
 ];
+const RHYME_END = fr(1.85);
 
 function SceneRhyme() {
   const f = useCurrentFrame();
-  const exit = ip(f, [36, 42], [0, 1], INOUT);
+  const exit = ip(f, [RHYME_END - 6, RHYME_END], [0, 1], INOUT);
   const center = (i: number) => ({ x: RAIN[i].x + 210, y: RAIN[i].y + 95 });
 
   // position du doigt : saut en arc entre deux propositions
@@ -173,7 +191,7 @@ function SceneRhyme() {
       </AbsoluteFill>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
         {HOPS.map((h, k) => {
-          const next = HOPS[k + 1]?.at ?? 99;
+          const next = HOPS[k + 1]?.at ?? 999;
           return f >= h.at && f < next ? (
             <div key={h.word} style={{ position: "absolute" }}>
               <Pop at={h.at} size={210} color={k === 2 ? C.violet : C.text}>
@@ -187,27 +205,24 @@ function SceneRhyme() {
   );
 }
 
-/* ------------------------------------------------------------------ 1,4 → 4,1 s : la question */
+/* ------------------------------------------------------------------ « Vous êtes VTC ? Vous voulez gagner PLUS ? » */
 
+const HOOK = { from: RHYME_END, to: fr(VO.prix) - 2 };
+const COIN_AT = fr(VO.plus + 0.55) - HOOK.from;
 const COINS = [
-  { a: -2.7, d: 640, s: 120, at: 18 },
-  { a: -0.4, d: 660, s: 96, at: 20 },
-  { a: 0.5, d: 700, s: 80, at: 22 },
-  { a: 2.6, d: 660, s: 104, at: 24 },
-  { a: -1.9, d: 560, s: 70, at: 26 },
-  { a: 1.3, d: 600, s: 86, at: 28 },
+  { a: -2.7, d: 640, s: 120, at: COIN_AT },
+  { a: -0.4, d: 660, s: 96, at: COIN_AT + 2 },
+  { a: 0.5, d: 700, s: 80, at: COIN_AT + 4 },
+  { a: 2.6, d: 660, s: 104, at: COIN_AT + 6 },
+  { a: -1.9, d: 560, s: 70, at: COIN_AT + 8 },
+  { a: 1.3, d: 600, s: 86, at: COIN_AT + 10 },
 ];
 
-function SceneHook() {
+function Coins({ list, opacity = 1 }: { list: typeof COINS; opacity?: number }) {
   const f = useCurrentFrame();
-  const swap = ip(f, [38, 44], [0, 1], INOUT);
-  const exit = ip(f, [74, 80], [0, 1], INOUT);
-
   return (
-    <AbsoluteFill style={{ opacity: 1 - exit }}>
-      <Backdrop tint={swap > 0.5 ? C.red : C.green} tint2={C.violet} drift={f / 120} />
-      {/* les pièces jaillissent quand on parle d'argent */}
-      {COINS.map((c, i) => {
+    <>
+      {list.map((c, i) => {
         const t = ip(f, [c.at, c.at + 12], [0, 1], BACK);
         return (
           <div
@@ -225,7 +240,7 @@ function SceneHook() {
               placeItems: "center",
               fontSize: c.s * 0.55,
               fontWeight: 800,
-              opacity: ip(f, [c.at, c.at + 2], [0, 1], Easing.linear) * (1 - swap),
+              opacity: ip(f, [c.at, c.at + 2], [0, 1], Easing.linear) * opacity,
               scale: t,
               rotate: `${Math.sin((f - c.at) / 5) * 14 * (i % 2 ? 1 : -1)}deg`,
               boxShadow: `0 20px 40px -18px ${C.green}`,
@@ -235,115 +250,129 @@ function SceneHook() {
           </div>
         );
       })}
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 34, opacity: 1 - swap, scale: 1 - swap * 0.1 }}>
-        <Pop at={2} size={150}>
-          Vous êtes VTC
+    </>
+  );
+}
+
+function SceneHook() {
+  const f = useCurrentFrame();
+  const end = HOOK.to - HOOK.from;
+  const exit = ip(f, [end - 5, end], [0, 1], INOUT);
+  const second = fr(VO.plus) - HOOK.from;
+
+  return (
+    <AbsoluteFill style={{ opacity: 1 - exit }}>
+      <Backdrop tint={C.green} tint2={C.violet} drift={f / 120} />
+      <Coins list={COINS} />
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 30 }}>
+        <Pop at={fr(VO.vtc) - HOOK.from} size={150}>
+          Vous êtes VTC ?
         </Pop>
-        {f >= 12 && (
-          <Pop at={12} size={86}>
-            et vous voulez gagner <span style={{ color: C.green }}>plus d’argent</span> ?
+        {f >= second && (
+          <Pop at={second} size={118}>
+            Vous voulez gagner <span style={{ color: C.green }}>PLUS</span> ?
           </Pop>
         )}
       </AbsoluteFill>
-      {f >= 42 && (
-        <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20 }}>
-          <Pop at={42} size={100} color={C.muted}>
-            Alors arrêtez de choisir
-          </Pop>
-          <Pop at={48} size={136}>
-            vos courses <span style={{ color: C.red, textDecoration: "line-through", textDecorationThickness: 10 }}>au hasard</span>.
-          </Pop>
-        </AbsoluteFill>
-      )}
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 4,1 → 8 s : le problème, « Pschiit » ×3 */
+/* ------------------------------------------------------------------ « 32 euros ?! JACKPOT ?! … Pschit ! … 6 euros de l'heure. » */
 
+const PROB = { from: HOOK.to, to: fr(VO.copilot) - 1 };
+const rel = (sec: number) => fr(sec) - PROB.from;
 const PINS = [
-  { at: 14, icon: <Navigation size={32} />, label: "pour aller chercher le client", value: `${RIDE_TRAP.approachMin} min`, color: C.orange, pschit: "Pschiit.", size: 80 },
-  { at: 34, icon: <Undo2 size={32} />, label: "Retour à vide depuis Roissy", value: `${RIDE_TRAP.returnMin ?? 0} min`, color: C.red, pschit: "Pschiit.", size: 92 },
-  { at: 54, icon: <Fuel size={32} />, label: "Bouchons, station bondée, usure", value: `− ${fmtEUR(TRAP.costs, 0)}`, color: C.red, pschit: "Pschiiiit.", size: 120 },
+  { at: rel(VO.approche), icon: <Navigation size={32} />, label: "Approche", value: `${RIDE_TRAP.approachMin} min`, color: C.orange, pschit: rel(VO.pschit1), word: "Pschit !", size: 96, drop: 0.2 },
+  { at: rel(VO.retour), icon: <Undo2 size={32} />, label: "Retour à vide", value: `${RIDE_TRAP.returnMin ?? 0} min`, color: C.red, pschit: rel(VO.pschit2), word: "Pschit !", size: 106, drop: 0.2 },
+  { at: rel(VO.bouchons), icon: <Fuel size={32} />, label: "Bouchons, station, usure", value: `− ${fmtEUR(TRAP.costs, 0)}`, color: C.red, pschit: rel(VO.pschit3), word: "Pschiiit !", size: 140, drop: 0.45 },
 ];
-const RESULT_AT = 76;
+const RESULT_AT = rel(VO.resultat);
+const SIX_AT = rel(VO.six);
 const hm = (min: number) => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, "0")}`;
 
 function SceneBalloon() {
   const f = useCurrentFrame();
-  const enter = ip(f, [0, 10], [0, 1]);
-  // le ballon se dégonfle par paliers, à chaque « Pschiit »
-  const steps = PINS.map((p, i) => ip(f, [p.at + 6, p.at + 14], [0, [0.2, 0.2, 0.45][i]], Easing.in(Easing.quad)));
-  const deflate = steps.reduce((a, b) => a + b, 0);
-  const hiss = PINS.find((p) => f >= p.at + 6 && f < p.at + 14);
+  const end = PROB.to - PROB.from;
+  const enter = ip(f, [0, 8], [0, 1]);
+  // le ballon se dégonfle par paliers, à chaque « Pschit »
+  const deflate = PINS.reduce((a, p) => a + ip(f, [p.pschit, p.pschit + 10], [0, p.drop], Easing.in(Easing.quad)), 0);
+  const hiss = PINS.find((p) => f >= p.pschit && f < p.pschit + 10);
   const wobble = hiss ? Math.sin(f * 2.3) * 7 : 0;
-  const hourly = ip(f, [RESULT_AT, RESULT_AT + 14], [RIDE_TRAP.price, TRAP.hourly], Easing.out(Easing.cubic));
-  const exit = ip(f, [112, 118], [0, 1], INOUT);
+  const hourly = ip(f, [SIX_AT, SIX_AT + 14], [RIDE_TRAP.price, TRAP.hourly], Easing.out(Easing.cubic));
+  const exit = ip(f, [end - 5, end], [0, 1], INOUT);
+  const jackpot = rel(VO.jackpot);
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
-      <Backdrop tint={deflate > 0.4 ? C.red : C.orange} tint2={C.violet} drift={0.4 + f / 200} />
+      <Backdrop tint={deflate > 0.4 ? C.red : C.orange} tint2={C.violet} drift={0.4 + f / 300} />
 
       <div style={{ position: "absolute", left: 140, top: 150, width: 860, height: 620 }}>
-        {/* « 32 € ? Jackpot ? » */}
-        <div style={{ position: "absolute", left: 10, top: 0, opacity: 1 - ip(f, [12, 18], [0, 1]) }}>
-          <Pop at={4} size={92} color={C.orange}>
-            Jackpot ?
-          </Pop>
-        </div>
+        {/* « 32 euros ?! JACKPOT ?! » */}
+        {f >= jackpot && (
+          <div style={{ position: "absolute", left: 10, top: 0, opacity: 1 - ip(f, [PINS[0].at - 4, PINS[0].at + 2], [0, 1]) }}>
+            <Pop at={jackpot} size={120} color={C.orange}>
+              JACKPOT ?!
+            </Pop>
+          </div>
+        )}
         <div
           style={{
             position: "absolute",
             left: 0,
-            top: 120,
+            top: 150,
             fontSize: 290,
             fontWeight: 720,
             letterSpacing: "-0.07em",
-            whiteSpace: "nowrap",
             lineHeight: 1,
+            whiteSpace: "nowrap",
             color: deflate > 0.5 ? C.red : C.text,
             transformOrigin: "30% 60%",
             opacity: enter * (1 - ip(f, [RESULT_AT - 4, RESULT_AT], [0, 1])),
-            scale: `${ip(f, [0, 10], [0.6, 1], BIGBACK) * (1 - deflate * 0.8)} ${ip(f, [0, 10], [0.6, 1], BIGBACK) * (1 - deflate * 0.9)}`,
+            scale: `${ip(f, [0, 8], [0.6, 1], BIGBACK) * (1 - deflate * 0.8)} ${ip(f, [0, 8], [0.6, 1], BIGBACK) * (1 - deflate * 0.9)}`,
             rotate: `${wobble}deg`,
             translate: `${wobble * 3}px ${deflate * 160}px`,
             ...tab,
           }}
         >
-          {fmtEUR(RIDE_TRAP.price, 0)} ?
+          {fmtEUR(RIDE_TRAP.price, 0)} ?!
         </div>
         {[
-          { x: 640, y: 140, s: 74, d: 0 },
-          { x: 720, y: 330, s: 44, d: 3 },
-          { x: -30, y: 150, s: 52, d: 1 },
-          { x: 420, y: 480, s: 38, d: 5 },
-        ].map((s, i) => (
+          { x: 640, y: 170, s: 74, d: 0 },
+          { x: 720, y: 360, s: 44, d: 3 },
+          { x: -30, y: 180, s: 52, d: 1 },
+          { x: 420, y: 510, s: 38, d: 5 },
+          { x: 300, y: 120, s: 60, d: jackpot - 2 },
+          { x: 780, y: 240, s: 50, d: jackpot },
+        ].map((sp, i) => (
           <Sparkle
             key={i}
-            size={s.s}
-            style={{ left: s.x, top: s.y, opacity: ip(f, [s.d + 2, s.d + 7], [0, 1]) * (1 - ip(f, [18, 24], [0, 1])), scale: 0.7 + 0.3 * Math.abs(Math.sin((f + s.d * 5) / 6)), rotate: `${f * 3}deg` }}
+            size={sp.s}
+            style={{ left: sp.x, top: sp.y, opacity: ip(f, [sp.d + 2, sp.d + 7], [0, 1]) * (1 - ip(f, [PINS[0].pschit - 4, PINS[0].pschit + 2], [0, 1])), scale: 0.7 + 0.3 * Math.abs(Math.sin((f + sp.d * 5) / 6)), rotate: `${f * 3}deg` }}
           />
         ))}
-        {/* les trois « Pschiit », de plus en plus longs */}
+        {/* les trois « Pschit », le dernier plus long */}
         {PINS.map((p) =>
-          f >= p.at + 6 && f < p.at + 20 ? (
-            <div key={p.pschit + p.at} style={{ position: "absolute", left: 420, top: 40 }}>
-              <Pop at={p.at + 6} size={p.size} color={C.red}>
-                {p.pschit}
+          f >= p.pschit && f < p.pschit + 18 ? (
+            <div key={p.pschit} style={{ position: "absolute", left: 400, top: 30 }}>
+              <Pop at={p.pschit} size={p.size} color={C.red}>
+                {p.word}
               </Pop>
             </div>
           ) : null,
         )}
-        {/* « Résultat : 6 € de l'heure. » */}
-        <div style={{ position: "absolute", left: 0, top: 120, opacity: ip(f, [RESULT_AT, RESULT_AT + 4], [0, 1]), scale: ip(f, [RESULT_AT, RESULT_AT + 10], [0.5, 1], BIGBACK), transformOrigin: "left center" }}>
-          <div style={{ fontSize: 60, fontWeight: 650, color: C.text, letterSpacing: "-0.03em" }}>Résultat :</div>
-          <div style={{ fontSize: 210, fontWeight: 720, letterSpacing: "-0.06em", color: C.red, lineHeight: 1, ...tab }}>≈ {fmtEUR(hourly, 0)}/h</div>
-          <div style={{ fontSize: 30, color: C.muted, marginTop: 12 }}>net estimé, sur {hm(TRAP.totalMin)} mobilisées</div>
+        {/* « Résultat : 6 euros de l'heure. » */}
+        <div style={{ position: "absolute", left: 0, top: 110, opacity: ip(f, [RESULT_AT, RESULT_AT + 4], [0, 1]) }}>
+          <div style={{ fontSize: 72, fontWeight: 650, color: C.text, letterSpacing: "-0.03em", scale: ip(f, [RESULT_AT, RESULT_AT + 10], [0.6, 1], BIGBACK), transformOrigin: "left center" }}>Résultat :</div>
+          <div style={{ opacity: ip(f, [SIX_AT, SIX_AT + 3], [0, 1]), scale: ip(f, [SIX_AT, SIX_AT + 10], [0.5, 1], BIGBACK), transformOrigin: "left center" }}>
+            <div style={{ fontSize: 200, fontWeight: 720, letterSpacing: "-0.06em", color: C.red, lineHeight: 1, whiteSpace: "nowrap", ...tab }}>{fmtEUR(hourly, 0)} de l’heure</div>
+            <div style={{ fontSize: 30, color: C.muted, marginTop: 12 }}>net estimé, sur {hm(TRAP.totalMin)} mobilisées</div>
+          </div>
         </div>
       </div>
 
       {/* les épingles qui piquent le ballon */}
-      <div style={{ position: "absolute", left: 1040, top: 230, display: "flex", flexDirection: "column", gap: 26 }}>
+      <div style={{ position: "absolute", left: 1100, top: 260, display: "flex", flexDirection: "column", gap: 26, opacity: 1 - ip(f, [RESULT_AT - 4, RESULT_AT + 4], [0, 1]) }}>
         {PINS.map((p) => (
           <div
             key={p.label}
@@ -352,7 +381,7 @@ function SceneBalloon() {
               alignItems: "center",
               gap: 20,
               padding: "20px 28px",
-              width: 760,
+              width: 700,
               borderRadius: 26,
               background: "#fff",
               border: `1.5px solid ${p.color}55`,
@@ -363,43 +392,29 @@ function SceneBalloon() {
             }}
           >
             <span style={{ width: 62, height: 62, flex: "none", borderRadius: 20, display: "grid", placeItems: "center", background: `${p.color}1f`, color: p.color }}>{p.icon}</span>
-            {p.at === PINS[0].at ? (
-              <>
-                <span style={{ fontSize: 40, fontWeight: 720, color: p.color, ...tab }}>{p.value}</span>
-                <span style={{ fontSize: 32, color: C.muted, flex: 1 }}>{p.label}</span>
-              </>
-            ) : (
-              <>
-                <span style={{ fontSize: 32, color: C.muted, flex: 1 }}>{p.label}</span>
-                <span style={{ fontSize: 40, fontWeight: 720, color: p.color, ...tab }}>{p.value}</span>
-              </>
-            )}
+            <span style={{ fontSize: 34, color: C.muted, flex: 1 }}>{p.label}</span>
+            <span style={{ fontSize: 40, fontWeight: 720, color: p.color, ...tab }}>{p.value}</span>
           </div>
         ))}
-      </div>
-
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 130, display: "flex", justifyContent: "center" }}>
-        {f >= 90 && (
-          <Pop at={90} size={64} style={{ fontWeight: 640, letterSpacing: "-0.035em" }}>
-            Un gros prix, ce n’est pas forcément une <span style={{ color: C.green }}>bonne course</span>.
-          </Pop>
-        )}
       </div>
       <DemoNotice opacity={enter} right />
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 8 → 9 s : « La solution », le logo au milieu de l'écran */
+/* ------------------------------------------------------------------ « VTC Copilot ! » : le logo au milieu de l'écran */
+
+const LOGO = { from: PROB.to, to: fr(VO.trafic) - 3 };
 
 function SceneLogo() {
   const f = useCurrentFrame();
   const slam = ip(f, [0, 6], [2.4, 1], BIGBACK);
-  const tile = ip(f, [15, 25], [0, 1], INOUT);
+  const tile = ip(f, [20, 30], [0, 1], INOUT);
   const ring = ip(f, [3, 16], [0, 1]);
+  const end = LOGO.to - LOGO.from;
 
   return (
-    <AbsoluteFill style={{ background: C.night, alignItems: "center", justifyContent: "center" }}>
+    <AbsoluteFill style={{ background: C.night, alignItems: "center", justifyContent: "center", opacity: 1 - ip(f, [end - 4, end], [0, 1]) }}>
       {/* flash d'entrée */}
       <AbsoluteFill style={{ background: C.violet, opacity: ip(f, [0, 4], [0.18, 0], Easing.linear) }} />
       {/* onde de choc */}
@@ -422,29 +437,25 @@ function SceneLogo() {
           <LogoMark size={440} id="film-slam" />
         </div>
       </div>
-      <div style={{ position: "absolute", top: 70 }}>
-        <Pop at={0} size={64} color={C.violet} style={{ letterSpacing: "-0.03em" }}>
-          La solution :
-        </Pop>
-      </div>
-      <div style={{ position: "absolute", top: 760, textAlign: "center", opacity: ip(f, [17, 22], [0, 1]), translate: `0 ${ip(f, [17, 26], [30, 0])}px` }}>
-        <div style={{ fontSize: 96, fontWeight: 680, letterSpacing: "-0.05em" }}>
+      <div style={{ position: "absolute", top: 760, textAlign: "center", opacity: ip(f, [8, 14], [0, 1]), translate: `0 ${ip(f, [8, 18], [30, 0])}px` }}>
+        <div style={{ fontSize: 110, fontWeight: 680, letterSpacing: "-0.05em" }}>
           VTC Copilot <span style={{ color: C.muted, fontWeight: 420 }}>AI</span>
         </div>
-        <div style={{ fontSize: 40, color: C.muted, marginTop: 6 }}>L’app des chauffeurs VTC</div>
+        <div style={{ fontSize: 40, color: C.muted, marginTop: 6, opacity: ip(f, [24, 30], [0, 1]) }}>L’app des chauffeurs VTC</div>
       </div>
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 9 → 12,7 s : l'IA calcule */
+/* ------------------------------------------------------------------ « Trafic, météo, demande, votre voiture : l'IA calcule tout. En une seconde. » */
 
+const COMPUTE = { from: LOGO.to, to: fr(VO.course) - 3 };
 const PARAMS: { label: string; icon: ReactNode }[] = [
   { label: "Trafic", icon: <TrafficCone size={28} /> },
   { label: "Météo", icon: <CloudRain size={28} /> },
   { label: "Demande", icon: <TrendingUp size={28} /> },
-  { label: "Offre de chauffeurs", icon: <Users size={28} /> },
   { label: "Votre voiture", icon: <Car size={28} /> },
+  { label: "Offre de chauffeurs", icon: <Users size={28} /> },
   { label: "Approche", icon: <Navigation size={28} /> },
   { label: "Retour à vide", icon: <Undo2 size={28} /> },
   { label: "Péages", icon: <Ticket size={28} /> },
@@ -454,24 +465,27 @@ const PARAMS: { label: string; icon: ReactNode }[] = [
   { label: "Vos préférences", icon: <SlidersHorizontal size={28} /> },
 ];
 const PHONE = { x: 1290, y: 540, w: 430 };
-const PARAM_START = 4;
-const PARAM_GAP = 3;
+const PARAM_START = 6;
+const PARAM_GAP = 5;
 const PARAM_FLY = 14;
 
 function SceneCompute() {
   const f = useCurrentFrame();
+  const end = COMPUTE.to - COMPUTE.from;
+  const calc = fr(VO.calcule) - COMPUTE.from;
+  const second = fr(VO.seconde) - COMPUTE.from;
   const phoneIn = ip(f, [0, 14], [0, 1], BACK);
   const absorbed = PARAMS.filter((_, i) => f >= PARAM_START + i * PARAM_GAP + PARAM_FLY).length;
-  const counter = ip(f, [8, 14], [0, 1]) * (1 - ip(f, [52, 60], [0, 1]));
-  const exit = ip(f, [104, 110], [0, 1], INOUT);
+  const counter = ip(f, [8, 14], [0, 1]) * (1 - ip(f, [second - 16, second - 8], [0, 1]));
+  const exit = ip(f, [end - 5, end], [0, 1], INOUT);
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
       <Backdrop tint={C.violet} tint2={C.blue} drift={f / 150} />
 
-      <div style={{ position: "absolute", left: PHONE.x - PHONE.w / 2, top: 80, opacity: phoneIn, translate: `0 ${(1 - phoneIn) * 160}px`, scale: 1 + (f >= 16 && f < 54 ? Math.sin(f * 1.4) * 0.006 : 0) }}>
+      <div style={{ position: "absolute", left: PHONE.x - PHONE.w / 2, top: 80, opacity: phoneIn, translate: `0 ${(1 - phoneIn) * 160}px`, scale: 1 + (f >= 16 && f < second - 10 ? Math.sin(f * 1.4) * 0.006 : 0) }}>
         <Phone width={PHONE.w} glow={C.violet}>
-          <OverlayScreen p={ip(f, [50, 104], [0, 0.33], Easing.linear)} />
+          <OverlayScreen p={ip(f, [second - 10, end], [0, 0.33], Easing.linear)} />
           {/* le calcul : compteur de paramètres */}
           <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.94)", display: "grid", placeItems: "center", opacity: counter }}>
             <div style={{ textAlign: "center" }}>
@@ -496,11 +510,11 @@ function SceneCompute() {
 
       {/* les paramètres foncent vers le téléphone */}
       {PARAMS.map((p, i) => {
-        const s = PARAM_START + i * PARAM_GAP;
+        const st = PARAM_START + i * PARAM_GAP;
         const a = (i / PARAMS.length) * Math.PI * 2 - Math.PI / 2;
         const sx = Math.cos(a) * 620;
         const sy = Math.sin(a) * 420;
-        const t = ip(f, [s, s + PARAM_FLY], [0, 1], Easing.in(Easing.cubic));
+        const t = ip(f, [st, st + PARAM_FLY], [0, 1], Easing.in(Easing.cubic));
         return (
           <div
             key={p.label}
@@ -509,8 +523,8 @@ function SceneCompute() {
               left: PHONE.x,
               top: PHONE.y,
               translate: `calc(${sx * (1 - t)}px - 50%) calc(${sy * (1 - t)}px - 50%)`,
-              opacity: ip(f, [s, s + 3], [0, 1], Easing.linear) * (1 - ip(f, [s + PARAM_FLY - 3, s + PARAM_FLY], [0, 1], Easing.linear)),
-              scale: ip(f, [s, s + 5], [0.4, 1], BIGBACK) * (1 - t * 0.7),
+              opacity: ip(f, [st, st + 3], [0, 1], Easing.linear) * (1 - ip(f, [st + PARAM_FLY - 3, st + PARAM_FLY], [0, 1], Easing.linear)),
+              scale: ip(f, [st, st + 5], [0.4, 1], BIGBACK) * (1 - t * 0.7),
               display: "flex",
               alignItems: "center",
               gap: 12,
@@ -531,30 +545,31 @@ function SceneCompute() {
         );
       })}
 
-      <div style={{ position: "absolute", left: 130, top: 250, display: "flex", flexDirection: "column", gap: 26 }}>
-        <Pop at={4} size={50} color={C.muted} style={{ fontWeight: 560, letterSpacing: "-0.02em", lineHeight: 1.25 }}>
-          Trafic, météo, demande, offre,
+      <div style={{ position: "absolute", left: 130, top: 270, display: "flex", flexDirection: "column", gap: 26 }}>
+        <Pop at={2} size={58} color={C.muted} style={{ fontWeight: 560, letterSpacing: "-0.02em", lineHeight: 1.25 }}>
+          Trafic, météo, demande,
           <br />
-          votre voiture, vos coûts :
+          votre voiture :
         </Pop>
-        <Pop at={18} size={118} color={C.violet}>
-          l’IA calcule tout,
-        </Pop>
-        <Pop at={40} size={118} color={C.green}>
-          en une seconde.
-        </Pop>
+        {f >= calc && (
+          <Pop at={calc} size={118} color={C.violet}>
+            l’IA calcule tout.
+          </Pop>
+        )}
+        {f >= second && (
+          <Pop at={second} size={118} color={C.green}>
+            En une seconde.
+          </Pop>
+        )}
       </div>
       <DemoNotice opacity={phoneIn} />
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 12,7 → 16,3 s : la pastille */
+/* ------------------------------------------------------------------ « Une course ? VTC Copilot tranche. » */
 
-const SORT: { price: number; dest: string; verdict: Verdict; hourly: string; out: number; at: number }[] = [
-  { price: 58, dest: "Puteaux → CDG", verdict: "green", hourly: "57 €/h", out: 1, at: 6 },
-  { price: 14, dest: "Paris 12e → 20e", verdict: "red", hourly: "11 €/h", out: -1, at: 40 },
-];
+const SORT_SC = { from: COMPUTE.to, to: fr(VO.adieu) - 2 };
 
 /** La pastille VTC Copilot AI, qui s'affiche juste sous la proposition. */
 function Pastille({ verdict, hourly, at }: { verdict: Verdict; hourly: string; at: number }) {
@@ -571,7 +586,7 @@ function Pastille({ verdict, hourly, at }: { verdict: Verdict; hourly: string; a
           borderRadius: 99,
           background: v.color,
           color: "#fff",
-          fontSize: 42,
+          fontSize: 40,
           fontWeight: 700,
           letterSpacing: "-0.02em",
           whiteSpace: "nowrap",
@@ -581,11 +596,11 @@ function Pastille({ verdict, hourly, at }: { verdict: Verdict; hourly: string; a
           translate: `0 ${ip(f, [at, at + 8], [-40, 0])}px`,
         }}
       >
-        <span style={{ width: 52, height: 52, borderRadius: 52, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.25)" }}>
-          {verdict === "green" ? <Check size={32} strokeWidth={3} /> : <X size={32} strokeWidth={3} />}
+        <span style={{ width: 50, height: 50, borderRadius: 50, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.25)" }}>
+          {verdict === "green" ? <Check size={30} strokeWidth={3} /> : <X size={30} strokeWidth={3} />}
         </span>
         {v.label}
-        <span style={{ fontWeight: 560, opacity: 0.85, fontSize: 34 }}>· {hourly}</span>
+        <span style={{ fontWeight: 560, opacity: 0.85, fontSize: 32 }}>· {hourly}</span>
       </div>
     </div>
   );
@@ -593,185 +608,155 @@ function Pastille({ verdict, hourly, at }: { verdict: Verdict; hourly: string; a
 
 function SceneSort() {
   const f = useCurrentFrame();
-  const outro = 74;
-  const exit = ip(f, [104, 110], [0, 1], INOUT);
+  const end = SORT_SC.to - SORT_SC.from;
+  const tranche = fr(VO.tranche) - SORT_SC.from;
+  const exit = ip(f, [end - 5, end], [0, 1], INOUT);
+  const cards: { price: number; dest: string; verdict: Verdict; hourly: string; x: number; at: number; stamp: number }[] = [
+    { price: 58, dest: "Puteaux → CDG", verdict: "green", hourly: "57 €/h", x: 960 - 640 - 40, at: 2, stamp: tranche + 8 },
+    { price: 14, dest: "Paris 12e → 20e", verdict: "red", hourly: "11 €/h", x: 960 + 40, at: 8, stamp: tranche + 22 },
+  ];
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
       <Backdrop tint={C.green} tint2={C.violet} drift={0.2 + f / 240} />
-      <div style={{ position: "absolute", left: 0, right: 0, top: 110, display: "flex", flexDirection: "column", alignItems: "center", gap: 18, opacity: 1 - ip(f, [outro - 4, outro], [0, 1]) }}>
-        <Pop at={0} size={104}>
-          Une course arrive ?
+      <div style={{ position: "absolute", left: 0, right: 0, top: 110, display: "flex", justifyContent: "center", gap: 36 }}>
+        <Pop at={1} size={104}>
+          Une course ?
         </Pop>
-        {f >= 14 && (
-          <Pop at={14} size={50} color={C.muted} style={{ fontWeight: 560, letterSpacing: "-0.02em" }}>
-            Une pastille <span style={{ color: C.green }}>verte</span> ou <span style={{ color: C.red }}>rouge</span> s’affiche direct en dessous.
+        {f >= tranche && (
+          <Pop at={tranche} size={104} color={C.violet}>
+            VTC Copilot tranche.
           </Pop>
         )}
       </div>
 
-      {SORT.map((o) => {
-        const s = o.at;
-        const enter = ip(f, [s, s + 8], [0, 1], BACK);
-        const leave = ip(f, [s + 26, s + 34], [0, 1], Easing.in(Easing.cubic));
-        if (f < s || leave >= 1) return null;
+      {cards.map((o) => {
+        const enter = ip(f, [o.at, o.at + 8], [0, 1], BACK);
         return (
-          <div
-            key={o.price}
-            style={{
-              position: "absolute",
-              left: 960 - 320,
-              top: 420,
-              opacity: enter,
-              translate: `${(1 - enter) * 500 + leave * o.out * 1500}px ${leave * (o.out < 0 ? 200 : -120)}px`,
-              rotate: `${leave * o.out * 18 + (1 - enter) * 8}deg`,
-            }}
-          >
-            <OfferToast price={o.price} dest={o.dest} timer={ip(f, [s, s + 50], [1, 0.4], Easing.linear)} width={640} />
-            <Pastille verdict={o.verdict} hourly={o.hourly} at={s + 9} />
+          <div key={o.price} style={{ position: "absolute", left: o.x, top: 400, opacity: enter, translate: `0 ${(1 - enter) * 200}px` }}>
+            <OfferToast price={o.price} dest={o.dest} timer={ip(f, [o.at, o.at + 70], [1, 0.35], Easing.linear)} width={640} />
+            <Pastille verdict={o.verdict} hourly={o.hourly} at={o.stamp} />
           </div>
         );
       })}
-
-      {f >= outro && (
-        <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 24 }}>
-          <Pop at={outro} size={130}>
-            Fini le pifomètre,
-          </Pop>
-          {f >= outro + 10 && (
-            <Pop at={outro + 10} size={96} color={C.violet}>
-              et vous gardez le dernier mot.
-            </Pop>
-          )}
-        </AbsoluteFill>
-      )}
-      <DemoNotice opacity={ip(f, [0, 10], [0, 1]) * (1 - ip(f, [outro - 4, outro], [0, 1]))} />
+      <DemoNotice opacity={ip(f, [0, 10], [0, 1])} />
     </AbsoluteFill>
   );
 }
 
-/* ------------------------------------------------------------------ 16,3 → 20 s : la chute et la signature */
+/* ------------------------------------------------------------------ « Adieu les courses au pif… bonjour celles qui font du BIFF » */
 
-const BIFF = [
-  { a: -2.8, d: 700, s: 110, at: 16 },
-  { a: -0.3, d: 720, s: 90, at: 18 },
-  { a: 0.35, d: 740, s: 76, at: 20 },
-  { a: 2.8, d: 700, s: 100, at: 17 },
-  { a: -1.6, d: 520, s: 70, at: 22 },
-  { a: 1.6, d: 540, s: 84, at: 19 },
+const BIFF_SC = { from: SORT_SC.to, to: fr(VO.fin) };
+const BIFF_AT = fr(VO.biff) - BIFF_SC.from;
+const BIFF_COINS = [
+  { a: -2.8, d: 700, s: 120, at: BIFF_AT },
+  { a: -0.3, d: 720, s: 96, at: BIFF_AT + 1 },
+  { a: 0.35, d: 740, s: 80, at: BIFF_AT + 2 },
+  { a: 2.8, d: 700, s: 104, at: BIFF_AT + 1 },
+  { a: -1.6, d: 520, s: 70, at: BIFF_AT + 3 },
+  { a: 1.6, d: 540, s: 86, at: BIFF_AT + 2 },
+  { a: -2.2, d: 820, s: 64, at: BIFF_AT + 4 },
+  { a: 0.9, d: 820, s: 72, at: BIFF_AT + 4 },
 ];
-const SIGN = 44;
+
+function SceneBiff() {
+  const f = useCurrentFrame();
+  const end = BIFF_SC.to - BIFF_SC.from;
+  const bonjour = fr(VO.bonjour) - BIFF_SC.from;
+  const exit = ip(f, [end - 5, end], [0, 1], INOUT);
+
+  return (
+    <AbsoluteFill style={{ opacity: 1 - exit }}>
+      <Backdrop tint={C.green} tint2={C.violet} drift={f / 160} />
+      <Coins list={BIFF_COINS} />
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 26 }}>
+        <Pop at={1} size={100} color={C.muted} style={{ opacity: f >= bonjour ? 0.55 : 1 }}>
+          Adieu les courses au <span style={{ textDecoration: "line-through", textDecorationThickness: 8 }}>pif</span>…
+        </Pop>
+        {f >= bonjour && (
+          <Pop at={bonjour} size={110}>
+            bonjour celles qui font du{" "}
+            <span style={{ display: "inline-block", color: C.green, fontWeight: 800, transformOrigin: "left 70%", scale: ip(f, [BIFF_AT, BIFF_AT + 8], [1, 1.35], BIGBACK), rotate: `${ip(f, [BIFF_AT, BIFF_AT + 8], [0, -6])}deg` }}>BIFF</span>
+          </Pop>
+        )}
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+}
+
+/* ------------------------------------------------------------------ signature : la carte finale reste après la voix */
 
 function SceneBrand() {
   const f = useCurrentFrame();
-  const punch = 1 - ip(f, [SIGN - 6, SIGN], [0, 1], INOUT);
-  const g = f - SIGN;
-  const draw = ip(g, [0, 24], [0, 1], INOUT);
-  const spark = ip(g, [22, 32], [0, 1]);
+  const draw = ip(f, [0, 24], [0, 1], INOUT);
+  const spark = ip(f, [22, 32], [0, 1]);
   const letters = "VTC Copilot AI".split("");
 
   return (
     <AbsoluteFill>
-      <Backdrop tint={C.green} tint2={C.violet} drift={f / 160} />
-
-      {/* « Adieu les courses au pif, bonjour les courses qui font du biff ! » */}
-      {punch > 0 && (
-        <AbsoluteFill style={{ opacity: punch }}>
-          {BIFF.map((c, i) => {
-            const t = ip(f, [c.at, c.at + 12], [0, 1], BACK);
+      <AbsoluteFill style={{ background: C.night }} />
+      <AbsoluteFill
+        style={{
+          background: `radial-gradient(50% 55% at 50% 40%, ${C.violet}22 0%, transparent 70%), radial-gradient(40% 40% at 50% 82%, ${C.green}14 0%, transparent 70%)`,
+          scale: ip(f, [0, 72], [1.3, 1]),
+        }}
+      />
+      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+        <div style={{ position: "relative", scale: ip(f, [0, 24], [0.7, 1], BACK), marginTop: -30 }}>
+          <LogoMark size={240} draw={draw} id="film-end" />
+          {/* le € s'allume */}
+          <Sparkle size={70} color={C.green} style={{ left: 170, top: 150, opacity: spark * (1 - ip(f, [36, 48], [0, 1])), scale: 0.4 + spark * 0.8, rotate: `${f * 4}deg` }} />
+        </div>
+        <div style={{ display: "flex", marginTop: 36, fontSize: 140, fontWeight: 680, letterSpacing: "-0.05em", color: C.text }}>
+          {letters.map((l, i) => {
+            const st = 6 + i * 1.2;
             return (
-              <div
-                key={i}
-                style={{
-                  position: "absolute",
-                  left: 960 + Math.cos(c.a) * c.d * t - c.s / 2,
-                  top: 540 + Math.sin(c.a) * c.d * 0.6 * t - c.s / 2,
-                  width: c.s,
-                  height: c.s,
-                  borderRadius: c.s,
-                  background: C.green,
-                  color: "#fff",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: c.s * 0.55,
-                  fontWeight: 800,
-                  opacity: ip(f, [c.at, c.at + 2], [0, 1], Easing.linear),
-                  scale: t,
-                  rotate: `${Math.sin((f - c.at) / 5) * 14 * (i % 2 ? 1 : -1)}deg`,
-                }}
-              >
-                €
-              </div>
+              <span key={i} style={{ display: "inline-block", whiteSpace: "pre", opacity: ip(f, [st, st + 8], [0, 1]), translate: `0 ${ip(f, [st, st + 12], [50, 0])}px`, fontWeight: i >= 12 ? 420 : 680, color: i >= 12 ? C.muted : C.text }}>
+                {l}
+              </span>
             );
           })}
-          <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 22 }}>
-            <Pop at={0} size={96} color={C.muted}>
-              Adieu les courses au pif,
-            </Pop>
-            {f >= 12 && (
-              <Pop at={12} size={112}>
-                bonjour les courses qui font du <span style={{ color: C.green }}>biff</span> !
-              </Pop>
-            )}
-          </AbsoluteFill>
-        </AbsoluteFill>
-      )}
-
-      {f >= SIGN && (
-        <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-          <div style={{ position: "relative", scale: ip(g, [0, 24], [0.7, 1], BACK), marginTop: -30 }}>
-            <LogoMark size={240} draw={draw} id="film-end" />
-            {/* le € s'allume */}
-            <Sparkle size={70} color={C.green} style={{ left: 170, top: 150, opacity: spark * (1 - ip(g, [36, 48], [0, 1])), scale: 0.4 + spark * 0.8, rotate: `${f * 4}deg` }} />
-          </div>
-          <div style={{ display: "flex", marginTop: 36, fontSize: 140, fontWeight: 680, letterSpacing: "-0.05em", color: C.text }}>
-            {letters.map((l, i) => {
-              const s = 8 + i * 1.2;
-              return (
-                <span key={i} style={{ display: "inline-block", whiteSpace: "pre", opacity: ip(g, [s, s + 8], [0, 1]), translate: `0 ${ip(g, [s, s + 12], [50, 0])}px`, fontWeight: i >= 12 ? 420 : 680, color: i >= 12 ? C.muted : C.text }}>
-                  {l}
-                </span>
-              );
-            })}
-          </div>
-          <div
-            style={{
-              marginTop: 54,
-              padding: "26px 56px",
-              borderRadius: 99,
-              fontSize: 46,
-              fontWeight: 560,
-              color: "#fff",
-              background: C.ink,
-              boxShadow: "0 30px 60px -20px rgba(11,13,18,0.5)",
-              opacity: ip(g, [22, 30], [0, 1]),
-              scale: ip(g, [22, 34], [0.8, 1], BACK),
-            }}
-          >
-            Rejoignez-nous sur la waitlist
-          </div>
-        </AbsoluteFill>
-      )}
+        </div>
+        <div
+          style={{
+            marginTop: 54,
+            padding: "26px 56px",
+            borderRadius: 99,
+            fontSize: 46,
+            fontWeight: 560,
+            color: "#fff",
+            background: C.ink,
+            boxShadow: "0 30px 60px -20px rgba(11,13,18,0.5)",
+            opacity: ip(f, [18, 26], [0, 1]),
+            scale: ip(f, [18, 30], [0.8, 1], BACK),
+          }}
+        >
+          Rejoignez la waitlist
+        </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 }
 
 /* ------------------------------------------------------------------ montage */
 
-const SCENES: { name: string; from: number; frames: number; Scene: () => ReactNode }[] = [
-  { name: "1. Am, stram, gram", from: 0, frames: 42, Scene: SceneRhyme },
-  { name: "2. Vous êtes VTC ?", from: 42, frames: 80, Scene: SceneHook },
-  { name: "3. Pschiit", from: 122, frames: 118, Scene: SceneBalloon },
-  { name: "4. La solution", from: 240, frames: 30, Scene: SceneLogo },
-  { name: "5. L'IA calcule", from: 270, frames: 110, Scene: SceneCompute },
-  { name: "6. La pastille", from: 380, frames: 110, Scene: SceneSort },
-  { name: "7. Biff et signature", from: 490, frames: 110, Scene: SceneBrand },
+export const FILM_FRAMES = fr(27);
+
+const SCENES: { name: string; from: number; to: number; Scene: () => ReactNode }[] = [
+  { name: "1. Am, stram, gram", from: 0, to: RHYME_END, Scene: SceneRhyme },
+  { name: "2. Vous êtes VTC ?", from: HOOK.from, to: HOOK.to, Scene: SceneHook },
+  { name: "3. Jackpot ? Pschit !", from: PROB.from, to: PROB.to, Scene: SceneBalloon },
+  { name: "4. VTC Copilot !", from: LOGO.from, to: LOGO.to, Scene: SceneLogo },
+  { name: "5. L'IA calcule tout", from: COMPUTE.from, to: COMPUTE.to, Scene: SceneCompute },
+  { name: "6. VTC Copilot tranche", from: SORT_SC.from, to: SORT_SC.to, Scene: SceneSort },
+  { name: "7. Bonjour le biff", from: BIFF_SC.from, to: BIFF_SC.to, Scene: SceneBiff },
+  { name: "8. Signature", from: BIFF_SC.to, to: FILM_FRAMES, Scene: SceneBrand },
 ];
 
 export const Film = () => (
   <AbsoluteFill style={{ background: C.night, fontFamily: FONT, color: C.text }}>
-    {SCENES.map(({ name, from, frames, Scene }) => (
-      <Sequence key={name} name={name} from={from} durationInFrames={frames}>
+    {SCENES.map(({ name, from, to, Scene }) => (
+      <Sequence key={name} name={name} from={from} durationInFrames={to - from}>
         <Scene />
       </Sequence>
     ))}

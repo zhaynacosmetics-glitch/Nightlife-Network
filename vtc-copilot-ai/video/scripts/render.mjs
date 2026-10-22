@@ -1,4 +1,4 @@
-// Rendu du film : image via la CLI Remotion, musique originale (scripts/music.py), master H.264 + AAC, puis versions web via ffmpeg.
+// Rendu du film : image via la CLI Remotion, voix off + musique originale (scripts/music.py) mixées, master H.264 + AAC, puis versions web via ffmpeg.
 // Usage : npm run render   (depuis vtc-copilot-ai/video)
 import path from "node:path";
 import { execFileSync } from "node:child_process";
@@ -12,15 +12,27 @@ mkdirSync(site, { recursive: true });
 const master = path.join(out, "vtc-copilot-ai-film-master-1080p.mp4");
 const picture = path.join(out, "image-seule.mp4");
 const music = path.join(ROOT, "public/audio/musique.wav");
+const voice = path.join(ROOT, "public/audio/voix-off-elevenlabs.mp3");
+const mix = path.join(out, "mix.wav");
 const run = (cmd, args) => execFileSync(cmd, args, { stdio: "inherit", cwd: ROOT });
 
 const browserArgs = browserExecutable ? [`--browser-executable=${browserExecutable}`] : [];
 if (!process.argv.includes("--skip-master")) {
   run("npx", ["remotion", "render", "src/index.ts", COMPOSITION, picture, "--codec=h264", "--crf=16", "--muted", ...browserArgs]);
 }
-// Musique (générée, sans échantillon externe) puis assemblage image + son.
+// Musique (générée, sans échantillon externe), puis mixage : voix normalisée à −16 LUFS,
+// musique baissée automatiquement quand la voix parle (sidechain), limiteur de sécurité.
 run("python3", ["scripts/music.py", music]);
-run("ffmpeg", ["-y", "-loglevel", "error", "-i", picture, "-i", music, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", master]);
+run("ffmpeg", [
+  "-y", "-loglevel", "error", "-i", music, "-i", voice, "-filter_complex",
+  "[1:a]aformat=channel_layouts=stereo,loudnorm=I=-16:TP=-2:LRA=11,aresample=44100,apad,asplit=2[vo][sc];" +
+    "[0:a]volume=0.6[m];[m][sc]sidechaincompress=threshold=0.02:ratio=5:attack=15:release=350[md];" +
+    "[md][vo]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.89,atrim=0:27[a]",
+  "-map", "[a]", "-ar", "44100", mix,
+]);
+run("ffmpeg", ["-y", "-loglevel", "error", "-i", picture, "-i", mix, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", master]);
+// Version sans son (même image), pour les usages où le son n'est pas souhaité.
+run("ffmpeg", ["-y", "-loglevel", "error", "-i", picture, "-c:v", "copy", "-an", "-movflags", "+faststart", path.join(out, "vtc-copilot-ai-film-master-1080p-sans-son.mp4")]);
 
 // Versions web : H.264 High, yuv420p, faststart (lecture progressive), musique en AAC.
 const web = [
@@ -49,11 +61,11 @@ for (const v of [
     path.join(site, v.name),
   ]);
 }
-// Affiche (poster) : « Vous conduisez. L’IA calcule. En un instant. » et le pop-up « Bonne course » (12,4 s).
-const POSTER_AT = "12.4";
+// Affiche (poster) : « l’IA calcule tout. En une seconde. » et le pop-up « Bonne course » (18,3 s).
+const POSTER_AT = "18.3";
 run("ffmpeg", ["-y", "-loglevel", "error", "-ss", POSTER_AT, "-i", master, "-frames:v", "1", "-vf", "scale=1280:-1", "-c:v", "libwebp", "-quality", "82", path.join(site, "vtc-copilot-ai-film-poster.webp")]);
 run("ffmpeg", ["-y", "-loglevel", "error", "-ss", POSTER_AT, "-i", master, "-frames:v", "1", "-vf", "scale=1280:-1", "-q:v", "4", path.join(site, "vtc-copilot-ai-film-poster.jpg")]);
 // Image de partage social 1200×630 : signature finale.
-run("ffmpeg", ["-y", "-loglevel", "error", "-ss", "19.9", "-i", master, "-frames:v", "1", "-vf", "scale=1200:675,crop=1200:630", "-q:v", "3", path.join(site, "og-image.jpg")]);
+run("ffmpeg", ["-y", "-loglevel", "error", "-ss", "26.9", "-i", master, "-frames:v", "1", "-vf", "scale=1200:675,crop=1200:630", "-q:v", "3", path.join(site, "og-image.jpg")]);
 copyFileSync(path.join(site, "vtc-copilot-ai-film-poster.jpg"), path.join(out, "poster.jpg"));
 console.log("✓ film et déclinaisons web générés");

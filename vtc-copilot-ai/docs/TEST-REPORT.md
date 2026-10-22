@@ -15,7 +15,7 @@ Toutes les commandes ont été relancées après les dernières modifications.
 | Tests de bout en bout Playwright (desktop + mobile Pixel 7) | `npm run test:e2e` | 45 réussis, 1 ignoré par conception (lien d’évitement au clavier, testé sur desktop uniquement) |
 | Lighthouse mobile | voir plus bas | Performance 98 · Accessibilité 100 · Bonnes pratiques 100 · SEO 100 |
 | Lighthouse desktop | voir plus bas | 100 · 100 · 100 · 100 |
-| Film | `ffprobe` | 20,000 s, 600 images, 1920 × 1080, H.264 High, yuv420p, musique AAC stéréo |
+| Film | `ffprobe` | 27,000 s, 810 images, 1920 × 1080, H.264 High, yuv420p, voix off + musique AAC stéréo |
 
 ## Ce que couvrent les tests de bout en bout
 
@@ -33,7 +33,7 @@ Les fichiers sont dans `tests/e2e/`.
 - **Responsive** : aucun débordement horizontal à 320 px de large.
 - **Film**
   - Il démarre au clic et se met en pause ; le bouton « Activer le son » apparaît pendant la lecture.
-  - On vérifie sa durée (environ 20 s), son ratio 16:9 et qu’il démarre son coupé.
+  - On vérifie sa durée (environ 27 s), son ratio 16:9 et qu’il démarre son coupé.
 - **Problème puis solution (7 écrans au défilement)**
   - Les 7 boutons d'étape font défiler la page et changent l'écran du téléphone (coach IA, pop-up de verdict, notifications…).
   - Les 7 étapes sont listées pour les lecteurs d'écran.

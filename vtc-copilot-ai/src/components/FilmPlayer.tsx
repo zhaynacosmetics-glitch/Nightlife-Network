@@ -99,7 +99,7 @@ export function FilmPlayer() {
         preload="none"
         width={1280}
         height={720}
-        aria-label="Film de présentation de VTC Copilot AI, 20 secondes, son coupé par défaut"
+        aria-label="Film de présentation de VTC Copilot AI, 27 secondes, avec voix off et musique, son coupé par défaut"
         aria-describedby="film-description"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
@@ -122,7 +122,7 @@ export function FilmPlayer() {
             <span className="grid size-9 place-items-center rounded-full bg-white text-ink">
               <Play size={17} fill="currentColor" aria-hidden />
             </span>
-            Voir le film · 20 s<span className="sr-only"> (son coupé par défaut)</span>
+            Voir le film · 27 s<span className="sr-only"> (son coupé par défaut)</span>
           </span>
         </button>
       )}

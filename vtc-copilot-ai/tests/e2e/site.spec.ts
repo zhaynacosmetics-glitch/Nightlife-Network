@@ -122,7 +122,7 @@ test.describe("film", () => {
     await page.getByRole("button", { name: /Voir le film/ }).click();
     await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused && v.currentTime > 0.3), { timeout: 10_000 }).toBe(true);
     const meta = await video.evaluate((v: HTMLVideoElement) => ({ d: v.duration, w: v.videoWidth, h: v.videoHeight }));
-    expect(Math.round(meta.d)).toBe(20);
+    expect(Math.round(meta.d)).toBe(27);
     expect(meta.w / meta.h).toBeCloseTo(16 / 9, 2);
     // son coupé au départ, activable par le visiteur
     await page.getByRole("button", { name: "Activer le son" }).click();
