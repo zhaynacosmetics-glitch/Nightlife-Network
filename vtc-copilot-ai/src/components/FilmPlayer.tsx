@@ -15,92 +15,36 @@ function pickSource(): Sources {
   return light ? { mp4: site.media.film720, webm: site.media.film720Webm } : { mp4: site.media.film1080, webm: site.media.film1080Webm };
 }
 
-/** Lecture automatique uniquement si le contexte s'y prête (pas d'économie de données, pas de réduction des animations). */
-function canAutoplay(): boolean {
-  const conn = (navigator as Navigator & { connection?: NetInfo }).connection;
-  if (conn?.saveData) return false;
-  if (conn?.effectiveType && /(^|-)2g$/.test(conn.effectiveType)) return false;
-  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
 export function FilmPlayer() {
   const wrap = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState<Sources | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [userPaused, setUserPaused] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
 
-  // Tente la lecture avec le son. Les navigateurs refusent souvent le son sans geste préalable du visiteur :
-  // dans ce cas le film part sans le son, qui s'active au premier clic, toucher ou touche du clavier sur la page.
-  const playWithSound = useCallback(() => {
-    const v = video.current;
-    if (!v) return;
-    v.muted = false;
-    setMuted(false);
-    v.play().catch((err: unknown) => {
-      if (!(err instanceof DOMException) || err.name !== "NotAllowedError") return setPlaying(false);
-      v.muted = true;
-      setMuted(true);
-      v.play().catch(() => setPlaying(false));
-      const unmute = (e: Event) => {
-        // Le bouton du son gère lui-même son clic.
-        if (e.target instanceof Element && e.target.closest("[data-sound-toggle]")) return;
-        v.muted = false;
-        setMuted(false);
-        if (v.paused) v.play().catch(() => undefined);
-      };
-      for (const evt of ["pointerdown", "keydown", "touchend"]) window.addEventListener(evt, unmute, { once: true, capture: true });
-    });
-  }, []);
+  // Choisit la source dès l'affichage ; preload="none" évite tout téléchargement avant le clic.
+  useEffect(() => setSrc(pickSource()), []);
 
-  // Charge et lance la vidéo seulement lorsqu'elle est visible.
+  // Met le film en pause s'il sort de l'écran.
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
-    const auto = canAutoplay();
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        const v = video.current;
-        if (entry.isIntersecting) {
-          if (auto && !userPaused) {
-            setSrc((s) => s ?? pickSource());
-            if (v && v.currentSrc) playWithSound();
-          }
-        } else if (v && !v.paused) {
-          v.pause();
-        }
-      },
-      { threshold: 0.4 },
-    );
+    const io = new IntersectionObserver(([entry]) => {
+      const v = video.current;
+      if (!entry.isIntersecting && v && !v.paused) v.pause();
+    }, { threshold: 0.2 });
     io.observe(el);
     return () => io.disconnect();
-  }, [userPaused, playWithSound]);
+  }, []);
 
-  useEffect(() => {
-    const v = video.current;
-    if (!v || !src) return;
-    v.load();
-    playWithSound();
-  }, [src, playWithSound]);
-
+  // Le film ne démarre qu'au clic du visiteur, avec le son (play() appelé dans le geste, exigé par Safari iOS).
   const toggle = useCallback(() => {
     const v = video.current;
     if (!v) return;
-    if (!src) {
-      setUserPaused(false);
-      setSrc(pickSource());
-      return;
-    }
-    if (v.paused) {
-      setUserPaused(false);
-      v.play().catch(() => setFailed(true));
-    } else {
-      setUserPaused(true);
-      v.pause();
-    }
-  }, [src]);
+    if (v.paused) v.play().catch(() => setFailed(true));
+    else v.pause();
+  }, []);
 
   const toggleSound = useCallback(() => {
     const v = video.current;
@@ -116,7 +60,6 @@ export function FilmPlayer() {
         className="absolute inset-0 size-full object-cover"
         poster={site.media.poster}
         playsInline
-        loop
         preload="none"
         width={1280}
         height={720}
@@ -151,7 +94,6 @@ export function FilmPlayer() {
         <button
           type="button"
           onClick={toggleSound}
-          data-sound-toggle
           className="absolute bottom-3 left-3 flex h-11 items-center gap-2 rounded-full bg-ink/75 px-4 text-[14px] font-medium text-white ring-1 ring-white/20 backdrop-blur"
           aria-pressed={!muted}
         >

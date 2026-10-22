@@ -49,7 +49,7 @@ export function Hero() {
 
         {/* Pop-ups autour du film (exemples fictifs) */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <Pop delay={1.1} rotate={-4} float className="absolute -left-2 -top-10 sm:-left-10 lg:-left-20">
+          <Pop delay={1.1} rotate={-4} float className="absolute -top-10 hidden sm:-left-10 sm:block lg:-left-20">
             <NotifCard price={fmtEUR(RIDE_TRAP.price)} route={`${RIDE_TRAP.from} → ${RIDE_TRAP.to}`} />
           </Pop>
           <Pop delay={1.6} rotate={3} float className="absolute -right-2 top-[14%] hidden sm:block lg:-right-16">
@@ -61,7 +61,7 @@ export function Hero() {
           <Pop delay={2.3} rotate={-3} float className="absolute -left-8 bottom-[48%] hidden xl:block">
             <Chip tone="violet" icon={<Navigation size={16} aria-hidden />} label="Approche" value={`${RIDE_TRAP.approachMin} min`} />
           </Pop>
-          <Pop delay={2.7} rotate={2} float className="absolute -bottom-7 -right-1 sm:-right-8 lg:-right-14">
+          <Pop delay={2.7} rotate={2} float className="absolute -bottom-7 hidden sm:-right-8 sm:block lg:-right-14">
             <VerdictPill verdict="green" value={`${fmtEUR(MAIN.hourly)}/h`} />
           </Pop>
         </div>

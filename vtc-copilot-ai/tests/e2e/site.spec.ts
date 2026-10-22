@@ -113,7 +113,7 @@ test.describe("navigation", () => {
 
 test.describe("film", () => {
   test("affiche, contrôle de lecture et pause", async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" }); // pas de lecture auto : on teste le bouton
+    await page.emulateMedia({ reducedMotion: "reduce" }); // animations figées : boutons stables pour les clics
     await page.goto("/");
     const video = page.getByTestId("film");
     await expect(video).toHaveAttribute("poster", /poster\.webp$/);
@@ -135,15 +135,14 @@ test.describe("film", () => {
   });
 });
 
-test.describe("film en lecture automatique", () => {
-  test("démarre seul à l'écran, avec le son dès que le navigateur l'autorise", async ({ page }) => {
+test.describe("film au clic", () => {
+  test("ne démarre pas seul, même visible à l'écran", async ({ page }) => {
     await page.goto("/");
     const video = page.getByTestId("film");
     await video.scrollIntoViewIfNeeded();
-    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused && v.currentTime > 0.3), { timeout: 10_000 }).toBe(true);
-    // sans geste préalable, le navigateur peut imposer le silence : le premier clic sur la page rétablit le son
-    await page.locator("h1").click();
-    await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(false);
+    await page.waitForTimeout(1500);
+    expect(await video.evaluate((v: HTMLVideoElement) => v.paused && v.currentTime === 0)).toBe(true);
+    await expect(page.getByRole("button", { name: /Voir le film/ })).toBeVisible();
   });
 });
 

@@ -34,7 +34,7 @@ Les fichiers sont dans `tests/e2e/`.
 - **Film**
   - Il démarre au clic avec le son, se met en pause, et le son se coupe puis se remet avec le bouton.
   - On vérifie sa durée (environ 27 s) et son ratio 16:9.
-  - Lecture automatique : le film démarre seul quand il arrive à l’écran, avec le son si le navigateur l’autorise ; sinon le son s’active au premier clic sur la page.
+  - Pas de lecture automatique : le film reste à l’arrêt, même visible à l’écran, jusqu’au clic sur « Voir le film ».
 - **Problème puis solution (7 écrans au défilement)**
   - Les 7 boutons d'étape font défiler la page et changent l'écran du téléphone (coach IA, pop-up de verdict, notifications…).
   - Les 7 étapes sont listées pour les lecteurs d'écran.
