@@ -33,7 +33,7 @@ L'environnement de travail de Claude n'a pas de jeton API Cloudflare capable de 
 
 3. Lancer le déploiement. Cloudflare affiche une URL du type `https://vtc-copilot-ai.<votre-sous-domaine>.workers.dev`.
 
-   L'écran d'import ne propose pas de choisir la branche : Cloudflare prend la branche par défaut du dépôt. Tant que la PR n'est pas fusionnée, ce premier build échoue à l'étape « Cloning ». Dans ce cas, ouvrir le Worker, onglet **Settings**, rubrique **Build**, puis **Branch control**, et choisir la branche du site comme **Production branch**. Le build suivant part automatiquement au prochain push sur cette branche.
+   L'écran d'import ne propose pas de choisir la branche : Cloudflare prend la branche par défaut du dépôt. Tant que la PR n'est pas fusionnée, ce premier build échoue à l'étape « Cloning ». Dans ce cas, ouvrir le Worker, onglet **Settings**, rubrique **Build**, puis **Branch control**, et choisir la branche du site comme **Production branch**. Le build suivant part automatiquement au prochain push sur cette branche (vérifier aussi que **Root directory** vaut `vtc-copilot-ai`).
 4. Ouvrir le Worker, puis **Settings**, puis **Variables and Secrets**, et ajouter deux **secrets** (type *Secret*, pas *Text*) :
 
    | Secret | Valeur | Rôle |
