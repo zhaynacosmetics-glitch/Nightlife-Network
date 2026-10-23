@@ -1,67 +1,105 @@
-// Vignette TikTok 1080×1920 : accroche du film (exemple fictif « 32 € → 6 €/h ») et promesse du produit, dans la zone sûre de TikTok.
+// Vignette TikTok 1080×1920 : « Le VTC qui fait du BIFF », pluie de pièces €.
+// Le texte reste dans le cadre central 3:4 que TikTok garde dans la grille du profil.
 
+import type { CSSProperties } from "react";
 import { AbsoluteFill } from "remotion";
-import { Check, X } from "lucide-react";
-import { C, FONT, VERDICT } from "../../shared/brand";
+import { C, FONT } from "../../shared/brand";
 import { LogoMark } from "../../shared/Logo";
 import { Sparkle } from "./Film";
 
-const glow = "0 0 50px #fff, 0 0 20px #fff";
+const glow = "0 0 60px #fff, 0 0 24px #fff, 0 0 8px #fff";
 
-function Verdict({ ok, label, value, rotate }: { ok: boolean; label: string; value: string; rotate: number }) {
-  const color = ok ? VERDICT.green.color : VERDICT.red.color;
+/** Générateur pseudo-aléatoire déterministe : la vignette est identique à chaque rendu. */
+function rand(seed: number) {
+  const x = Math.sin(seed * 9301 + 49297) * 233280;
+  return x - Math.floor(x);
+}
+
+// pièces réparties autour du texte, plus grosses au premier plan, floues à l'arrière-plan
+const COINS = Array.from({ length: 90 }, (_, i) => {
+  const depth = rand(i + 1);
+  return {
+    x: rand(i + 101) * 1180 - 50,
+    y: rand(i + 201) * 2020 - 50,
+    s: 50 + depth * 150,
+    r: rand(i + 301) * 70 - 35,
+    blur: depth < 0.35 ? (0.35 - depth) * 18 : 0,
+    tilt: 0.55 + rand(i + 401) * 0.45,
+  };
+}).filter((c) => (c.blur > 0 && c.s < 90) || c.x + c.s < 150 || c.x > 930 || c.y + c.s < 560 || c.y > 1290); // dégage le texte
+
+function Coin({ x, y, s, r, blur, tilt }: { x: number; y: number; s: number; r: number; blur: number; tilt: number }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "18px 34px 18px 20px", borderRadius: 99, background: color, color: "#fff", fontSize: 50, fontWeight: 720, letterSpacing: "-0.02em", whiteSpace: "nowrap", boxShadow: `0 30px 50px -20px ${color}`, rotate: `${rotate}deg` }}>
-      <span style={{ width: 62, height: 62, borderRadius: 62, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.25)" }}>{ok ? <Check size={38} strokeWidth={3} /> : <X size={38} strokeWidth={3} />}</span>
-      {label}
-      <span style={{ fontWeight: 560, opacity: 0.85, fontSize: 40 }}>· {value}</span>
+    <div
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        width: s,
+        height: s,
+        borderRadius: s,
+        background: `radial-gradient(circle at 35% 30%, #4ADE80 0%, ${C.green} 55%, #0B7A3B 100%)`,
+        border: `${Math.max(3, s * 0.06)}px solid #0E8F45`,
+        color: "#fff",
+        display: "grid",
+        placeItems: "center",
+        fontSize: s * 0.58,
+        fontWeight: 820,
+        rotate: `${r}deg`,
+        scale: `${tilt} 1`,
+        filter: blur ? `blur(${blur}px)` : undefined,
+        boxShadow: `0 ${s * 0.18}px ${s * 0.35}px -${s * 0.12}px rgba(14,143,69,0.55), inset 0 -${s * 0.06}px 0 rgba(0,0,0,0.12)`,
+        textShadow: "0 2px 0 rgba(0,0,0,0.15)",
+      }}
+    >
+      €
     </div>
   );
 }
 
+const line: CSSProperties = { fontWeight: 760, letterSpacing: "-0.05em", lineHeight: 1, textShadow: glow, whiteSpace: "nowrap" };
+
 export const Thumbnail = () => (
-  <AbsoluteFill style={{ background: C.night, fontFamily: FONT, color: C.text }}>
-    <AbsoluteFill style={{ background: `radial-gradient(70% 35% at 45% 32%, ${C.red}26 0%, transparent 70%), radial-gradient(60% 30% at 45% 78%, ${C.green}22 0%, transparent 70%)` }} />
-    <AbsoluteFill
-      style={{
-        backgroundImage: "linear-gradient(rgba(15,18,30,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(15,18,30,0.05) 1px, transparent 1px)",
-        backgroundSize: "96px 96px",
-        maskImage: "radial-gradient(80% 70% at 50% 50%, black 30%, transparent 85%)",
-      }}
-    />
+  <AbsoluteFill style={{ background: C.night, fontFamily: FONT, color: C.text, overflow: "hidden" }}>
+    <AbsoluteFill style={{ background: `radial-gradient(60% 40% at 50% 50%, ${C.green}30 0%, transparent 75%), radial-gradient(50% 30% at 50% 15%, ${C.violet}14 0%, transparent 70%)` }} />
+    {COINS.filter((c) => c.blur > 0).map((c, i) => (
+      <Coin key={`b${i}`} {...c} />
+    ))}
 
-    <div style={{ position: "absolute", left: 0, width: 940, top: 170, display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <div style={{ padding: "16px 34px", borderRadius: 99, background: C.ink, color: "#fff", fontSize: 44, fontWeight: 700, letterSpacing: "0.04em", rotate: "-2deg" }}>CHAUFFEURS VTC</div>
+    {/* rayons qui partent du BIFF */}
+    <AbsoluteFill style={{ background: `repeating-conic-gradient(from 0deg at 50% 54%, ${C.green}12 0deg 8deg, transparent 8deg 20deg)`, maskImage: "radial-gradient(45% 35% at 50% 54%, black 20%, transparent 80%)" }} />
 
-      <div style={{ marginTop: 60, fontSize: 92, fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.05, textAlign: "center", textShadow: glow }}>
-        Ta course à
+    <div style={{ position: "absolute", left: 0, right: 0, top: 560, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ ...line, fontSize: 170 }}>Le VTC</div>
+      <div style={{ ...line, fontSize: 120, marginTop: 18 }}>qui fait du</div>
+      <div style={{ position: "relative", marginTop: 10, marginLeft: -30 }}>
+        <div
+          style={{
+            fontSize: 380,
+            fontWeight: 880,
+            letterSpacing: "-0.06em",
+            lineHeight: 0.95,
+            color: C.green,
+            rotate: "-6deg",
+            textShadow: "0 6px 0 #0E8F45, 0 12px 0 #0B7A3B, 0 18px 0 #0B7A3B, 0 40px 60px rgba(14,143,69,0.45)",
+          }}
+        >
+          BIFF
+        </div>
+        <Sparkle size={110} color={C.orange} style={{ left: -70, top: -20 }} />
+        <Sparkle size={70} color={C.orange} style={{ right: -40, top: 30 }} />
+        <Sparkle size={60} color={C.orange} style={{ right: 20, bottom: -10 }} />
       </div>
-      <div style={{ position: "relative", marginTop: 6 }}>
-        <div style={{ fontSize: 250, fontWeight: 760, letterSpacing: "-0.07em", lineHeight: 1, textShadow: glow }}>32 €</div>
-        {/* barré d'un trait rouge */}
-        <div style={{ position: "absolute", left: -20, right: -20, top: "52%", height: 26, borderRadius: 26, background: C.red, rotate: "-12deg", boxShadow: `0 10px 30px -8px ${C.red}` }} />
-      </div>
-      <div style={{ marginTop: 10, fontSize: 92, fontWeight: 700, letterSpacing: "-0.04em", textShadow: glow }}>te rapporte…</div>
-      <div style={{ position: "relative", marginTop: 4 }}>
-        <div style={{ fontSize: 330, fontWeight: 800, letterSpacing: "-0.07em", lineHeight: 0.95, color: C.red, textShadow: glow, rotate: "-3deg", whiteSpace: "nowrap" }}>6 €/h</div>
-        <Sparkle size={90} color={C.orange} style={{ left: -60, top: -30 }} />
-        <Sparkle size={60} color={C.orange} style={{ right: -40, top: 20 }} />
-      </div>
-      <div style={{ marginTop: 6, fontSize: 26, fontWeight: 500, color: C.muted }}>Exemple illustratif · chiffres fictifs</div>
+    </div>
 
-      <div style={{ marginTop: 70, display: "flex", flexDirection: "column", alignItems: "center", gap: 26 }}>
-        <Verdict ok={false} label="Mauvaise course" value="6 €/h" rotate={2} />
-        <Verdict ok label="Bonne course" value="57 €/h" rotate={-2} />
-      </div>
+    {COINS.filter((c) => !c.blur).map((c, i) => (
+      <Coin key={`f${i}`} {...c} />
+    ))}
 
-      <div style={{ marginTop: 70, fontSize: 70, fontWeight: 720, letterSpacing: "-0.04em", lineHeight: 1.08, textAlign: "center", textShadow: glow }}>
-        L’IA qui te dit
-        <br />
-        <span style={{ color: C.violet }}>laquelle accepter</span>
-      </div>
-      <div style={{ marginTop: 40, display: "flex", alignItems: "center", gap: 18 }}>
-        <LogoMark size={84} id="thumb-logo" />
-        <span style={{ fontSize: 52, fontWeight: 680, letterSpacing: "-0.04em" }}>
+    <div style={{ position: "absolute", left: 0, right: 0, top: 1500, display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 18, padding: "20px 40px 20px 24px", borderRadius: 99, background: "#fff", boxShadow: "0 30px 60px -24px rgba(11,13,18,0.45)", border: `2px solid ${C.line}` }}>
+        <LogoMark size={86} id="thumb-logo" />
+        <span style={{ fontSize: 56, fontWeight: 700, letterSpacing: "-0.04em" }}>
           VTC Copilot <span style={{ color: C.muted, fontWeight: 420 }}>AI</span>
         </span>
       </div>
