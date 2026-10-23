@@ -9,6 +9,7 @@ import { RIDE_TRAP } from "../../shared/demo";
 import { LogoMark } from "../../shared/Logo";
 import { Phone } from "../../shared/Phone";
 import { OverlayScreen } from "../../shared/coach";
+import { Thumbnail } from "./Thumbnail";
 import {
   BACK, BIFF_AT, BIFF_SC, BIGBACK, COINS, COMPUTE, Coins, DemoNotice, FILM_FRAMES, HOOK, HOPS, INOUT, LOGO, OfferToast, PARAMS, PARAM_FLY, PARAM_GAP,
   PARAM_START, PINS, PROB, Pop, RAIN, RESULT_AT, RHYME_END, SIX_AT, SORT_SC, Sparkle, TRAP, VO, Backdrop, fr, hm, ip, tab,
@@ -509,6 +510,8 @@ const SCENES: { name: string; from: number; to: number; Scene: () => ReactNode }
   { name: "8. Signature", from: BIFF_SC.to, to: FILM_FRAMES, Scene: VBrand },
 ];
 
+const COVER_FRAMES = 3;
+
 export const FilmVertical = () => (
   <AbsoluteFill style={{ background: C.night, fontFamily: FONT, color: C.text, width: W }}>
     {SCENES.map(({ name, from, to, Scene }) => (
@@ -516,5 +519,9 @@ export const FilmVertical = () => (
         <Scene />
       </Sequence>
     ))}
+    {/* la vignette sur les 3 premières images (0,1 s) : c'est elle qu'affichent les aperçus (WhatsApp, Instagram…) */}
+    <Sequence name="0. Vignette d'aperçu" durationInFrames={COVER_FRAMES}>
+      <Thumbnail />
+    </Sequence>
   </AbsoluteFill>
 );
