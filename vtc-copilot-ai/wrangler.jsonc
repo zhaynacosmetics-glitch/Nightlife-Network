@@ -1,0 +1,29 @@
+// Configuration Cloudflare du site VTC Copilot AI (Worker + fichiers statiques + D1).
+// Plan gratuit : fichiers statiques illimités, 100 000 requêtes Worker/jour, D1 5 Go et 100 000 écritures/jour.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vtc-copilot-ai",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    // Seules les routes /api/* passent par le code du Worker ; le reste est servi directement.
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vtc-copilot-ai-waitlist",
+      "database_id": "574d8a13-ad7c-4e51-9155-5d04382d01d8",
+      "migrations_dir": "migrations"
+    }
+  ]
+  // Secrets (jamais dans ce fichier) : ADMIN_TOKEN, IP_HASH_SALT, TURNSTILE_SECRET_KEY (facultatif).
+  // wrangler secret put ADMIN_TOKEN
+}

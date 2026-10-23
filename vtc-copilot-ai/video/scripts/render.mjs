@@ -1,0 +1,79 @@
+// Rendu du film : image via la CLI Remotion, voix off + musique originale (scripts/music.py) mixées, master H.264 + AAC, puis versions web via ffmpeg.
+// Usage : npm run render   (depuis vtc-copilot-ai/video)
+import path from "node:path";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, copyFileSync } from "node:fs";
+import { ROOT, COMPOSITION, browserExecutable } from "./common.mjs";
+
+const out = path.join(ROOT, "out");
+const site = path.join(ROOT, "../public/media");
+mkdirSync(out, { recursive: true });
+mkdirSync(site, { recursive: true });
+const master = path.join(out, "vtc-copilot-ai-film-master-1080p.mp4");
+const picture = path.join(out, "image-seule.mp4");
+const music = path.join(ROOT, "public/audio/musique.wav");
+const voice = path.join(ROOT, "public/audio/voix-off-elevenlabs.mp3");
+const mix = path.join(out, "mix.wav");
+const run = (cmd, args) => execFileSync(cmd, args, { stdio: "inherit", cwd: ROOT });
+
+const browserArgs = browserExecutable ? [`--browser-executable=${browserExecutable}`] : [];
+if (!process.argv.includes("--skip-master")) {
+  run("npx", ["remotion", "render", "src/index.ts", COMPOSITION, picture, "--codec=h264", "--crf=16", "--muted", ...browserArgs]);
+}
+// Musique (générée, sans échantillon externe), puis mixage : voix normalisée à −16 LUFS,
+// musique baissée automatiquement quand la voix parle (sidechain), limiteur de sécurité.
+run("python3", ["scripts/music.py", music]);
+run("ffmpeg", [
+  "-y", "-loglevel", "error", "-i", music, "-i", voice, "-filter_complex",
+  "[1:a]aformat=channel_layouts=stereo,loudnorm=I=-16:TP=-2:LRA=11,aresample=44100,apad,asplit=2[vo][sc];" +
+    "[0:a]volume=0.6[m];[m][sc]sidechaincompress=threshold=0.02:ratio=5:attack=15:release=350[md];" +
+    "[md][vo]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.89,atrim=0:27[a]",
+  "-map", "[a]", "-ar", "44100", mix,
+]);
+run("ffmpeg", ["-y", "-loglevel", "error", "-i", picture, "-i", mix, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", master]);
+// Version sans son (même image), pour les usages où le son n'est pas souhaité.
+run("ffmpeg", ["-y", "-loglevel", "error", "-i", picture, "-c:v", "copy", "-an", "-movflags", "+faststart", path.join(out, "vtc-copilot-ai-film-master-1080p-sans-son.mp4")]);
+
+// Versions web : H.264 High, yuv420p, faststart (lecture progressive), musique en AAC.
+const web = [
+  { name: "vtc-copilot-ai-film-1080p.mp4", scale: "1920:1080", crf: "25" },
+  { name: "vtc-copilot-ai-film-720p.mp4", scale: "1280:720", crf: "26" },
+];
+for (const v of web) {
+  run("ffmpeg", [
+    "-y", "-loglevel", "error", "-i", master,
+    "-vf", `scale=${v.scale}:flags=lanczos`,
+    "-c:v", "libx264", "-profile:v", "high", "-preset", "slow", "-crf", v.crf,
+    "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-c:a", "aac", "-b:a", "128k",
+    path.join(site, v.name),
+  ]);
+}
+// Repli WebM (VP9 + Opus) pour les navigateurs sans H.264 (ex. Chromium libre).
+for (const v of [
+  { name: "vtc-copilot-ai-film-1080p.webm", scale: "1920:1080", crf: "36" },
+  { name: "vtc-copilot-ai-film-720p.webm", scale: "1280:720", crf: "36" },
+]) {
+  run("ffmpeg", [
+    "-y", "-loglevel", "error", "-i", master,
+    "-vf", `scale=${v.scale}:flags=lanczos`,
+    "-c:v", "libvpx-vp9", "-crf", v.crf, "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "3",
+    "-pix_fmt", "yuv420p", "-c:a", "libopus", "-b:a", "96k",
+    path.join(site, v.name),
+  ]);
+}
+// Affiche (poster) : « l’IA calcule tout. En une seconde. » et le pop-up « Bonne course » (18,3 s).
+const POSTER_AT = "18.3";
+run("ffmpeg", ["-y", "-loglevel", "error", "-ss", POSTER_AT, "-i", master, "-frames:v", "1", "-vf", "scale=1280:-1", "-c:v", "libwebp", "-quality", "82", path.join(site, "vtc-copilot-ai-film-poster.webp")]);
+run("ffmpeg", ["-y", "-loglevel", "error", "-ss", POSTER_AT, "-i", master, "-frames:v", "1", "-vf", "scale=1280:-1", "-q:v", "4", path.join(site, "vtc-copilot-ai-film-poster.jpg")]);
+// Image de partage social 1200×630 : signature finale.
+run("ffmpeg", ["-y", "-loglevel", "error", "-ss", "26.9", "-i", master, "-frames:v", "1", "-vf", "scale=1200:675,crop=1200:630", "-q:v", "3", path.join(site, "og-image.jpg")]);
+copyFileSync(path.join(site, "vtc-copilot-ai-film-poster.jpg"), path.join(out, "poster.jpg"));
+
+// Version verticale 9:16 pour TikTok, Reels et Shorts (même mixage audio), et sa vignette.
+if (!process.argv.includes("--skip-vertical")) {
+  const vPicture = path.join(out, "image-seule-9x16.mp4");
+  run("npx", ["remotion", "render", "src/index.ts", "VtcCopilotFilmVertical", vPicture, "--codec=h264", "--crf=16", "--muted", ...browserArgs]);
+  run("ffmpeg", ["-y", "-loglevel", "error", "-i", vPicture, "-i", mix, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", path.join(out, "vtc-copilot-ai-film-tiktok-9x16.mp4")]);
+  run("npx", ["remotion", "still", "src/index.ts", "VignetteTikTok", path.join(out, "vignette-tiktok.png"), ...browserArgs]);
+}
+console.log("✓ film et déclinaisons web générés");
