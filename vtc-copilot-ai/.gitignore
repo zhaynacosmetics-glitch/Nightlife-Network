@@ -9,5 +9,6 @@ playwright-report/
 video/node_modules/
 video/out/*.mp4
 !video/out/vtc-copilot-ai-film-master-1080p.mp4
+!video/out/vtc-copilot-ai-film-tiktok-9x16.mp4
 video/public/audio/musique.wav
 video/out/*.wav

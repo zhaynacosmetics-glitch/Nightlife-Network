@@ -68,4 +68,12 @@ run("ffmpeg", ["-y", "-loglevel", "error", "-ss", POSTER_AT, "-i", master, "-fra
 // Image de partage social 1200×630 : signature finale.
 run("ffmpeg", ["-y", "-loglevel", "error", "-ss", "26.9", "-i", master, "-frames:v", "1", "-vf", "scale=1200:675,crop=1200:630", "-q:v", "3", path.join(site, "og-image.jpg")]);
 copyFileSync(path.join(site, "vtc-copilot-ai-film-poster.jpg"), path.join(out, "poster.jpg"));
+
+// Version verticale 9:16 pour TikTok, Reels et Shorts (même mixage audio), et sa vignette.
+if (!process.argv.includes("--skip-vertical")) {
+  const vPicture = path.join(out, "image-seule-9x16.mp4");
+  run("npx", ["remotion", "render", "src/index.ts", "VtcCopilotFilmVertical", vPicture, "--codec=h264", "--crf=16", "--muted", ...browserArgs]);
+  run("ffmpeg", ["-y", "-loglevel", "error", "-i", vPicture, "-i", mix, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", path.join(out, "vtc-copilot-ai-film-tiktok-9x16.mp4")]);
+  run("npx", ["remotion", "still", "src/index.ts", "VignetteTikTok", path.join(out, "vignette-tiktok.png"), ...browserArgs]);
+}
 console.log("✓ film et déclinaisons web générés");

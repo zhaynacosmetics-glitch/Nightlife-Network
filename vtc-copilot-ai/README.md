@@ -15,6 +15,7 @@ Site de présentation de **VTC Copilot AI**, le copilote d’aide à la décisio
 | Schéma de base de données (D1) | `migrations/` |
 | Film motion design de 27 s avec voix off et musique (sources Remotion) | `video/` |
 | Film final (master 1080p) | [`video/out/vtc-copilot-ai-film-master-1080p.mp4`](video/out/vtc-copilot-ai-film-master-1080p.mp4) |
+| Version verticale 9:16 pour TikTok, Reels, Shorts (même voix et musique) et sa vignette | [`video/out/vtc-copilot-ai-film-tiktok-9x16.mp4`](video/out/vtc-copilot-ai-film-tiktok-9x16.mp4), [`video/out/vignette-tiktok.png`](video/out/vignette-tiktok.png) |
 | Versions web du film, affiche, image de partage | `public/media/` |
 | Storyboard avec timecodes | [`video/STORYBOARD.md`](video/STORYBOARD.md) |
 | Stack, skills et licences | [`docs/STACK-AND-SKILLS.md`](docs/STACK-AND-SKILLS.md) |

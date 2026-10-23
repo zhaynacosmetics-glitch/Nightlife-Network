@@ -15,22 +15,22 @@ for (const file of ["geist-latin-wght-normal.woff2", "geist-latin-ext-wght-norma
   loadFont({ family: "Geist Variable", url: staticFile(`fonts/${file}`), weight: "100 900", display: "block" });
 }
 
-const OUT = Easing.bezier(0.16, 1, 0.3, 1);
-const INOUT = Easing.bezier(0.65, 0, 0.35, 1);
-const BACK = Easing.bezier(0.34, 1.56, 0.64, 1);
-const BIGBACK = Easing.bezier(0.3, 2.1, 0.5, 1);
+export const OUT = Easing.bezier(0.16, 1, 0.3, 1);
+export const INOUT = Easing.bezier(0.65, 0, 0.35, 1);
+export const BACK = Easing.bezier(0.34, 1.56, 0.64, 1);
+export const BIGBACK = Easing.bezier(0.3, 2.1, 0.5, 1);
 
 /** interpolate() bornée, avec easing. */
-const ip = (f: number, range: [number, number], out: [number, number], easing = OUT) =>
+export const ip = (f: number, range: [number, number], out: [number, number], easing = OUT) =>
   interpolate(f, range, out, { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing });
 
-const tab: CSSProperties = { fontVariantNumeric: "tabular-nums" };
-const TRAP = estimate(RIDE_TRAP);
+export const tab: CSSProperties = { fontVariantNumeric: "tabular-nums" };
+export const TRAP = estimate(RIDE_TRAP);
 const halo = "0 0 40px #fff, 0 0 18px #fff, 0 0 6px #fff";
 
 /* ------------------------------------------------------------------ décor commun */
 
-function Backdrop({ tint, tint2, drift = 0 }: { tint: string; tint2: string; drift?: number }) {
+export function Backdrop({ tint, tint2, drift = 0 }: { tint: string; tint2: string; drift?: number }) {
   return (
     <AbsoluteFill style={{ background: C.night }}>
       <AbsoluteFill
@@ -49,16 +49,16 @@ function Backdrop({ tint, tint2, drift = 0 }: { tint: string; tint2: string; dri
   );
 }
 
-function DemoNotice({ opacity = 1, right = false }: { opacity?: number; right?: boolean }) {
+export function DemoNotice({ opacity = 1, right = false, style }: { opacity?: number; right?: boolean; style?: CSSProperties }) {
   return (
-    <div style={{ position: "absolute", [right ? "right" : "left"]: 80, bottom: 56, fontSize: 24, fontWeight: 500, color: C.muted, opacity, letterSpacing: "0.01em" }}>
+    <div style={{ position: "absolute", [right ? "right" : "left"]: 80, bottom: 56, fontSize: 24, fontWeight: 500, color: C.muted, opacity, letterSpacing: "0.01em", ...style }}>
       Exemple illustratif · données fictives
     </div>
   );
 }
 
 /** Mot qui jaillit d'un coup (ressort), puis reste. */
-function Pop({ at, children, size = 120, color = C.text, style }: { at: number; children: ReactNode; size?: number; color?: string; style?: CSSProperties }) {
+export function Pop({ at, children, size = 120, color = C.text, style }: { at: number; children: ReactNode; size?: number; color?: string; style?: CSSProperties }) {
   const f = useCurrentFrame();
   return (
     <div
@@ -81,7 +81,7 @@ function Pop({ at, children, size = 120, color = C.text, style }: { at: number; 
   );
 }
 
-function Sparkle({ size = 60, color = C.orange, style }: { size?: number; color?: string; style?: CSSProperties }) {
+export function Sparkle({ size = 60, color = C.orange, style }: { size?: number; color?: string; style?: CSSProperties }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" style={{ position: "absolute", ...style }} aria-hidden>
       <path d="M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z" fill={color} />
@@ -89,7 +89,7 @@ function Sparkle({ size = 60, color = C.orange, style }: { size?: number; color?
   );
 }
 
-function OfferToast({ price, dest, timer, width = 420 }: { price: number; dest: string; timer: number; width?: number }) {
+export function OfferToast({ price, dest, timer, width = 420 }: { price: number; dest: string; timer: number; width?: number }) {
   return (
     <div
       style={{
@@ -116,9 +116,9 @@ function OfferToast({ price, dest, timer, width = 420 }: { price: number; dest: 
 
 /* ------------------------------------------------------------------ minutage, calé sur la voix off (secondes → images) */
 
-const fr = (sec: number) => Math.round(sec * 30);
+export const fr = (sec: number) => Math.round(sec * 30);
 // repères relevés sur voix-off-elevenlabs.mp3 (silences et fricatives)
-const VO = {
+export const VO = {
   am: 0.05, stram: 0.55, gram: 1.1,
   vtc: 1.91, plus: 2.89,
   prix: 4.14, jackpot: 4.95,
@@ -133,7 +133,7 @@ const VO = {
 
 /* ------------------------------------------------------------------ « Am, stram, gram… » */
 
-const RAIN = [
+export const RAIN = [
   { at: 0, x: 110, y: 110, r: -5, price: 18, dest: "Paris 11e" },
   { at: 2, x: 1390, y: 130, r: 4, price: 41, dest: "Roissy (95)" },
   { at: 4, x: 150, y: 700, r: 3, price: 12, dest: "Paris 3e" },
@@ -142,12 +142,12 @@ const RAIN = [
   { at: 10, x: 760, y: 780, r: -2, price: 15, dest: "Paris 18e" },
 ];
 // le doigt saute d'une proposition à l'autre, au rythme de la comptine
-const HOPS = [
+export const HOPS = [
   { at: fr(VO.am) + 2, toast: 0, word: "Am," },
   { at: fr(VO.stram), toast: 3, word: "stram," },
   { at: fr(VO.gram), toast: 1, word: "gram…" },
 ];
-const RHYME_END = fr(1.85);
+export const RHYME_END = fr(1.85);
 
 function SceneRhyme() {
   const f = useCurrentFrame();
@@ -207,9 +207,9 @@ function SceneRhyme() {
 
 /* ------------------------------------------------------------------ « Vous êtes VTC ? Vous voulez gagner PLUS ? » */
 
-const HOOK = { from: RHYME_END, to: fr(VO.prix) - 2 };
-const COIN_AT = fr(VO.plus + 0.55) - HOOK.from;
-const COINS = [
+export const HOOK = { from: RHYME_END, to: fr(VO.prix) - 2 };
+export const COIN_AT = fr(VO.plus + 0.55) - HOOK.from;
+export const COINS = [
   { a: -2.7, d: 640, s: 120, at: COIN_AT },
   { a: -0.4, d: 660, s: 96, at: COIN_AT + 2 },
   { a: 0.5, d: 700, s: 80, at: COIN_AT + 4 },
@@ -218,7 +218,7 @@ const COINS = [
   { a: 1.3, d: 600, s: 86, at: COIN_AT + 10 },
 ];
 
-function Coins({ list, opacity = 1 }: { list: typeof COINS; opacity?: number }) {
+export function Coins({ list, opacity = 1, cx = 960, cy = 540, squash = 0.6 }: { list: typeof COINS; opacity?: number; cx?: number; cy?: number; squash?: number }) {
   const f = useCurrentFrame();
   return (
     <>
@@ -229,8 +229,8 @@ function Coins({ list, opacity = 1 }: { list: typeof COINS; opacity?: number }) 
             key={i}
             style={{
               position: "absolute",
-              left: 960 + Math.cos(c.a) * c.d * t - c.s / 2,
-              top: 540 + Math.sin(c.a) * c.d * 0.6 * t - c.s / 2,
+              left: cx + Math.cos(c.a) * c.d * t - c.s / 2,
+              top: cy + Math.sin(c.a) * c.d * squash * t - c.s / 2,
               width: c.s,
               height: c.s,
               borderRadius: c.s,
@@ -280,16 +280,16 @@ function SceneHook() {
 
 /* ------------------------------------------------------------------ « 32 euros ?! JACKPOT ?! … Pschit ! … 6 euros de l'heure. » */
 
-const PROB = { from: HOOK.to, to: fr(VO.copilot) - 1 };
+export const PROB = { from: HOOK.to, to: fr(VO.copilot) - 1 };
 const rel = (sec: number) => fr(sec) - PROB.from;
-const PINS = [
+export const PINS = [
   { at: rel(VO.approche), icon: <Navigation size={32} />, label: "Approche", value: `${RIDE_TRAP.approachMin} min`, color: C.orange, pschit: rel(VO.pschit1), word: "Pschit !", size: 96, drop: 0.2 },
   { at: rel(VO.retour), icon: <Undo2 size={32} />, label: "Retour à vide", value: `${RIDE_TRAP.returnMin ?? 0} min`, color: C.red, pschit: rel(VO.pschit2), word: "Pschit !", size: 106, drop: 0.2 },
   { at: rel(VO.bouchons), icon: <Fuel size={32} />, label: "Bouchons, station, usure", value: `− ${fmtEUR(TRAP.costs, 0)}`, color: C.red, pschit: rel(VO.pschit3), word: "Pschiiit !", size: 140, drop: 0.45 },
 ];
-const RESULT_AT = rel(VO.resultat);
-const SIX_AT = rel(VO.six);
-const hm = (min: number) => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, "0")}`;
+export const RESULT_AT = rel(VO.resultat);
+export const SIX_AT = rel(VO.six);
+export const hm = (min: number) => `${Math.floor(min / 60)} h ${String(Math.round(min % 60)).padStart(2, "0")}`;
 
 function SceneBalloon() {
   const f = useCurrentFrame();
@@ -404,7 +404,7 @@ function SceneBalloon() {
 
 /* ------------------------------------------------------------------ « VTC Copilot ! » : le logo au milieu de l'écran */
 
-const LOGO = { from: PROB.to, to: fr(VO.trafic) - 3 };
+export const LOGO = { from: PROB.to, to: fr(VO.trafic) - 3 };
 
 function SceneLogo() {
   const f = useCurrentFrame();
@@ -449,8 +449,8 @@ function SceneLogo() {
 
 /* ------------------------------------------------------------------ « Trafic, météo, demande, votre voiture : l'IA calcule tout. En une seconde. » */
 
-const COMPUTE = { from: LOGO.to, to: fr(VO.course) - 3 };
-const PARAMS: { label: string; icon: ReactNode }[] = [
+export const COMPUTE = { from: LOGO.to, to: fr(VO.course) - 3 };
+export const PARAMS: { label: string; icon: ReactNode }[] = [
   { label: "Trafic", icon: <TrafficCone size={28} /> },
   { label: "Météo", icon: <CloudRain size={28} /> },
   { label: "Demande", icon: <TrendingUp size={28} /> },
@@ -465,9 +465,9 @@ const PARAMS: { label: string; icon: ReactNode }[] = [
   { label: "Vos préférences", icon: <SlidersHorizontal size={28} /> },
 ];
 const PHONE = { x: 1290, y: 540, w: 430 };
-const PARAM_START = 6;
-const PARAM_GAP = 5;
-const PARAM_FLY = 14;
+export const PARAM_START = 6;
+export const PARAM_GAP = 5;
+export const PARAM_FLY = 14;
 
 function SceneCompute() {
   const f = useCurrentFrame();
@@ -569,10 +569,10 @@ function SceneCompute() {
 
 /* ------------------------------------------------------------------ « Une course ? VTC Copilot tranche. » */
 
-const SORT_SC = { from: COMPUTE.to, to: fr(VO.adieu) - 2 };
+export const SORT_SC = { from: COMPUTE.to, to: fr(VO.adieu) - 2 };
 
 /** La pastille VTC Copilot AI, qui s'affiche juste sous la proposition. */
-function Pastille({ verdict, hourly, at }: { verdict: Verdict; hourly: string; at: number }) {
+export function Pastille({ verdict, hourly, at }: { verdict: Verdict; hourly: string; at: number }) {
   const f = useCurrentFrame();
   const v = VERDICT[verdict];
   return (
@@ -646,9 +646,9 @@ function SceneSort() {
 
 /* ------------------------------------------------------------------ « Adieu les courses au pif… bonjour celles qui font du BIFF » */
 
-const BIFF_SC = { from: SORT_SC.to, to: fr(VO.fin) };
-const BIFF_AT = fr(VO.biff) - BIFF_SC.from;
-const BIFF_COINS = [
+export const BIFF_SC = { from: SORT_SC.to, to: fr(VO.fin) };
+export const BIFF_AT = fr(VO.biff) - BIFF_SC.from;
+export const BIFF_COINS = [
   { a: -2.8, d: 700, s: 120, at: BIFF_AT },
   { a: -0.3, d: 720, s: 96, at: BIFF_AT + 1 },
   { a: 0.35, d: 740, s: 80, at: BIFF_AT + 2 },
